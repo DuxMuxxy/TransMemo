@@ -1,6 +1,11 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.protobuf)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlinter)
 }
 
 android {
@@ -13,8 +18,6 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -35,11 +38,38 @@ android {
     }
 }
 
-dependencies {
+// Setup protobuf configuration, generating lite Java and Kotlin classes
+protobuf {
+    protoc {
+        artifact = libs.protobuf.protoc.get().toString()
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                register("java") {
+                    option("lite")
+                }
+                register("kotlin") {
+                    option("lite")
+                }
+            }
+        }
+    }
+}
 
+dependencies {
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.lifecycle.runtimeCompose)
+    implementation(libs.androidx.lifecycle.viewModelCompose)
+    implementation(libs.bundles.androidx.compose)
+    implementation(libs.bundles.androidx.dataStore)
+    implementation(libs.bundles.koin)
+    implementation(libs.bundles.kotlinx)
+    implementation(libs.bundles.room)
+    implementation(libs.protobuf.kotlin.lite)
+    ksp(libs.room.compiler)
+
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
+    testImplementation(libs.koinTest)
 }
