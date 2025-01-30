@@ -5,7 +5,7 @@
 
     <string name="feature_calendar_title">Calendar</string>
     <string name="feature_takes_title">Takes</string>
-    <string name="feature_boxes_title">Boxes</string>
+    <string name="feature_containers_title">Boxes</string>
     <string name="feature_products_title">Products</string>
     <string name="feature_wellness_title">Wellness</string>
     <string name="feature_statistics_title">Statistics</string>

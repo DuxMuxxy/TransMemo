@@ -14,8 +14,8 @@ object TransMemoIcons {
     val CalendarUnselected = Icons.Outlined.DateRange
     val Takes = Icons.Rounded.Menu
     val TakesUnselected = Icons.Outlined.Menu
-    val Boxes = Icons.Rounded.Menu
-    val BoxesUnselected = Icons.Outlined.Menu
+    val Containers = Icons.Rounded.Menu
+    val ContainersUnselected = Icons.Outlined.Menu
     val Products = Icons.Rounded.Menu
     val ProductsUnselected = Icons.Outlined.Menu
     val Wellness = Icons.Rounded.Menu

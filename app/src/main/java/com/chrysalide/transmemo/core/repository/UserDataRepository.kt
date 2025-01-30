@@ -1,17 +1,16 @@
 package com.chrysalide.transmemo.core.repository
 
+import com.chrysalide.transmemo.core.datastore.PreferencesDataSource
 import com.chrysalide.transmemo.core.model.DarkThemeConfig
 import com.chrysalide.transmemo.core.model.UserData
 import kotlinx.coroutines.flow.Flow
 
-interface UserDataRepository {
-    /**
-     * Stream of [UserData]
-     */
-    val userData: Flow<UserData>
+class UserDataRepository(
+    private val preferencesDataSource: PreferencesDataSource
+) {
+    val userData: Flow<UserData> = preferencesDataSource.userData
 
-    /**
-     * Sets the desired dark theme config
-     */
-    suspend fun setDarkThemeConfig(darkThemeConfig: DarkThemeConfig)
+    suspend fun setDarkThemeConfig(darkThemeConfig: DarkThemeConfig) {
+        preferencesDataSource.setDarkThemeConfig(darkThemeConfig)
+    }
 }

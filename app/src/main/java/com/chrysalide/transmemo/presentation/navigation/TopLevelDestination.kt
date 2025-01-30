@@ -34,11 +34,11 @@ enum class TopLevelDestination(
         route = CalendarRoute::class,
         baseRoute = CalendarBaseRoute::class
     ),
-    BOXES(
-        selectedIcon = TransMemoIcons.Boxes,
-        unselectedIcon = TransMemoIcons.BoxesUnselected,
-        iconTextId = string.feature_boxes_title,
-        titleTextId = string.feature_boxes_title,
+    CONTAINERS(
+        selectedIcon = TransMemoIcons.Containers,
+        unselectedIcon = TransMemoIcons.ContainersUnselected,
+        iconTextId = string.feature_containers_title,
+        titleTextId = string.feature_containers_title,
         route = CalendarRoute::class,
         baseRoute = CalendarBaseRoute::class
     ),
