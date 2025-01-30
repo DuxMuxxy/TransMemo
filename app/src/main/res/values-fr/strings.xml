@@ -22,4 +22,6 @@
     <string name="feature_settings_database_import_title">Importer</string>
     <string name="feature_settings_database_import_action">Importer</string>
     <string name="feature_settings_database_import_description">Importer un fichier de données d\'une ancienne version de l\'application</string>
+    <string name="feature_settings_database_import_error">Une erreur a été rencontrée pendant l\'import du fichier de données</string>
+    <string name="feature_settings_database_import_success">Le fichier de données a été importé avec succès !</string>
 </resources>

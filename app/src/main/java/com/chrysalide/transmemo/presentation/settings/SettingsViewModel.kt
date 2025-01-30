@@ -1,11 +1,14 @@
 package com.chrysalide.transmemo.presentation.settings
 
 import android.net.Uri
-import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chrysalide.transmemo.core.model.DarkThemeConfig
 import com.chrysalide.transmemo.core.repository.UserDataRepository
+import com.chrysalide.transmemo.core.usecase.ImportOldDatabaseUseCase
 import com.chrysalide.transmemo.presentation.settings.SettingsUiState.Loading
 import com.chrysalide.transmemo.presentation.settings.SettingsUiState.UserEditableSettings
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
@@ -16,8 +19,12 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 class SettingsViewModel(
-    private val userDataRepository: UserDataRepository
+    private val userDataRepository: UserDataRepository,
+    private val importOldDatabaseUseCase: ImportOldDatabaseUseCase
 ) : ViewModel() {
+
+    var importResultSnackbar by mutableStateOf<ImportDatabaseFileResultSnackbar>(ImportDatabaseFileResultSnackbar.Idle)
+
     val settingsUiState: StateFlow<SettingsUiState> = userDataRepository.userData
         .map { userData ->
             UserEditableSettings(darkThemeConfig = userData.darkThemeConfig)
@@ -34,7 +41,17 @@ class SettingsViewModel(
     }
 
     fun importDatabaseFile(fileUri: Uri) {
-        Log.d("TEST", "importDatabaseFile: $fileUri")
+        viewModelScope.launch {
+            importOldDatabaseUseCase(
+                oldDataFileUri = fileUri,
+                onSuccess = {
+                    importResultSnackbar = ImportDatabaseFileResultSnackbar.Success
+                },
+                onError = {
+                    importResultSnackbar = ImportDatabaseFileResultSnackbar.Error
+                }
+            )
+        }
     }
 }
 
@@ -44,4 +61,10 @@ sealed interface SettingsUiState {
     data class UserEditableSettings(
         val darkThemeConfig: DarkThemeConfig
     ) : SettingsUiState
+}
+
+sealed interface ImportDatabaseFileResultSnackbar {
+    data object Idle : ImportDatabaseFileResultSnackbar
+    data object Success : ImportDatabaseFileResultSnackbar
+    data object Error : ImportDatabaseFileResultSnackbar
 }

@@ -19,10 +19,12 @@ fun NavController.navigateToSettings(navOptions: NavOptions) = navigate(route = 
  *  The Settings screen of the app.
  *  This should be supplied from a separate module.
  */
-fun NavGraphBuilder.settingsScreen() {
+fun NavGraphBuilder.settingsScreen(
+    onShowSnackbar: suspend (String, String?) -> Boolean
+) {
     navigation<SettingsBaseRoute>(startDestination = SettingsRoute) {
         composable<SettingsRoute> {
-            SettingsScreen()
+            SettingsScreen(onShowSnackbar = onShowSnackbar)
         }
     }
 }

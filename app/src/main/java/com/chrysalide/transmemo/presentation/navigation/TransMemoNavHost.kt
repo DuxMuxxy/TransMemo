@@ -21,6 +21,6 @@ fun TransMemoNavHost(
         modifier = modifier
     ) {
         calendarScreen()
-        settingsScreen()
+        settingsScreen(onShowSnackbar)
     }
 }

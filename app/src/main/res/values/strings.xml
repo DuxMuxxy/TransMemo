@@ -22,4 +22,6 @@
     <string name="feature_settings_database_import_title">Import</string>
     <string name="feature_settings_database_import_action">Import</string>
     <string name="feature_settings_database_import_description">Import an old app version data file</string>
+    <string name="feature_settings_database_import_error">Error occured on data file import</string>
+    <string name="feature_settings_database_import_success">The selected data file has been imported succesfully!</string>
 </resources>

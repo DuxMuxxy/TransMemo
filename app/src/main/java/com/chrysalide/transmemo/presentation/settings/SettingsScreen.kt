@@ -21,6 +21,7 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,9 +41,28 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SettingsScreen(
-    viewModel: SettingsViewModel = koinViewModel()
+    viewModel: SettingsViewModel = koinViewModel(),
+    onShowSnackbar: suspend (String, String?) -> Boolean
 ) {
     val settingsUiState by viewModel.settingsUiState.collectAsStateWithLifecycle()
+    val importResultSnackbar = viewModel.importResultSnackbar
+    val importResultSuccessText = stringResource(string.feature_settings_database_import_success)
+    val importResultErrorText = stringResource(string.feature_settings_database_import_error)
+
+    LaunchedEffect(importResultSnackbar) {
+        when (importResultSnackbar) {
+            ImportDatabaseFileResultSnackbar.Idle -> {}
+            ImportDatabaseFileResultSnackbar.Success -> {
+                onShowSnackbar(importResultSuccessText, null)
+                viewModel.importResultSnackbar = ImportDatabaseFileResultSnackbar.Idle
+            }
+            ImportDatabaseFileResultSnackbar.Error -> {
+                onShowSnackbar(importResultErrorText, null)
+                viewModel.importResultSnackbar = ImportDatabaseFileResultSnackbar.Idle
+            }
+        }
+    }
+
     SettingsView(
         settingsUiState = settingsUiState,
         onChangeDarkThemeConfig = viewModel::updateDarkThemeConfig,

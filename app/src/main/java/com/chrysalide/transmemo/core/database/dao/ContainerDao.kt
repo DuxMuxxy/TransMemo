@@ -23,4 +23,7 @@ interface ContainerDao {
 
     @Delete
     suspend fun delete(container: ContainerEntity)
+
+    @Query("DELETE FROM containers")
+    suspend fun deleteAll()
 }

@@ -15,6 +15,7 @@ import com.chrysalide.transmemo.core.datastore.UserPreferences
 import com.chrysalide.transmemo.core.datastore.UserPreferencesSerializer
 import com.chrysalide.transmemo.core.repository.DatabaseRepository
 import com.chrysalide.transmemo.core.repository.UserDataRepository
+import com.chrysalide.transmemo.core.usecase.ImportOldDatabaseUseCase
 import com.chrysalide.transmemo.presentation.MainActivityViewModel
 import com.chrysalide.transmemo.presentation.calendar.CalendarViewModel
 import com.chrysalide.transmemo.presentation.settings.SettingsViewModel
@@ -32,6 +33,10 @@ private const val DATA_STORE_FILE_NAME = "user_preferences.pb"
 private val coreModule = module {
     singleOf(::UserDataRepository)
     singleOf(::DatabaseRepository)
+}
+
+private val useCaseModule = module {
+    singleOf(::ImportOldDatabaseUseCase)
 }
 
 private val dataStoreModule = module {
@@ -67,4 +72,4 @@ private val databaseModule = module {
     single<WellnessDao> { get<TransMemoDatabase>().wellnessDao() }
 }
 
-val appModule = coreModule + dataStoreModule + viewModelModule + databaseModule
+val appModule = coreModule + useCaseModule + dataStoreModule + viewModelModule + databaseModule

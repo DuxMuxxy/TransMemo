@@ -23,4 +23,7 @@ interface WellnessDao {
 
     @Delete
     suspend fun delete(entity: WellnessEntity)
+
+    @Query("DELETE FROM wellness")
+    suspend fun deleteAll()
 }

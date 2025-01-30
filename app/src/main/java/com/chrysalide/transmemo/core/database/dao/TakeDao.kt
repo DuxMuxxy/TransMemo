@@ -23,4 +23,7 @@ interface TakeDao {
 
     @Delete
     suspend fun delete(product: TakeEntity)
+
+    @Query("DELETE FROM takes")
+    suspend fun deleteAll()
 }
