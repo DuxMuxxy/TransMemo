@@ -2,14 +2,15 @@ package com.chrysalide.transmemo.presentation.design
 
 import android.R.string
 import androidx.annotation.StringRes
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -21,25 +22,27 @@ import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 @Composable
 fun TransMemoTopAppBar(
     @StringRes titleRes: Int,
-    actionIcon: ImageVector,
-    actionIconContentDescription: String,
+    navigationIcon: ImageVector,
+    navigationIconContentDescription: String,
     modifier: Modifier = Modifier,
     colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(),
-    onActionClick: () -> Unit = {}
+    onNavigationClick: () -> Unit = {},
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
-    CenterAlignedTopAppBar(
-        title = { Text(text = stringResource(id = titleRes)) },
-        actions = {
-            IconButton(onClick = onActionClick) {
+    MediumTopAppBar(
+        title = { Text(stringResource(titleRes)) },
+        navigationIcon = {
+            IconButton(onClick = onNavigationClick) {
                 Icon(
-                    imageVector = actionIcon,
-                    contentDescription = actionIconContentDescription,
+                    imageVector = navigationIcon,
+                    contentDescription = navigationIconContentDescription,
                     tint = MaterialTheme.colorScheme.onSurface
                 )
             }
         },
         colors = colors,
-        modifier = modifier.testTag("topAppBar")
+        modifier = modifier.testTag("topAppBar"),
+        scrollBehavior = scrollBehavior
     )
 }
 
@@ -50,8 +53,9 @@ private fun TransMemoAppBarPreview() {
     TransMemoTheme {
         TransMemoTopAppBar(
             titleRes = string.untitled,
-            actionIcon = TransMemoIcons.Settings,
-            actionIconContentDescription = "Settings"
+            navigationIcon = TransMemoIcons.Menu,
+            navigationIconContentDescription = "",
+            scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
         )
     }
 }

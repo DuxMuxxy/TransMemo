@@ -9,6 +9,7 @@ import com.chrysalide.transmemo.core.datastore.UserPreferencesSerializer
 import com.chrysalide.transmemo.core.repository.TransMemoUserDataRepository
 import com.chrysalide.transmemo.core.repository.UserDataRepository
 import com.chrysalide.transmemo.presentation.MainActivityViewModel
+import com.chrysalide.transmemo.presentation.calendar.CalendarViewModel
 import com.chrysalide.transmemo.presentation.settings.SettingsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,6 +41,7 @@ private val dataStoreModule = module {
 
 private val viewModelModule = module {
     viewModelOf(::MainActivityViewModel)
+    viewModelOf(::CalendarViewModel)
     viewModelOf(::SettingsViewModel)
 }
 

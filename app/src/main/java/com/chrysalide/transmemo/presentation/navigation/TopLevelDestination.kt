@@ -3,7 +3,11 @@ package com.chrysalide.transmemo.presentation.navigation
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.chrysalide.transmemo.R.string
+import com.chrysalide.transmemo.presentation.calendar.CalendarBaseRoute
+import com.chrysalide.transmemo.presentation.calendar.CalendarRoute
 import com.chrysalide.transmemo.presentation.design.TransMemoIcons
+import com.chrysalide.transmemo.presentation.settings.SettingsBaseRoute
+import com.chrysalide.transmemo.presentation.settings.SettingsRoute
 import kotlin.reflect.KClass
 
 enum class TopLevelDestination(
@@ -14,12 +18,60 @@ enum class TopLevelDestination(
     val route: KClass<*>,
     val baseRoute: KClass<*> = route
 ) {
-    HOME(
-        selectedIcon = TransMemoIcons.Home,
-        unselectedIcon = TransMemoIcons.HomeBorder,
-        iconTextId = string.feature_home_title,
-        titleTextId = string.app_name,
-        route = HomeRoute::class,
-        baseRoute = HomeBaseRoute::class
+    CALENDAR(
+        selectedIcon = TransMemoIcons.Calendar,
+        unselectedIcon = TransMemoIcons.CalendarUnselected,
+        iconTextId = string.feature_calendar_title,
+        titleTextId = string.feature_calendar_title,
+        route = CalendarRoute::class,
+        baseRoute = CalendarBaseRoute::class
+    ),
+    TAKES(
+        selectedIcon = TransMemoIcons.Takes,
+        unselectedIcon = TransMemoIcons.TakesUnselected,
+        iconTextId = string.feature_takes_title,
+        titleTextId = string.feature_takes_title,
+        route = CalendarRoute::class,
+        baseRoute = CalendarBaseRoute::class
+    ),
+    BOXES(
+        selectedIcon = TransMemoIcons.Boxes,
+        unselectedIcon = TransMemoIcons.BoxesUnselected,
+        iconTextId = string.feature_boxes_title,
+        titleTextId = string.feature_boxes_title,
+        route = CalendarRoute::class,
+        baseRoute = CalendarBaseRoute::class
+    ),
+    PRODUCTS(
+        selectedIcon = TransMemoIcons.Products,
+        unselectedIcon = TransMemoIcons.ProductsUnselected,
+        iconTextId = string.feature_products_title,
+        titleTextId = string.feature_products_title,
+        route = CalendarRoute::class,
+        baseRoute = CalendarBaseRoute::class
+    ),
+    WELLNESS(
+        selectedIcon = TransMemoIcons.Wellness,
+        unselectedIcon = TransMemoIcons.WellnessUnselected,
+        iconTextId = string.feature_wellness_title,
+        titleTextId = string.feature_wellness_title,
+        route = CalendarRoute::class,
+        baseRoute = CalendarBaseRoute::class
+    ),
+    STATISTICS(
+        selectedIcon = TransMemoIcons.Statistics,
+        unselectedIcon = TransMemoIcons.StatisticsUnselected,
+        iconTextId = string.feature_statistics_title,
+        titleTextId = string.feature_statistics_title,
+        route = CalendarRoute::class,
+        baseRoute = CalendarBaseRoute::class
+    ),
+    SETTINGS(
+        selectedIcon = TransMemoIcons.Settings,
+        unselectedIcon = TransMemoIcons.SettingsUnselected,
+        iconTextId = string.feature_settings_title,
+        titleTextId = string.feature_settings_title,
+        route = SettingsRoute::class,
+        baseRoute = SettingsBaseRoute::class
     )
 }

@@ -4,6 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.chrysalide.transmemo.presentation.TransMemoAppState
+import com.chrysalide.transmemo.presentation.calendar.CalendarBaseRoute
+import com.chrysalide.transmemo.presentation.calendar.calendarScreen
+import com.chrysalide.transmemo.presentation.settings.settingsScreen
 
 @Composable
 fun TransMemoNavHost(
@@ -14,9 +17,10 @@ fun TransMemoNavHost(
     val navController = appState.navController
     NavHost(
         navController = navController,
-        startDestination = HomeBaseRoute,
+        startDestination = CalendarBaseRoute,
         modifier = modifier
     ) {
-        homeScreen()
+        calendarScreen()
+        settingsScreen()
     }
 }

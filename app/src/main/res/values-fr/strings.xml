@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menu_content_description">Menu</string>
+
+    <string name="feature_calendar_title">Calendrier</string>
+    <string name="feature_takes_title">Prises</string>
+    <string name="feature_boxes_title">Boîtes</string>
+    <string name="feature_products_title">Produits</string>
+    <string name="feature_wellness_title">Bien-être</string>
+    <string name="feature_statistics_title">Statistiques</string>
+    <string name="feature_settings_title">Paramètres</string>
+
+    <string name="feature_settings_loading">Chargement…</string>
+    <string name="feature_settings_appearance_title">Apparence</string>
+    <string name="feature_settings_dark_mode_preference">Thème</string>
+    <string name="feature_settings_dark_mode_config_system_default">Système</string>
+    <string name="feature_settings_dark_mode_config_light">Clair</string>
+    <string name="feature_settings_dark_mode_config_dark">Sombre</string>
+    <string name="feature_settings_dismiss_dialog_button_text">OK</string>
+</resources>

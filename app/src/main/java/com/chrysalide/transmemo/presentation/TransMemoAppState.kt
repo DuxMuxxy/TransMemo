@@ -11,9 +11,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.chrysalide.transmemo.presentation.calendar.navigateToCalendar
 import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination
-import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.HOME
-import com.chrysalide.transmemo.presentation.navigation.navigateToHome
+import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.BOXES
+import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.CALENDAR
+import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.PRODUCTS
+import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.SETTINGS
+import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.STATISTICS
+import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.TAKES
+import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.WELLNESS
+import com.chrysalide.transmemo.presentation.settings.navigateToSettings
 
 @Composable
 fun rememberTransMemoAppState(navController: NavHostController = rememberNavController()): TransMemoAppState =
@@ -63,7 +70,13 @@ class TransMemoAppState(
             }
 
             when (topLevelDestination) {
-                HOME -> navController.navigateToHome(topLevelNavOptions)
+                CALENDAR -> navController.navigateToCalendar(topLevelNavOptions)
+                TAKES -> {} // navController.navigateToTakes(topLevelNavOptions)
+                BOXES -> {} // navController.navigateToBoxes(topLevelNavOptions)
+                PRODUCTS -> {} // navController.navigateToProducts(topLevelNavOptions)
+                WELLNESS -> {} // navController.navigateToWellness(topLevelNavOptions)
+                STATISTICS -> {} // navController.navigateToStatistics(topLevelNavOptions)
+                SETTINGS -> navController.navigateToSettings(topLevelNavOptions)
             }
         }
     }
