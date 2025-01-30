@@ -18,6 +18,15 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
+
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
+            arg("room.generateKotlin", "true")
+        }
+
+        androidResources {
+            generateLocaleConfig = true
+        }
     }
 
     buildTypes {
