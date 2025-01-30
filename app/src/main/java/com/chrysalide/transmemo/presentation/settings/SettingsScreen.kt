@@ -1,5 +1,8 @@
 package com.chrysalide.transmemo.presentation.settings
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -10,7 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -41,6 +46,7 @@ fun SettingsScreen(
     SettingsView(
         settingsUiState = settingsUiState,
         onChangeDarkThemeConfig = viewModel::updateDarkThemeConfig,
+        importDatabaseFile = viewModel::importDatabaseFile
     )
 }
 
@@ -48,7 +54,14 @@ fun SettingsScreen(
 private fun SettingsView(
     settingsUiState: SettingsUiState,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
+    importDatabaseFile: (Uri) -> Unit
 ) {
+    val importFileLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { fileUri ->
+        fileUri?.let(importDatabaseFile)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -59,7 +72,7 @@ private fun SettingsView(
             Loading -> {
                 Box(
                     contentAlignment = Alignment.Center,
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     CircularProgressIndicator()
                 }
@@ -69,6 +82,7 @@ private fun SettingsView(
                 SettingsPanel(
                     settings = settingsUiState,
                     onChangeDarkThemeConfig = onChangeDarkThemeConfig,
+                    onImportClick = { importFileLauncher.launch(arrayOf("*/*")) }
                 )
             }
         }
@@ -79,8 +93,13 @@ private fun SettingsView(
 private fun ColumnScope.SettingsPanel(
     settings: UserEditableSettings,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
+    onImportClick: () -> Unit
 ) {
     AppearancePanel(settings, onChangeDarkThemeConfig)
+    Spacer(modifier = Modifier.height(16.dp))
+    HorizontalDivider()
+    Spacer(modifier = Modifier.height(16.dp))
+    DatabasePanel(onImportClick)
 }
 
 @Composable
@@ -117,6 +136,21 @@ private fun ColumnScope.AppearancePanel(
 }
 
 @Composable
+private fun ColumnScope.DatabasePanel(
+    onImportClick: () -> Unit
+) {
+    SettingsSectionTitle(text = stringResource(string.feature_settings_database_title))
+    Spacer(modifier = Modifier.height(16.dp))
+    SettingsSectionSubtitle(text = stringResource(string.feature_settings_database_import_title))
+    Spacer(modifier = Modifier.height(4.dp))
+    SettingsDescription(text = stringResource(string.feature_settings_database_import_description))
+    Spacer(modifier = Modifier.height(4.dp))
+    OutlinedButton(onClick = onImportClick) {
+        Text(stringResource(string.feature_settings_database_import_action))
+    }
+}
+
+@Composable
 private fun SettingsSectionTitle(text: String) {
     Text(
         text = text,
@@ -132,6 +166,14 @@ private fun SettingsSectionSubtitle(text: String) {
     )
 }
 
+@Composable
+private fun SettingsDescription(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyMedium
+    )
+}
+
 @ThemePreviews
 @Composable
 private fun PreviewSettingsDialog() {
@@ -139,6 +181,7 @@ private fun PreviewSettingsDialog() {
         SettingsView(
             settingsUiState = UserEditableSettings(darkThemeConfig = FOLLOW_SYSTEM),
             onChangeDarkThemeConfig = {},
+            importDatabaseFile = {}
         )
     }
 }
@@ -150,6 +193,7 @@ private fun PreviewSettingsDialogLoading() {
         SettingsView(
             settingsUiState = Loading,
             onChangeDarkThemeConfig = {},
+            importDatabaseFile = {}
         )
     }
 }

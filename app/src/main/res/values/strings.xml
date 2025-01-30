@@ -18,4 +18,8 @@
     <string name="feature_settings_dark_mode_config_light">Light</string>
     <string name="feature_settings_dark_mode_config_dark">Dark</string>
     <string name="feature_settings_dismiss_dialog_button_text">OK</string>
+    <string name="feature_settings_database_title">Data</string>
+    <string name="feature_settings_database_import_title">Import</string>
+    <string name="feature_settings_database_import_action">Import</string>
+    <string name="feature_settings_database_import_description">Import an old app version data file</string>
 </resources>

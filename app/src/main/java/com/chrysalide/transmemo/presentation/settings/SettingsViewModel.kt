@@ -1,5 +1,7 @@
 package com.chrysalide.transmemo.presentation.settings
 
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chrysalide.transmemo.core.model.DarkThemeConfig
@@ -29,6 +31,10 @@ class SettingsViewModel(
         viewModelScope.launch {
             userDataRepository.setDarkThemeConfig(darkThemeConfig)
         }
+    }
+
+    fun importDatabaseFile(fileUri: Uri) {
+        Log.d("TEST", "importDatabaseFile: $fileUri")
     }
 }
 

@@ -17,4 +17,9 @@
     <string name="feature_settings_dark_mode_config_light">Clair</string>
     <string name="feature_settings_dark_mode_config_dark">Sombre</string>
     <string name="feature_settings_dismiss_dialog_button_text">OK</string>
+
+    <string name="feature_settings_database_title">Données</string>
+    <string name="feature_settings_database_import_title">Importer</string>
+    <string name="feature_settings_database_import_action">Importer</string>
+    <string name="feature_settings_database_import_description">Importer un fichier de données d\'une ancienne version de l\'application</string>
 </resources>
