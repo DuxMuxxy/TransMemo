@@ -4,17 +4,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chrysalide.transmemo.core.model.UserData
 import com.chrysalide.transmemo.core.repository.UserDataRepository
+import com.chrysalide.transmemo.core.usecase.AutoImportOldDatabaseUseCase
 import com.chrysalide.transmemo.presentation.MainActivityUiState.Loading
 import com.chrysalide.transmemo.presentation.MainActivityUiState.Success
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 class MainActivityViewModel(
-    userDataRepository: UserDataRepository
+    userDataRepository: UserDataRepository,
+    autoImportOldDatabaseUseCase: AutoImportOldDatabaseUseCase
 ) : ViewModel() {
+    init {
+        viewModelScope.launch {
+            autoImportOldDatabaseUseCase()
+        }
+    }
+
     val uiState: StateFlow<MainActivityUiState> = userDataRepository.userData
         .map {
             Success(it)

@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
 import androidx.room.Room
+import com.chrysalide.transmemo.core.database.ImportLegacyDatabaseHelper
 import com.chrysalide.transmemo.core.database.TransMemoDatabase
 import com.chrysalide.transmemo.core.database.dao.ContainerDao
 import com.chrysalide.transmemo.core.database.dao.NoteDao
@@ -15,6 +16,7 @@ import com.chrysalide.transmemo.core.datastore.UserPreferences
 import com.chrysalide.transmemo.core.datastore.UserPreferencesSerializer
 import com.chrysalide.transmemo.core.repository.DatabaseRepository
 import com.chrysalide.transmemo.core.repository.UserDataRepository
+import com.chrysalide.transmemo.core.usecase.AutoImportOldDatabaseUseCase
 import com.chrysalide.transmemo.core.usecase.ImportOldDatabaseUseCase
 import com.chrysalide.transmemo.presentation.MainActivityViewModel
 import com.chrysalide.transmemo.presentation.calendar.CalendarViewModel
@@ -37,6 +39,7 @@ private val coreModule = module {
 
 private val useCaseModule = module {
     singleOf(::ImportOldDatabaseUseCase)
+    singleOf(::AutoImportOldDatabaseUseCase)
 }
 
 private val dataStoreModule = module {
@@ -70,6 +73,7 @@ private val databaseModule = module {
     single<ProductDao> { get<TransMemoDatabase>().productDao() }
     single<TakeDao> { get<TransMemoDatabase>().takeDao() }
     single<WellnessDao> { get<TransMemoDatabase>().wellnessDao() }
+    singleOf(::ImportLegacyDatabaseHelper)
 }
 
 val appModule = coreModule + useCaseModule + dataStoreModule + viewModelModule + databaseModule

@@ -13,4 +13,8 @@ class UserDataRepository(
     suspend fun setDarkThemeConfig(darkThemeConfig: DarkThemeConfig) {
         preferencesDataSource.setDarkThemeConfig(darkThemeConfig)
     }
+
+    suspend fun setLegacyDatabaseHasBeenImported() {
+        preferencesDataSource.setLegacyDatabaseHasBeenImported()
+    }
 }

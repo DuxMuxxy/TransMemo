@@ -14,7 +14,8 @@ class PreferencesDataSource(
                 DarkThemeConfigProto.DARK_THEME_CONFIG_LIGHT -> DarkThemeConfig.LIGHT
                 DarkThemeConfigProto.DARK_THEME_CONFIG_DARK -> DarkThemeConfig.DARK
                 else -> DarkThemeConfig.FOLLOW_SYSTEM
-            }
+            },
+            legacyDatabaseHasBeenImported = it.legacyDatabaseHasBeenImported
         )
     }
 
@@ -22,11 +23,18 @@ class PreferencesDataSource(
         userPreferences.updateData {
             it.copy {
                 this.darkThemeConfig = when (darkThemeConfig) {
-                    DarkThemeConfig.FOLLOW_SYSTEM ->
-                        DarkThemeConfigProto.DARK_THEME_CONFIG_FOLLOW_SYSTEM
+                    DarkThemeConfig.FOLLOW_SYSTEM -> DarkThemeConfigProto.DARK_THEME_CONFIG_FOLLOW_SYSTEM
                     DarkThemeConfig.LIGHT -> DarkThemeConfigProto.DARK_THEME_CONFIG_LIGHT
                     DarkThemeConfig.DARK -> DarkThemeConfigProto.DARK_THEME_CONFIG_DARK
                 }
+            }
+        }
+    }
+
+    suspend fun setLegacyDatabaseHasBeenImported() {
+        userPreferences.updateData {
+            it.copy {
+                this.legacyDatabaseHasBeenImported = true
             }
         }
     }

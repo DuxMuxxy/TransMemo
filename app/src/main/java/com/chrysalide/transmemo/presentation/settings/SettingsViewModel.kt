@@ -22,7 +22,6 @@ class SettingsViewModel(
     private val userDataRepository: UserDataRepository,
     private val importOldDatabaseUseCase: ImportOldDatabaseUseCase
 ) : ViewModel() {
-
     var importResultSnackbar by mutableStateOf<ImportDatabaseFileResultSnackbar>(ImportDatabaseFileResultSnackbar.Idle)
 
     val settingsUiState: StateFlow<SettingsUiState> = userDataRepository.userData
@@ -65,6 +64,8 @@ sealed interface SettingsUiState {
 
 sealed interface ImportDatabaseFileResultSnackbar {
     data object Idle : ImportDatabaseFileResultSnackbar
+
     data object Success : ImportDatabaseFileResultSnackbar
+
     data object Error : ImportDatabaseFileResultSnackbar
 }
