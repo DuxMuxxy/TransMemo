@@ -20,6 +20,7 @@ import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.SETT
 import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.STATISTICS
 import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.TAKES
 import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.WELLNESS
+import com.chrysalide.transmemo.presentation.products.navigateToProducts
 import com.chrysalide.transmemo.presentation.settings.navigateToSettings
 
 @Composable
@@ -73,7 +74,7 @@ class TransMemoAppState(
                 CALENDAR -> navController.navigateToCalendar(topLevelNavOptions)
                 TAKES -> {} // navController.navigateToTakes(topLevelNavOptions)
                 CONTAINERS -> {} // navController.navigateToContainers(topLevelNavOptions)
-                PRODUCTS -> {} // navController.navigateToProducts(topLevelNavOptions)
+                PRODUCTS -> navController.navigateToProducts(topLevelNavOptions)
                 WELLNESS -> {} // navController.navigateToWellness(topLevelNavOptions)
                 STATISTICS -> {} // navController.navigateToStatistics(topLevelNavOptions)
                 SETTINGS -> navController.navigateToSettings(topLevelNavOptions)

@@ -12,12 +12,12 @@ data class ProductEntity(
     val name: String,
     val molecule: Int,
     val unit: Int,
-    val takeDose: Float,
+    val dosePerIntake: Float,
     val capacity: Float,
-    val dlcDays: Int,
-    val interval: Int,
+    val expirationDays: Int,
+    val intakeInterval: Int,
     val alertDelay: Int,
-    val side: Int,
-    val state: Int,
+    val handleSide: Boolean,
+    val inUse: Boolean,
     val notifications: Int
 )

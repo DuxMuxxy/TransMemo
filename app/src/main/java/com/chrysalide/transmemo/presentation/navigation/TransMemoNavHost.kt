@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import com.chrysalide.transmemo.presentation.TransMemoAppState
 import com.chrysalide.transmemo.presentation.calendar.CalendarBaseRoute
 import com.chrysalide.transmemo.presentation.calendar.calendarScreen
+import com.chrysalide.transmemo.presentation.products.productsScreen
 import com.chrysalide.transmemo.presentation.settings.settingsScreen
 
 @Composable
@@ -21,6 +22,7 @@ fun TransMemoNavHost(
         modifier = modifier
     ) {
         calendarScreen()
+        productsScreen()
         settingsScreen(onShowSnackbar)
     }
 }

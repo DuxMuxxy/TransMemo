@@ -10,6 +10,7 @@ import com.chrysalide.transmemo.core.model.entities.NoteEntity
 import com.chrysalide.transmemo.core.model.entities.ProductEntity
 import com.chrysalide.transmemo.core.model.entities.TakeEntity
 import com.chrysalide.transmemo.core.model.entities.WellnessEntity
+import kotlinx.coroutines.flow.Flow
 
 class DatabaseRepository(
     private val containerDao: ContainerDao,
@@ -35,4 +36,6 @@ class DatabaseRepository(
         takeDao.deleteAll()
         wellnessDao.deleteAll()
     }
+
+    fun getAllProducts(): Flow<List<ProductEntity>> = productDao.getAll()
 }

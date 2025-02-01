@@ -6,6 +6,8 @@ import com.chrysalide.transmemo.R.string
 import com.chrysalide.transmemo.presentation.calendar.CalendarBaseRoute
 import com.chrysalide.transmemo.presentation.calendar.CalendarRoute
 import com.chrysalide.transmemo.presentation.design.TransMemoIcons
+import com.chrysalide.transmemo.presentation.products.ProductsBaseRoute
+import com.chrysalide.transmemo.presentation.products.ProductsRoute
 import com.chrysalide.transmemo.presentation.settings.SettingsBaseRoute
 import com.chrysalide.transmemo.presentation.settings.SettingsRoute
 import kotlin.reflect.KClass
@@ -29,8 +31,8 @@ enum class TopLevelDestination(
     TAKES(
         selectedIcon = TransMemoIcons.Takes,
         unselectedIcon = TransMemoIcons.TakesUnselected,
-        iconTextId = string.feature_takes_title,
-        titleTextId = string.feature_takes_title,
+        iconTextId = string.feature_intakes_title,
+        titleTextId = string.feature_intakes_title,
         route = CalendarRoute::class,
         baseRoute = CalendarBaseRoute::class
     ),
@@ -47,8 +49,8 @@ enum class TopLevelDestination(
         unselectedIcon = TransMemoIcons.ProductsUnselected,
         iconTextId = string.feature_products_title,
         titleTextId = string.feature_products_title,
-        route = CalendarRoute::class,
-        baseRoute = CalendarBaseRoute::class
+        route = ProductsRoute::class,
+        baseRoute = ProductsBaseRoute::class
     ),
     WELLNESS(
         selectedIcon = TransMemoIcons.Wellness,

@@ -4,10 +4,10 @@
     <string name="menu_content_description">Menu</string>
 
     <string name="feature_calendar_title">Calendar</string>
-    <string name="feature_takes_title">Takes</string>
+    <string name="feature_intakes_title">Intakes</string>
     <string name="feature_containers_title">Boxes</string>
     <string name="feature_products_title">Products</string>
-    <string name="feature_wellness_title">Wellness</string>
+    <string name="feature_wellness_title">Well being</string>
     <string name="feature_statistics_title">Statistics</string>
 
     <string name="feature_settings_title">Settings</string>
@@ -22,6 +22,47 @@
     <string name="feature_settings_database_import_title">Import</string>
     <string name="feature_settings_database_import_action">Import</string>
     <string name="feature_settings_database_import_description">Import an old app version data file</string>
-    <string name="feature_settings_database_import_error">Error occured on data file import</string>
-    <string name="feature_settings_database_import_success">The selected data file has been imported succesfully!</string>
+    <string name="feature_settings_database_import_error">Error occurred on data file import</string>
+    <string name="feature_settings_database_import_success">The selected data file has been imported successfully!</string>
+
+    <!-- measures / units -->
+    <string-array name="units">
+        <item>other unit</item>
+        <item>vial(s)</item>
+        <item>pill(s)</item>
+        <item>mg</item>
+        <item>ml</item>
+        <item>oz</item>
+        <item>patch(s)</item>
+        <item>pump(s)</item>
+        <item>sachet(s)</item>
+    </string-array>
+
+    <!-- molecules -->
+    <string-array name="molecules">
+        <item>Other molecule</item>
+        <item>Chlormadinone acetate</item>
+        <item>Cyproterone acetate</item>
+        <item>Nomegestrol acetate</item>
+        <item>Androstanolone</item>
+        <item>Bicalutamide</item>
+        <item>Dutasteride</item>
+        <item>Estradiol</item>
+        <item>Finasteride</item>
+        <item>Testosterone</item>
+        <item>Progesterone</item>
+        <item>Spironolactone</item>
+        <item>Triptorelin</item>
+    </string-array>
+    <string name="feature_products_beeing_used">Beeing used</string>
+    <string name="feature_products_intake_periodicity">Intake every</string>
+    <plurals name="global_days_text_template">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+    <string name="feature_products_handle_side">Shot side management</string>
+    <string name="feature_products_dosing_per_intake">Dosing per intake</string>
+    <string name="feature_products_capacity">Box capacity</string>
+    <string name="feature_products_expiration_after_opening">Expiration after opening</string>
+    <string name="feature_products_alert_delay">Alert delay</string>
 </resources>

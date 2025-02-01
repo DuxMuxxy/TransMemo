@@ -20,6 +20,7 @@ import com.chrysalide.transmemo.core.usecase.AutoImportOldDatabaseUseCase
 import com.chrysalide.transmemo.core.usecase.ImportOldDatabaseUseCase
 import com.chrysalide.transmemo.presentation.MainActivityViewModel
 import com.chrysalide.transmemo.presentation.calendar.CalendarViewModel
+import com.chrysalide.transmemo.presentation.products.ProductsViewModel
 import com.chrysalide.transmemo.presentation.settings.SettingsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -58,6 +59,7 @@ private val dataStoreModule = module {
 private val viewModelModule = module {
     viewModelOf(::MainActivityViewModel)
     viewModelOf(::CalendarViewModel)
+    viewModelOf(::ProductsViewModel)
     viewModelOf(::SettingsViewModel)
 }
 

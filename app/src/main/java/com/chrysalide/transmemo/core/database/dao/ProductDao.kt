@@ -5,12 +5,15 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.chrysalide.transmemo.core.model.entities.ProductEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ProductDao {
+    @Transaction
     @Query("SELECT * FROM products")
-    suspend fun getAll(): List<ProductEntity>
+    fun getAll(): Flow<List<ProductEntity>>
 
     @Query("SELECT * FROM products WHERE id = :id")
     suspend fun getBy(id: Int): ProductEntity

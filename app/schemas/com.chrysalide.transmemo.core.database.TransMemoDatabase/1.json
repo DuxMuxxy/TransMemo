@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e23dcbfca3c333a7767cc10a89512475",
+    "identityHash": "c066a6020eb1e7b0535fdb5e84c74d67",
     "entities": [
       {
         "tableName": "containers",
@@ -100,7 +100,7 @@
       },
       {
         "tableName": "products",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `molecule` INTEGER NOT NULL, `unit` INTEGER NOT NULL, `takeDose` REAL NOT NULL, `capacity` REAL NOT NULL, `dlcDays` INTEGER NOT NULL, `interval` INTEGER NOT NULL, `alertDelay` INTEGER NOT NULL, `side` INTEGER NOT NULL, `state` INTEGER NOT NULL, `notifications` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `molecule` INTEGER NOT NULL, `unit` INTEGER NOT NULL, `dosePerIntake` REAL NOT NULL, `capacity` REAL NOT NULL, `expirationDays` INTEGER NOT NULL, `intakeInterval` INTEGER NOT NULL, `alertDelay` INTEGER NOT NULL, `handleSide` INTEGER NOT NULL, `inUse` INTEGER NOT NULL, `notifications` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -127,8 +127,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "takeDose",
-            "columnName": "takeDose",
+            "fieldPath": "dosePerIntake",
+            "columnName": "dosePerIntake",
             "affinity": "REAL",
             "notNull": true
           },
@@ -139,14 +139,14 @@
             "notNull": true
           },
           {
-            "fieldPath": "dlcDays",
-            "columnName": "dlcDays",
+            "fieldPath": "expirationDays",
+            "columnName": "expirationDays",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "interval",
-            "columnName": "interval",
+            "fieldPath": "intakeInterval",
+            "columnName": "intakeInterval",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -157,14 +157,14 @@
             "notNull": true
           },
           {
-            "fieldPath": "side",
-            "columnName": "side",
+            "fieldPath": "handleSide",
+            "columnName": "handleSide",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "state",
-            "columnName": "state",
+            "fieldPath": "inUse",
+            "columnName": "inUse",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -294,7 +294,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e23dcbfca3c333a7767cc10a89512475')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c066a6020eb1e7b0535fdb5e84c74d67')"
     ]
   }
 }

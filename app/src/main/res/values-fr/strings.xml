@@ -3,7 +3,7 @@
     <string name="menu_content_description">Menu</string>
 
     <string name="feature_calendar_title">Calendrier</string>
-    <string name="feature_takes_title">Prises</string>
+    <string name="feature_intakes_title">Prises</string>
     <string name="feature_containers_title">Boîtes</string>
     <string name="feature_products_title">Produits</string>
     <string name="feature_wellness_title">Bien-être</string>
@@ -24,4 +24,45 @@
     <string name="feature_settings_database_import_description">Importer un fichier de données d\'une ancienne version de l\'application</string>
     <string name="feature_settings_database_import_success">Le fichier de données a été importé avec succès !</string>
     <string name="feature_settings_database_import_error">Une erreur a été rencontrée pendant l\'import du fichier de données</string>
+
+    <!-- measures / units -->
+    <string-array name="units">
+        <item>unité autre</item>
+        <item>ampoule(s)</item>
+        <item>comprimé(s)</item>
+        <item>mg</item>
+        <item>ml</item>
+        <item>oz</item>
+        <item>patch(s)</item>
+        <item>pression(s)</item>
+        <item>sachet(s)</item>
+    </string-array>
+
+    <!-- molecules -->
+    <string-array name="molecules">
+        <item>Autre molécule</item>
+        <item>Acétate de chlormadinone </item>
+        <item>Acétate de cyprotérone</item>
+        <item>Acétate de nomégestrol</item>
+        <item>Androstanolone</item>
+        <item>Bicalutamide</item>
+        <item>Dutastéride</item>
+        <item>Estradiol</item>
+        <item>Finastéride</item>
+        <item>Testostérone</item>
+        <item>Progestérone</item>
+        <item>Spironolactone</item>
+        <item>Triptoréline</item>
+    </string-array>
+    <string name="feature_products_beeing_used">Utilisé actuellement</string>
+    <string name="feature_products_intake_periodicity">Prise tous les</string>
+    <plurals name="global_days_text_template">
+    <item quantity="one">%d jour</item>
+    <item quantity="other">%d jours</item>
+</plurals>
+    <string name="feature_products_handle_side">Gestion du côté de la prise</string>
+    <string name="feature_products_dosing_per_intake">Dose par prise</string>
+    <string name="feature_products_capacity">Capacité de la boîte</string>
+    <string name="feature_products_expiration_after_opening">Péremption après ouverture</string>
+    <string name="feature_products_alert_delay">Délai d\'alerte</string>
 </resources>

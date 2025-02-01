@@ -216,13 +216,13 @@ class ImportDatabaseHelper(
         name = getString(getColumnIndexOrThrow(PRODUCTS_COLUMN_NOM_PRODUIT)),
         molecule = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_IDMOLECULE)),
         unit = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_UNITE)),
-        takeDose = getFloat(getColumnIndexOrThrow(PRODUCTS_COLUMN_DOSE_PRISE)),
+        dosePerIntake = getFloat(getColumnIndexOrThrow(PRODUCTS_COLUMN_DOSE_PRISE)),
         capacity = getFloat(getColumnIndexOrThrow(PRODUCTS_COLUMN_CAPACITE)),
-        dlcDays = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_JOURS_DLC)),
-        interval = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_INTERVALLE_PRISES)),
+        expirationDays = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_JOURS_DLC)),
+        intakeInterval = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_INTERVALLE_PRISES)),
         alertDelay = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_DELAI_ALERTE)),
-        side = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_GESTION_COTE)),
-        state = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_ETAT)),
+        handleSide = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_GESTION_COTE)) == 1,
+        inUse = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_ETAT)) == 2,
         notifications = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_NOTIFICATIONS))
     )
 
