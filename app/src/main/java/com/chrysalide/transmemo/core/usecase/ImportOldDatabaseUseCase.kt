@@ -1,24 +1,30 @@
 package com.chrysalide.transmemo.core.usecase
 
 import android.net.Uri
-import com.chrysalide.transmemo.core.database.ImportLegacyDatabaseHelper
+import com.chrysalide.transmemo.core.database.ImportDatabaseHelper
 import com.chrysalide.transmemo.core.repository.DatabaseRepository
+import com.chrysalide.transmemo.core.repository.UserDataRepository
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
-import java.io.IOException
 
 class ImportOldDatabaseUseCase(
     private val databaseRepository: DatabaseRepository,
-    private val importLegacyDatabaseHelper: ImportLegacyDatabaseHelper
+    private val importDatabaseHelper: ImportDatabaseHelper,
+    private val userDataRepository: UserDataRepository
 ) {
-    suspend operator fun invoke(oldDataFileUri: Uri, onSuccess: () -> Unit, onError: () -> Unit) {
+    suspend operator fun invoke(dbFileUri: Uri, onSuccess: () -> Unit, onError: () -> Unit) {
         coroutineScope {
             try {
-                importLegacyDatabaseHelper.copyFileToInternalStorage(oldDataFileUri)
-                databaseRepository.deleteAllData()
-                importLegacyDatabaseHelper.copyDataInRoomDatabase()
+                importDatabaseHelper.copyFileToInternalStorage(dbFileUri)
+                if (importDatabaseHelper.isDBFileLegacy()) {
+                    databaseRepository.deleteAllData()
+                    importDatabaseHelper.importLegacyDataInRoomDatabase()
+                    userDataRepository.setLegacyDatabaseHasBeenImported()
+                } else {
+                    importDatabaseHelper.importDatabase()
+                }
                 onSuccess()
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 e.printStackTrace()
                 onError()
                 this.cancel()

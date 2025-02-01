@@ -4,7 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
 import androidx.room.Room
-import com.chrysalide.transmemo.core.database.ImportLegacyDatabaseHelper
+import com.chrysalide.transmemo.core.database.ImportDatabaseHelper
 import com.chrysalide.transmemo.core.database.TransMemoDatabase
 import com.chrysalide.transmemo.core.database.dao.ContainerDao
 import com.chrysalide.transmemo.core.database.dao.NoteDao
@@ -73,7 +73,7 @@ private val databaseModule = module {
     single<ProductDao> { get<TransMemoDatabase>().productDao() }
     single<TakeDao> { get<TransMemoDatabase>().takeDao() }
     single<WellnessDao> { get<TransMemoDatabase>().wellnessDao() }
-    singleOf(::ImportLegacyDatabaseHelper)
+    singleOf(::ImportDatabaseHelper)
 }
 
 val appModule = coreModule + useCaseModule + dataStoreModule + viewModelModule + databaseModule

@@ -42,7 +42,7 @@ class SettingsViewModel(
     fun importDatabaseFile(fileUri: Uri) {
         viewModelScope.launch {
             importOldDatabaseUseCase(
-                oldDataFileUri = fileUri,
+                dbFileUri = fileUri,
                 onSuccess = {
                     importResultSnackbar = ImportDatabaseFileResultSnackbar.Success
                 },

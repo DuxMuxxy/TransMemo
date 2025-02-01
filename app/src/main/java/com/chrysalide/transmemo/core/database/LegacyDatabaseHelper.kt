@@ -5,8 +5,9 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 class LegacyDatabaseHelper(
-    context: Context
-) : SQLiteOpenHelper(context, DATABASE_NAME, null, 4) {
+    context: Context,
+    dbName: String
+) : SQLiteOpenHelper(context, dbName, null, 4) {
     override fun onCreate(p0: SQLiteDatabase?) {
     }
 
@@ -14,7 +15,7 @@ class LegacyDatabaseHelper(
     }
 
     companion object {
-        const val DATABASE_NAME = "TestoMemo.db"
+        const val LEGACY_DATABASE_NAME = "TestoMemo.db"
 
         const val TAKES_TABLE_NAME = "PRISES"
         const val TAKES_COLUMN_IDPRISE = "ID_PRISE"

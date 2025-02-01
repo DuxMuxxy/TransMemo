@@ -55,12 +55,14 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
-class ImportLegacyDatabaseHelper(
+private const val TMP_DATABASE_NAME = "tmp_database.db"
+
+class ImportDatabaseHelper(
     private val context: Context,
     private val databaseRepository: DatabaseRepository
 ) {
     suspend fun copyFileToInternalStorage(fileUri: Uri) = withContext(Dispatchers.IO) {
-        val destinationFile = File(context.getDatabasePath(DATABASE_NAME).parentFile, LegacyDatabaseHelper.DATABASE_NAME)
+        val destinationFile = File(context.getDatabasePath(DATABASE_NAME).parentFile, TMP_DATABASE_NAME)
 
         context.contentResolver.openInputStream(fileUri)?.use { inputStream ->
             FileOutputStream(destinationFile).use { outputStream ->
@@ -69,8 +71,36 @@ class ImportLegacyDatabaseHelper(
         }
     }
 
-    suspend fun copyDataInRoomDatabase() {
-        val legacyDatabaseHelper = LegacyDatabaseHelper(context)
+    suspend fun isDBFileLegacy() = withContext(Dispatchers.IO) {
+        val legacyDatabaseHelper = LegacyDatabaseHelper(context, TMP_DATABASE_NAME)
+        var dbContainsLegacyTable: Boolean
+        with(legacyDatabaseHelper.readableDatabase) {
+            dbContainsLegacyTable = dbContainsLegacyTable()
+            close()
+        }
+        legacyDatabaseHelper.close()
+        return@withContext dbContainsLegacyTable
+    }
+
+    private fun SQLiteDatabase.dbContainsLegacyTable(): Boolean {
+        try {
+            val query = "SELECT name FROM sqlite_master WHERE type='table' AND name='$CONTAINERS_TABLE_NAME'"
+            val cursor: Cursor = rawQuery(query, null)
+            if (cursor.moveToFirst()) {
+                cursor.close()
+                return true
+            }
+            cursor.close()
+            return false
+        } catch (e: Exception) {
+            return false
+        }
+    }
+
+    suspend fun importLegacyDataInRoomDatabase() = withContext(Dispatchers.IO) {
+        val tmpDBFile = context.getDatabasePath(TMP_DATABASE_NAME)
+        context.getDatabasePath(LegacyDatabaseHelper.LEGACY_DATABASE_NAME).renameTo(tmpDBFile)
+        val legacyDatabaseHelper = LegacyDatabaseHelper(context, TMP_DATABASE_NAME)
         with(legacyDatabaseHelper.readableDatabase) {
             copyContainers()
             copyTakes()
@@ -80,15 +110,17 @@ class ImportLegacyDatabaseHelper(
             close()
         }
         legacyDatabaseHelper.close()
-        deleteLegacyDatabase()
-    }
-
-    private suspend fun deleteLegacyDatabase() = withContext(Dispatchers.IO) {
-        context.getDatabasePath(LegacyDatabaseHelper.DATABASE_NAME).delete()
+        context.getDatabasePath(TMP_DATABASE_NAME).delete()
     }
 
     suspend fun legacyDatabaseExists() = withContext(Dispatchers.IO) {
-        context.getDatabasePath(LegacyDatabaseHelper.DATABASE_NAME).exists()
+        context.getDatabasePath(LegacyDatabaseHelper.LEGACY_DATABASE_NAME).exists()
+    }
+
+    suspend fun importDatabase() = withContext(Dispatchers.IO) {
+        val roomDBFil = context.getDatabasePath("$DATABASE_NAME.db")
+        roomDBFil.delete()
+        context.getDatabasePath(TMP_DATABASE_NAME).renameTo(roomDBFil)
     }
 
     private suspend fun SQLiteDatabase.copyContainers() {
