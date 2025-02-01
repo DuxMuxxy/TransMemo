@@ -7,11 +7,11 @@ import com.chrysalide.transmemo.core.database.dao.NoteDao
 import com.chrysalide.transmemo.core.database.dao.ProductDao
 import com.chrysalide.transmemo.core.database.dao.TakeDao
 import com.chrysalide.transmemo.core.database.dao.WellnessDao
-import com.chrysalide.transmemo.core.model.ContainerEntity
-import com.chrysalide.transmemo.core.model.NoteEntity
-import com.chrysalide.transmemo.core.model.ProductEntity
-import com.chrysalide.transmemo.core.model.TakeEntity
-import com.chrysalide.transmemo.core.model.WellnessEntity
+import com.chrysalide.transmemo.core.model.entities.ContainerEntity
+import com.chrysalide.transmemo.core.model.entities.NoteEntity
+import com.chrysalide.transmemo.core.model.entities.ProductEntity
+import com.chrysalide.transmemo.core.model.entities.TakeEntity
+import com.chrysalide.transmemo.core.model.entities.WellnessEntity
 
 @Database(
     entities = [

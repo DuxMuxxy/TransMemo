@@ -5,7 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.chrysalide.transmemo.core.model.TakeEntity
+import com.chrysalide.transmemo.core.model.entities.TakeEntity
 
 @Dao
 interface TakeDao {

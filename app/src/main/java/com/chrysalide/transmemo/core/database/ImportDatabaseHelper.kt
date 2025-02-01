@@ -43,11 +43,11 @@ import com.chrysalide.transmemo.core.database.LegacyDatabaseHelper.Companion.WEL
 import com.chrysalide.transmemo.core.database.LegacyDatabaseHelper.Companion.WELLNESS_COLUMN_IDCRITERE
 import com.chrysalide.transmemo.core.database.LegacyDatabaseHelper.Companion.WELLNESS_COLUMN_VALEUR
 import com.chrysalide.transmemo.core.database.LegacyDatabaseHelper.Companion.WELLNESS_TABLE_NAME
-import com.chrysalide.transmemo.core.model.ContainerEntity
-import com.chrysalide.transmemo.core.model.NoteEntity
-import com.chrysalide.transmemo.core.model.ProductEntity
-import com.chrysalide.transmemo.core.model.TakeEntity
-import com.chrysalide.transmemo.core.model.WellnessEntity
+import com.chrysalide.transmemo.core.model.entities.ContainerEntity
+import com.chrysalide.transmemo.core.model.entities.NoteEntity
+import com.chrysalide.transmemo.core.model.entities.ProductEntity
+import com.chrysalide.transmemo.core.model.entities.TakeEntity
+import com.chrysalide.transmemo.core.model.entities.WellnessEntity
 import com.chrysalide.transmemo.core.repository.DatabaseRepository
 import com.chrysalide.transmemo.di.DATABASE_NAME
 import kotlinx.coroutines.Dispatchers

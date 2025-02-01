@@ -5,7 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.chrysalide.transmemo.core.model.WellnessEntity
+import com.chrysalide.transmemo.core.model.entities.WellnessEntity
 
 @Dao
 interface WellnessDao {
