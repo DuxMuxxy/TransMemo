@@ -21,7 +21,7 @@
     <string name="feature_settings_database_title">Data</string>
     <string name="feature_settings_database_import_title">Import</string>
     <string name="feature_settings_database_import_action">Import</string>
-    <string name="feature_settings_database_import_description">Import an old app version data file</string>
+    <string name="feature_settings_database_import_description">Import a data file.\\nWarning: this operation will permanently overwrite your current data!</string>
     <string name="feature_settings_database_import_error">Error occurred on data file import</string>
     <string name="feature_settings_database_import_success">The selected data file has been imported successfully!</string>
 

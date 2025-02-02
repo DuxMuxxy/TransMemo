@@ -30,7 +30,7 @@ import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-const val DATABASE_NAME = "transmemo"
+const val DATABASE_NAME = "transmemo.db"
 private const val DATA_STORE_FILE_NAME = "user_preferences.pb"
 
 private val coreModule = module {

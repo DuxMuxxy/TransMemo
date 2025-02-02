@@ -3,7 +3,9 @@ package com.chrysalide.transmemo.core.database
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteException
 import android.net.Uri
+import android.util.Log
 import com.chrysalide.transmemo.core.database.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_CAPACITE_RESTANTE
 import com.chrysalide.transmemo.core.database.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_CAPACITE_UTILISEE
 import com.chrysalide.transmemo.core.database.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_DATE_OUVERTURE
@@ -13,6 +15,7 @@ import com.chrysalide.transmemo.core.database.LegacyDatabaseHelper.Companion.CON
 import com.chrysalide.transmemo.core.database.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_IDPRODUIT
 import com.chrysalide.transmemo.core.database.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_UNITE
 import com.chrysalide.transmemo.core.database.LegacyDatabaseHelper.Companion.CONTAINERS_TABLE_NAME
+import com.chrysalide.transmemo.core.database.LegacyDatabaseHelper.Companion.LEGACY_DATABASE_NAME
 import com.chrysalide.transmemo.core.database.LegacyDatabaseHelper.Companion.NOTES_COLUMN_DATE
 import com.chrysalide.transmemo.core.database.LegacyDatabaseHelper.Companion.NOTES_COLUMN_NOTES
 import com.chrysalide.transmemo.core.database.LegacyDatabaseHelper.Companion.NOTES_TABLE_NAME
@@ -59,7 +62,7 @@ private const val TMP_DATABASE_NAME = "tmp_database.db"
 
 class ImportDatabaseHelper(
     private val context: Context,
-    private val databaseRepository: DatabaseRepository
+    private val databaseRepository: DatabaseRepository,
 ) {
     suspend fun copyFileToInternalStorage(fileUri: Uri) = withContext(Dispatchers.IO) {
         val destinationFile = File(context.getDatabasePath(DATABASE_NAME).parentFile, TMP_DATABASE_NAME)
@@ -97,9 +100,23 @@ class ImportDatabaseHelper(
         }
     }
 
-    suspend fun importLegacyDataInRoomDatabase() = withContext(Dispatchers.IO) {
+    suspend fun tryImportLegacyData() = withContext(Dispatchers.IO) {
+        try {
+            importLegacyDataInRoomDatabase()
+        } catch (e: SQLiteException) {
+            // If the legacy file has not the writable permissions, we can't open it and copy data to room db for some reasons
+            // Actually this happens only when we upload a legacy file with the Android Studio device explorer to the app internal databases directory
+            // The solution is to copy the legacy file to a new one with the writable permissions and then try to import it again
+            Log.d("ImportDatabaseHelper", "retrying to import legacy data with a file with write permissions...")
+            copyLegacyToWritableFile()
+            importLegacyDataInRoomDatabase()
+            context.getDatabasePath(LEGACY_DATABASE_NAME).delete()
+        }
+    }
+
+    suspend fun importLegacyDataInRoomDatabase() {
         val tmpDBFile = context.getDatabasePath(TMP_DATABASE_NAME)
-        context.getDatabasePath(LegacyDatabaseHelper.LEGACY_DATABASE_NAME).renameTo(tmpDBFile)
+        context.getDatabasePath(LEGACY_DATABASE_NAME).renameTo(tmpDBFile)
         val legacyDatabaseHelper = LegacyDatabaseHelper(context, TMP_DATABASE_NAME)
         with(legacyDatabaseHelper.readableDatabase) {
             copyContainers()
@@ -114,13 +131,26 @@ class ImportDatabaseHelper(
     }
 
     suspend fun legacyDatabaseExists() = withContext(Dispatchers.IO) {
-        context.getDatabasePath(LegacyDatabaseHelper.LEGACY_DATABASE_NAME).exists()
+        context.getDatabasePath(LEGACY_DATABASE_NAME).exists()
     }
 
     suspend fun importDatabase() = withContext(Dispatchers.IO) {
         val roomDBFil = context.getDatabasePath("$DATABASE_NAME.db")
         roomDBFil.delete()
         context.getDatabasePath(TMP_DATABASE_NAME).renameTo(roomDBFil)
+    }
+
+    private fun copyLegacyToWritableFile() {
+        val tmpFile = context.getDatabasePath(TMP_DATABASE_NAME)
+        val sourceFile = context.getDatabasePath("$TMP_DATABASE_NAME.cpy")
+        tmpFile.renameTo(sourceFile)
+        val destinationFile = File(context.getDatabasePath(DATABASE_NAME).parentFile, TMP_DATABASE_NAME)
+        context.contentResolver.openInputStream(Uri.fromFile(sourceFile))?.use { inputStream ->
+            FileOutputStream(destinationFile).use { outputStream ->
+                inputStream.copyTo(outputStream)
+            }
+        }
+        sourceFile.delete()
     }
 
     private suspend fun SQLiteDatabase.copyContainers() {
@@ -196,7 +226,7 @@ class ImportDatabaseHelper(
         usedCapacity = getFloat(getColumnIndexOrThrow(CONTAINERS_COLUMN_CAPACITE_UTILISEE)),
         openDate = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_DATE_OUVERTURE)),
         expirationDate = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_DATE_PEREMPTION)),
-        state = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_ETAT))
+        state = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_ETAT)),
     )
 
     private fun Cursor.toTakeEntity() = TakeEntity(
@@ -208,7 +238,7 @@ class ImportDatabaseHelper(
         plannedDate = getInt(getColumnIndexOrThrow(TAKES_COLUMN_DATE_PREVUE)),
         realDate = getInt(getColumnIndexOrThrow(TAKES_COLUMN_DATE_REELLE)),
         plannedSide = getInt(getColumnIndexOrThrow(TAKES_COLUMN_COTE_PREVU)),
-        realSide = getInt(getColumnIndexOrThrow(TAKES_COLUMN_COTE_REEL))
+        realSide = getInt(getColumnIndexOrThrow(TAKES_COLUMN_COTE_REEL)),
     )
 
     private fun Cursor.toProductEntity() = ProductEntity(
@@ -223,17 +253,17 @@ class ImportDatabaseHelper(
         alertDelay = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_DELAI_ALERTE)),
         handleSide = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_GESTION_COTE)) == 1,
         inUse = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_ETAT)) == 2,
-        notifications = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_NOTIFICATIONS))
+        notifications = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_NOTIFICATIONS)),
     )
 
     private fun Cursor.toWellnessEntity() = WellnessEntity(
         date = getInt(getColumnIndexOrThrow(WELLNESS_COLUMN_DATE)),
         criteriaId = getInt(getColumnIndexOrThrow(WELLNESS_COLUMN_IDCRITERE)),
-        value = getFloat(getColumnIndexOrThrow(WELLNESS_COLUMN_VALEUR))
+        value = getFloat(getColumnIndexOrThrow(WELLNESS_COLUMN_VALEUR)),
     )
 
     private fun Cursor.toNoteEntity() = NoteEntity(
         date = getInt(getColumnIndexOrThrow(NOTES_COLUMN_DATE)),
-        text = getString(getColumnIndexOrThrow(NOTES_COLUMN_NOTES))
+        text = getString(getColumnIndexOrThrow(NOTES_COLUMN_NOTES)),
     )
 }

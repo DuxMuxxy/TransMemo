@@ -20,7 +20,7 @@ class AutoImportOldDatabaseUseCase(
             val legacyDatabaseHasBeenImported = userDataRepository.userData.map { it.legacyDatabaseHasBeenImported }.first()
             try {
                 if (!legacyDatabaseHasBeenImported && importDatabaseHelper.legacyDatabaseExists()) {
-                    importDatabaseHelper.importLegacyDataInRoomDatabase()
+                    importDatabaseHelper.tryImportLegacyData()
                     userDataRepository.setLegacyDatabaseHasBeenImported()
                 }
             } catch (e: Exception) {
