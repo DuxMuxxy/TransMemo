@@ -18,6 +18,7 @@ protobufPlugin = "0.9.4"
 room = "2.6.1"
 koin = "3.4.0"
 kotlinter = "5.0.1"
+vectorize = "1.0.2"
 
 [libraries]
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
@@ -48,6 +49,7 @@ protobuf-protoc = { group = "com.google.protobuf", name = "protoc", version.ref 
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+vectorize = { group = "dev.sergiobelda.compose.vectorize", name = "compose-vectorize-core", version.ref = "vectorize" }
 
 [bundles]
 androidx-compose = [
@@ -74,3 +76,4 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
 kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
+vectorize = { id = "dev.sergiobelda.compose.vectorize", version.ref = "vectorize" }

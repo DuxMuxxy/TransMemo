@@ -19,7 +19,7 @@ import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.PROD
 import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.SETTINGS
 import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.STATISTICS
 import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.TAKES
-import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.WELLNESS
+import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.WELLBEING
 import com.chrysalide.transmemo.presentation.products.navigateToProducts
 import com.chrysalide.transmemo.presentation.settings.navigateToSettings
 
@@ -75,7 +75,7 @@ class TransMemoAppState(
                 TAKES -> {} // navController.navigateToTakes(topLevelNavOptions)
                 CONTAINERS -> {} // navController.navigateToContainers(topLevelNavOptions)
                 PRODUCTS -> navController.navigateToProducts(topLevelNavOptions)
-                WELLNESS -> {} // navController.navigateToWellness(topLevelNavOptions)
+                WELLBEING -> {} // navController.navigateToWellbeing(topLevelNavOptions)
                 STATISTICS -> {} // navController.navigateToStatistics(topLevelNavOptions)
                 SETTINGS -> navController.navigateToSettings(topLevelNavOptions)
             }

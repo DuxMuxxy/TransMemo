@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,6 +8,7 @@ plugins {
     alias(libs.plugins.protobuf)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlinter)
+    alias(libs.plugins.vectorize)
 }
 
 android {
@@ -39,11 +42,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 }
 
@@ -78,7 +81,12 @@ dependencies {
     implementation(libs.bundles.room)
     implementation(libs.protobuf.kotlin.lite)
     ksp(libs.room.compiler)
+    implementation(libs.vectorize)
 
     testImplementation(libs.junit)
     testImplementation(libs.koinTest)
+}
+
+tasks.named("generateImages").configure {
+    dependsOn("kspDebugKotlin")
 }

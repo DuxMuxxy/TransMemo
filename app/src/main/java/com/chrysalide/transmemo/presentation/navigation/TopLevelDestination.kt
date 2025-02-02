@@ -52,9 +52,9 @@ enum class TopLevelDestination(
         route = ProductsRoute::class,
         baseRoute = ProductsBaseRoute::class
     ),
-    WELLNESS(
-        selectedIcon = TransMemoIcons.Wellness,
-        unselectedIcon = TransMemoIcons.WellnessUnselected,
+    WELLBEING(
+        selectedIcon = TransMemoIcons.Wellbeing,
+        unselectedIcon = TransMemoIcons.WellbeingUnselected,
         iconTextId = string.feature_wellness_title,
         titleTextId = string.feature_wellness_title,
         route = CalendarRoute::class,
