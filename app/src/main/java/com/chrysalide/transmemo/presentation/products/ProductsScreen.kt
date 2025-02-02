@@ -2,6 +2,8 @@ package com.chrysalide.transmemo.presentation.products
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,22 +14,29 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -42,12 +51,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.chrysalide.transmemo.R
 import com.chrysalide.transmemo.R.string
 import com.chrysalide.transmemo.core.model.entities.ProductEntity
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
@@ -72,6 +84,7 @@ fun ProductsScreen(
     ProductsView(
         productsUiState,
         saveProduct = viewModel::saveProduct,
+        addProduct = viewModel::addProduct
     )
 }
 
@@ -79,8 +92,9 @@ fun ProductsScreen(
 private fun ProductsView(
     productsUiState: ProductsUiState,
     saveProduct: (ProductEntity) -> Unit,
+    addProduct: () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize()) {
         when (productsUiState) {
             is Loading -> {
                 Box(
@@ -103,6 +117,15 @@ private fun ProductsView(
                         }
                     }
                 }
+
+                FloatingActionButton(
+                    onClick = addProduct,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(24.dp)
+                ) {
+                    Icon(Icons.Rounded.Add, contentDescription = stringResource(string.feature_products_add_button_content_description))
+                }
             }
         }
     }
@@ -113,7 +136,8 @@ private fun ProductCard(
     product: ProductEntity,
     saveProduct: (ProductEntity) -> Unit
 ) {
-    var isExtented by remember { mutableStateOf(true) }
+    val focusManager = LocalFocusManager.current
+    var isExtented by remember { mutableStateOf(false) }
     var isEditing by remember { mutableStateOf(false) }
     var editableProduct by remember(isEditing) { mutableStateOf(product) }
     var editedIntakePeriodicityValue by remember(isEditing) { mutableStateOf(product.intakeInterval.toString()) }
@@ -133,11 +157,68 @@ private fun ProductCard(
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
             Row {
-                Column {
-                    Text(product.name, style = MaterialTheme.typography.headlineMedium)
-                    Text(product.moleculeName(), style = MaterialTheme.typography.titleMedium)
+                AnimatedContent(isEditing) { isBeingEdited ->
+                    Column {
+                        if (isBeingEdited) {
+                            OutlinedTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = editableProduct.name,
+                                onValueChange = { editableProduct = editableProduct.copy(name = it) },
+                                label = { Text(stringResource(string.feature_product_name)) },
+                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next,),
+                                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) })
+                            )
+                            Spacer(modifier = Modifier.height(24.dp))
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                var isMoleculeDropDownExtended by remember { mutableStateOf(false) }
+                                Text(stringResource(string.feature_product_molecule))
+                                HorizontalDivider(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .widthIn(min = 16.dp)
+                                        .padding(horizontal = 24.dp)
+                                )
+                                Row(
+                                    modifier = Modifier
+                                        .background(
+                                            color = MaterialTheme.colorScheme.surfaceVariant,
+                                            shape = MaterialTheme.shapes.small
+                                        ).clickable { isMoleculeDropDownExtended = !isMoleculeDropDownExtended }
+                                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                                ) {
+                                    Text(
+                                        text = editableProduct.moleculeName(),
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Spacer(modifier = Modifier.width(16.dp))
+                                    Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+                                }
+                                DropdownMenu(
+                                    expanded = isMoleculeDropDownExtended,
+                                    onDismissRequest = { isMoleculeDropDownExtended = false }
+                                ) {
+                                    stringArrayResource(R.array.molecules).forEachIndexed { index, moleculeName ->
+                                        DropdownMenuItem(
+                                            text = { Text(moleculeName) },
+                                            onClick = {
+                                                editableProduct = editableProduct.copy(molecule = index)
+                                                isMoleculeDropDownExtended = false
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                        } else {
+                            Text(product.name, style = MaterialTheme.typography.headlineMedium)
+                            Text(product.moleculeName(), style = MaterialTheme.typography.titleMedium)
+                        }
+                    }
                 }
-                Spacer(modifier = Modifier.weight(1f).widthIn(min = 16.dp))
+                Spacer(
+                    modifier = Modifier
+                        .weight(1f)
+                        .widthIn(min = 16.dp)
+                )
                 AnimatedVisibility(!isEditing) {
                     val editButtonContentDescription = stringResource(string.feature_products_edit_button_content_description)
                     IconButton(onClick = { isEditing = true },) {
@@ -146,8 +227,6 @@ private fun ProductCard(
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-
-            val focusManager = LocalFocusManager.current
             val unitName = product.unitName()
             val daysSuffix = stringResource(string.global_days)
 
@@ -165,7 +244,6 @@ private fun ProductCard(
                 onCheckedChange = { editableProduct = editableProduct.copy(handleSide = it) }
             )
             Spacer(modifier = Modifier.height(16.dp))
-
 
             AnimatedContent(isEditing) { isBeingEdited ->
                 Column {
@@ -325,7 +403,7 @@ private fun TextValueRow(
     isError: Boolean
 ) {
     if (isEditing) {
-        TextField(
+        OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             value = value,
             onValueChange = { onValueChange(it) },
@@ -337,8 +415,8 @@ private fun TextValueRow(
                 {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "Bad value format",
-                        color = MaterialTheme.colorScheme.error
+                        text = stringResource(string.global_bad_value_format),
+                        color = MaterialTheme.colorScheme.error,
                     )
                 }
             } else {
@@ -353,12 +431,16 @@ private fun TextValueRow(
                 keyboardType = keyboardType,
                 imeAction = imeAction,
             ),
-            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
+            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) })
         )
     } else {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(title)
-            HorizontalDivider(modifier = Modifier.weight(1f).padding(horizontal = 24.dp))
+            HorizontalDivider(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 24.dp)
+            )
             Text(valueText)
         }
     }
@@ -372,7 +454,7 @@ private fun String.isValidDecimalValue() = isNotBlank() && matches("^[0-9]+(\\.[
 @Composable
 private fun ProductsScreenLoadingPreviews() {
     TransMemoTheme {
-        ProductsView(Loading, {})
+        ProductsView(Loading, {}, {})
     }
 }
 
@@ -399,6 +481,7 @@ private fun ProductsScreenListPreviews() {
                 ),
             ),
             saveProduct = {},
+            addProduct = {}
         )
     }
 }

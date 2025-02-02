@@ -40,4 +40,6 @@ class DatabaseRepository(
     fun getAllProducts(): Flow<List<ProductEntity>> = productDao.getAll()
 
     suspend fun updateProduct(productEntity: ProductEntity) = productDao.update(productEntity)
+
+    suspend fun insertProduct(product: ProductEntity) = productDao.insert(product)
 }

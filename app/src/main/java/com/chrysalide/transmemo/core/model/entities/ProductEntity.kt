@@ -20,4 +20,20 @@ data class ProductEntity(
     val handleSide: Boolean,
     val inUse: Boolean,
     val notifications: Int
-)
+) {
+    companion object {
+        fun default() = ProductEntity(
+            name = "",
+            molecule = 0,
+            unit = 0,
+            dosePerIntake = 0f,
+            capacity = 0f,
+            expirationDays = 0,
+            intakeInterval = 21,
+            alertDelay = 3,
+            handleSide = false,
+            inUse = false,
+            notifications = 0
+        )
+    }
+}

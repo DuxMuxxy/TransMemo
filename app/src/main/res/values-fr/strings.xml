@@ -69,4 +69,8 @@
     <string name="global_cancel">Annuler</string>
     <string name="global_save">Enregistrer</string>
     <string name="global_days">jours</string>
+    <string name="global_bad_value_format">Mauvais format de valeur</string>
+    <string name="feature_products_add_button_content_description">Ajouter un produit à la liste</string>
+    <string name="feature_product_name">Nom du produit</string>
+    <string name="feature_product_molecule">Molécule</string>
 </resources>
