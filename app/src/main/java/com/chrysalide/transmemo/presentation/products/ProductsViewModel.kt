@@ -9,10 +9,11 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 class ProductsViewModel(
-    databaseRepository: DatabaseRepository
+    private val databaseRepository: DatabaseRepository
 ) : ViewModel() {
     val productsUiState: StateFlow<ProductsUiState> = databaseRepository
         .getAllProducts()
@@ -22,6 +23,12 @@ class ProductsViewModel(
             started = SharingStarted.WhileSubscribed(5.seconds.inWholeMilliseconds),
             initialValue = ProductsUiState.Loading
         )
+
+    fun saveProduct(productEntity: ProductEntity) {
+        viewModelScope.launch {
+            databaseRepository.updateProduct(productEntity)
+        }
+    }
 }
 
 sealed interface ProductsUiState {

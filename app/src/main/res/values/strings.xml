@@ -65,4 +65,8 @@
     <string name="feature_products_capacity">Box capacity</string>
     <string name="feature_products_expiration_after_opening">Expiration after opening</string>
     <string name="feature_products_alert_delay">Alert delay</string>
+    <string name="feature_products_edit_button_content_description">Edit the product details</string>
+    <string name="global_cancel">Cancel</string>
+    <string name="global_save">Save</string>
+    <string name="global_days">days</string>
 </resources>

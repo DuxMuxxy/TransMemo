@@ -1,4 +1,5 @@
-import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
+import org.jmailen.gradle.kotlinter.tasks.FormatTask
+import org.jmailen.gradle.kotlinter.tasks.LintTask
 
 plugins {
     alias(libs.plugins.android.application)
@@ -89,4 +90,12 @@ dependencies {
 
 tasks.named("generateImages").configure {
     dependsOn("kspDebugKotlin")
+}
+
+tasks.withType<LintTask> {
+    this.source = this.source.minus(fileTree("build/images/src/main/kotlin/dev/sergiobelda")).asFileTree
+}
+
+tasks.withType<FormatTask> {
+    this.source = this.source.minus(fileTree("build/images/src/main/kotlin/dev/sergiobelda")).asFileTree
 }

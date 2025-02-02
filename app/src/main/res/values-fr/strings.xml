@@ -65,4 +65,8 @@
     <string name="feature_products_capacity">Capacité de la boîte</string>
     <string name="feature_products_expiration_after_opening">Péremption après ouverture</string>
     <string name="feature_products_alert_delay">Délai d\'alerte</string>
+    <string name="feature_products_edit_button_content_description">Modifier les détails du produit</string>
+    <string name="global_cancel">Annuler</string>
+    <string name="global_save">Enregistrer</string>
+    <string name="global_days">jours</string>
 </resources>

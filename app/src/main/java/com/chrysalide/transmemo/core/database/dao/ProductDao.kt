@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.chrysalide.transmemo.core.model.entities.ProductEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -29,4 +30,7 @@ interface ProductDao {
 
     @Query("DELETE FROM products")
     suspend fun deleteAll()
+
+    @Update
+    suspend fun update(productEntity: ProductEntity)
 }
