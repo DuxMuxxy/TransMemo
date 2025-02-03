@@ -29,12 +29,6 @@ class ProductsViewModel(
             databaseRepository.updateProduct(productEntity)
         }
     }
-
-    fun addProduct() {
-        viewModelScope.launch {
-            databaseRepository.insertProduct(ProductEntity.default())
-        }
-    }
 }
 
 sealed interface ProductsUiState {

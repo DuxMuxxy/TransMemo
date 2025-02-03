@@ -24,7 +24,7 @@ data class ProductEntity(
     companion object {
         fun default() = ProductEntity(
             name = "",
-            molecule = 0,
+            molecule = 8,
             unit = 0,
             dosePerIntake = 0f,
             capacity = 0f,

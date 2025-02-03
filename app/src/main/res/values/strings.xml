@@ -73,4 +73,7 @@
     <string name="feature_products_add_button_content_description">Add a product to the list</string>
     <string name="feature_product_name">Product name</string>
     <string name="feature_product_molecule">Molecule</string>
+    <string name="feature_products_add_dialog_title">Add a product</string>
+    <string name="feature_products_add_dialog_add_button">Add</string>
+    <string name="feature_product_unit">Unit</string>
 </resources>

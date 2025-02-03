@@ -40,7 +40,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,7 +56,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.chrysalide.transmemo.R
 import com.chrysalide.transmemo.R.string
@@ -68,10 +66,13 @@ import com.chrysalide.transmemo.presentation.extension.containerCapacity
 import com.chrysalide.transmemo.presentation.extension.dosePerIntake
 import com.chrysalide.transmemo.presentation.extension.expirationDate
 import com.chrysalide.transmemo.presentation.extension.intakeInterval
+import com.chrysalide.transmemo.presentation.extension.isValidDecimalValue
+import com.chrysalide.transmemo.presentation.extension.isValidIntegerValue
 import com.chrysalide.transmemo.presentation.extension.moleculeName
 import com.chrysalide.transmemo.presentation.extension.unitName
 import com.chrysalide.transmemo.presentation.products.ProductsUiState.Loading
 import com.chrysalide.transmemo.presentation.products.ProductsUiState.Products
+import com.chrysalide.transmemo.presentation.products.add.AddProductDialog
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -80,11 +81,19 @@ fun ProductsScreen(
     viewModel: ProductsViewModel = koinViewModel(),
 ) {
     val productsUiState by viewModel.productsUiState.collectAsStateWithLifecycle()
+    var showAddProductDialog by remember { mutableStateOf(false) }
+
+    if (showAddProductDialog) {
+        AddProductDialog(
+            onDismiss = { showAddProductDialog = false },
+            onAddedProduct = { /* show added product snackbar ? */}
+        )
+    }
 
     ProductsView(
         productsUiState,
         saveProduct = viewModel::saveProduct,
-        addProduct = viewModel::addProduct
+        addProduct = { showAddProductDialog = true }
     )
 }
 
@@ -183,7 +192,8 @@ private fun ProductCard(
                                         .background(
                                             color = MaterialTheme.colorScheme.surfaceVariant,
                                             shape = MaterialTheme.shapes.small
-                                        ).clickable { isMoleculeDropDownExtended = !isMoleculeDropDownExtended }
+                                        )
+                                        .clickable { isMoleculeDropDownExtended = !isMoleculeDropDownExtended }
                                         .padding(horizontal = 16.dp, vertical = 8.dp)
                                 ) {
                                     Text(
@@ -203,6 +213,47 @@ private fun ProductCard(
                                             onClick = {
                                                 editableProduct = editableProduct.copy(molecule = index)
                                                 isMoleculeDropDownExtended = false
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(24.dp))
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                var isUnitDropDownExtended by remember { mutableStateOf(false) }
+                                Text(stringResource(string.feature_product_unit))
+                                HorizontalDivider(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .widthIn(min = 16.dp)
+                                        .padding(horizontal = 16.dp)
+                                )
+                                Row(
+                                    modifier = Modifier
+                                        .background(
+                                            color = MaterialTheme.colorScheme.surfaceVariant,
+                                            shape = MaterialTheme.shapes.small
+                                        )
+                                        .clickable { isUnitDropDownExtended = !isUnitDropDownExtended }
+                                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                                ) {
+                                    Text(
+                                        text = editableProduct.unitName(),
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Spacer(modifier = Modifier.width(16.dp))
+                                    Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+                                }
+                                DropdownMenu(
+                                    expanded = isUnitDropDownExtended,
+                                    onDismissRequest = { isUnitDropDownExtended = false }
+                                ) {
+                                    stringArrayResource(R.array.units).forEachIndexed { index, unit ->
+                                        DropdownMenuItem(
+                                            text = { Text(unit) },
+                                            onClick = {
+                                                editableProduct = editableProduct.copy(unit = index)
+                                                isUnitDropDownExtended = false
                                             }
                                         )
                                     }
@@ -372,10 +423,10 @@ private fun ProductCard(
 }
 
 @Composable
-private fun SwitchRow(
+fun SwitchRow(
     text: String,
     checked: Boolean,
-    enabled: Boolean,
+    enabled: Boolean = true,
     onCheckedChange: (Boolean) -> Unit
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -423,7 +474,7 @@ private fun TextValueRow(
                 null
             },
             trailingIcon = if (isError) {
-                { Icon(Icons.Filled.Warning, "error", tint = MaterialTheme.colorScheme.error) }
+                { Icon(Icons.Filled.Warning, contentDescription = null, tint = MaterialTheme.colorScheme.error) }
             } else {
                 null
             },
@@ -445,10 +496,6 @@ private fun TextValueRow(
         }
     }
 }
-
-private fun String.isValidIntegerValue() = isNotBlank() && isDigitsOnly()
-
-private fun String.isValidDecimalValue() = isNotBlank() && matches("^[0-9]+(\\.[0-9]+)?$".toRegex())
 
 @ThemePreviews
 @Composable
