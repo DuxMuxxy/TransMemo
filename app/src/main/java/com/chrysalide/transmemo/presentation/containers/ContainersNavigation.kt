@@ -11,6 +11,9 @@ import kotlinx.serialization.Serializable
 data object ProductsRoute // route to Products screen
 
 @Serializable
+data object IncomingEventRoute // route to Products screen
+
+@Serializable
 data object ProductsBaseRoute // route to base navigation graph
 
 fun NavController.navigateToProducts(navOptions: NavOptions) = navigate(route = ProductsRoute, navOptions)

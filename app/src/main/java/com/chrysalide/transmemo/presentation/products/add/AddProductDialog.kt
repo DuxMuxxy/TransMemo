@@ -259,24 +259,12 @@ private fun AddProductDialog(
                     isExpirationDaysValid &&
                     isAlertDelayValid
             ) {
-                Text(
-                    text = stringResource(string.feature_products_add_dialog_add_button),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
+                Text(text = stringResource(string.feature_products_add_dialog_add_button))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(
-                    text = stringResource(string.global_cancel),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier
-                        .padding(horizontal = 8.dp)
-                        .clickable(onClick = onDismiss),
-                )
+                Text(text = stringResource(string.global_cancel))
             }
         },
     )
