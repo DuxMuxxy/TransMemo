@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -44,6 +45,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -74,6 +76,7 @@ import com.chrysalide.transmemo.presentation.extension.intakeInterval
 import com.chrysalide.transmemo.presentation.extension.isValidDecimalValue
 import com.chrysalide.transmemo.presentation.extension.isValidIntegerValue
 import com.chrysalide.transmemo.presentation.extension.moleculeName
+import com.chrysalide.transmemo.presentation.extension.stripTrailingZeros
 import com.chrysalide.transmemo.presentation.extension.unitName
 import com.chrysalide.transmemo.presentation.products.ProductsUiState.Loading
 import com.chrysalide.transmemo.presentation.products.ProductsUiState.Products
@@ -210,8 +213,8 @@ private fun ProductCard(
     var isEditing by remember { mutableStateOf(false) }
     var editableProduct by remember(isEditing) { mutableStateOf(product) }
     var editedIntakePeriodicityValue by remember(isEditing) { mutableStateOf(product.intakeInterval.toString()) }
-    var editedDosingPerIntakeValue by remember(isEditing) { mutableStateOf(product.dosePerIntake.toString()) }
-    var editedCapacityValue by remember(isEditing) { mutableStateOf(product.capacity.toString()) }
+    var editedDosingPerIntakeValue by remember(isEditing) { mutableStateOf(product.dosePerIntake.stripTrailingZeros()) }
+    var editedCapacityValue by remember(isEditing) { mutableStateOf(product.capacity.stripTrailingZeros()) }
     var editedExpirationDaysValue by remember(isEditing) { mutableStateOf(product.expirationDays.toString()) }
     var editedAlertDelayValue by remember(isEditing) { mutableStateOf(product.alertDelay.toString()) }
     val isIntakePeriodicityValid = editedIntakePeriodicityValue.isValidIntegerValue()
@@ -233,87 +236,44 @@ private fun ProductCard(
                             value = editableProduct.name,
                             onValueChange = { editableProduct = editableProduct.copy(name = it) },
                             label = { Text(stringResource(string.feature_product_name)) },
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next,),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Next
+                            ),
                             keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) })
                         )
                         Spacer(modifier = Modifier.height(24.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            var isMoleculeDropDownExtended by remember { mutableStateOf(false) }
-                            Text(stringResource(string.feature_product_molecule))
-                            HorizontalDivider(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .widthIn(min = 16.dp)
-                                    .padding(horizontal = 24.dp)
-                            )
-                            Row(
-                                modifier = Modifier
-                                    .background(
-                                        color = MaterialTheme.colorScheme.surfaceVariant,
-                                        shape = MaterialTheme.shapes.small
-                                    ).clickable { isMoleculeDropDownExtended = !isMoleculeDropDownExtended }
-                                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                            ) {
-                                Text(
-                                    text = editableProduct.moleculeName(),
-                                    overflow = TextOverflow.Ellipsis
+                        var isMoleculeDropDownExtended = remember { mutableStateOf(false) }
+                        DropDownValueRow(
+                            title = stringResource(string.feature_product_molecule),
+                            value = editableProduct.moleculeName(),
+                            isDropDownExtended = isMoleculeDropDownExtended
+                        ) {
+                            getAllMoleculeNames().forEach { (molecule, name) ->
+                                DropdownMenuItem(
+                                    text = { Text(name) },
+                                    onClick = {
+                                        editableProduct = editableProduct.copy(molecule = molecule)
+                                        isMoleculeDropDownExtended.value = false
+                                    }
                                 )
-                                Spacer(modifier = Modifier.width(16.dp))
-                                Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
-                            }
-                            DropdownMenu(
-                                expanded = isMoleculeDropDownExtended,
-                                onDismissRequest = { isMoleculeDropDownExtended = false }
-                            ) {
-                                getAllMoleculeNames().forEach { (molecule, name) ->
-                                    DropdownMenuItem(
-                                        text = { Text(name) },
-                                        onClick = {
-                                            editableProduct = editableProduct.copy(molecule = molecule)
-                                            isMoleculeDropDownExtended = false
-                                        }
-                                    )
-                                }
                             }
                         }
                         Spacer(modifier = Modifier.height(24.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            var isUnitDropDownExtended by remember { mutableStateOf(false) }
-                            Text(stringResource(string.feature_product_unit))
-                            HorizontalDivider(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .widthIn(min = 16.dp)
-                                    .padding(horizontal = 16.dp)
-                            )
-                            Row(
-                                modifier = Modifier
-                                    .background(
-                                        color = MaterialTheme.colorScheme.surfaceVariant,
-                                        shape = MaterialTheme.shapes.small
-                                    ).clickable { isUnitDropDownExtended = !isUnitDropDownExtended }
-                                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                            ) {
-                                Text(
-                                    text = editableProduct.unitName(),
-                                    overflow = TextOverflow.Ellipsis
+                        var isUnitDropDownExtended = remember { mutableStateOf(false) }
+                        DropDownValueRow(
+                            title = stringResource(string.feature_product_unit),
+                            value = editableProduct.unitName(),
+                            isDropDownExtended = isUnitDropDownExtended
+                        ) {
+                            getAllUnitNames().forEach { (unit, name) ->
+                                DropdownMenuItem(
+                                    text = { Text(name) },
+                                    onClick = {
+                                        editableProduct = editableProduct.copy(unit = unit)
+                                        isUnitDropDownExtended.value = false
+                                    }
                                 )
-                                Spacer(modifier = Modifier.width(16.dp))
-                                Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
-                            }
-                            DropdownMenu(
-                                expanded = isUnitDropDownExtended,
-                                onDismissRequest = { isUnitDropDownExtended = false }
-                            ) {
-                                getAllUnitNames().forEach { (unit, name) ->
-                                    DropdownMenuItem(
-                                        text = { Text(name) },
-                                        onClick = {
-                                            editableProduct = editableProduct.copy(unit = unit)
-                                            isUnitDropDownExtended = false
-                                        }
-                                    )
-                                }
                             }
                         }
                     }
@@ -336,7 +296,7 @@ private fun ProductCard(
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
-            val unitName = product.unitName()
+            val unitName = editableProduct.unitName()
             val daysSuffix = stringResource(string.global_days)
 
             SwitchRow(
@@ -365,7 +325,7 @@ private fun ProductCard(
                         onValueChange = { editedIntakePeriodicityValue = it },
                         focusManager = focusManager,
                         keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next,
+                        imeAction = if (isExtented) ImeAction.Next else ImeAction.Done,
                         isError = !isIntakePeriodicityValid
                     )
 
@@ -552,6 +512,44 @@ private fun TextValueRow(
             )
             Text(valueText)
         }
+    }
+}
+
+@Composable
+fun DropDownValueRow(
+    title: String,
+    value: String,
+    isDropDownExtended: MutableState<Boolean>,
+    values: @Composable ColumnScope.() -> Unit
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(title)
+        HorizontalDivider(
+            modifier = Modifier
+                .weight(1f)
+                .widthIn(min = 16.dp)
+                .padding(horizontal = 16.dp)
+        )
+        Row(
+            modifier = Modifier
+                .background(
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    shape = MaterialTheme.shapes.small
+                ).clickable { isDropDownExtended.value = !isDropDownExtended.value }
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+        ) {
+            Text(
+                text = value,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+        }
+        DropdownMenu(
+            expanded = isDropDownExtended.value,
+            onDismissRequest = { isDropDownExtended.value = false },
+            content = values
+        )
     }
 }
 

@@ -18,7 +18,7 @@ data class Product(
         fun default() = Product(
             name = "",
             molecule = Molecule.TESTOSTERONE,
-            unit = MeasureUnit.OTHER,
+            unit = MeasureUnit.VIAL,
             dosePerIntake = 0f,
             capacity = 0f,
             expirationDays = 0,

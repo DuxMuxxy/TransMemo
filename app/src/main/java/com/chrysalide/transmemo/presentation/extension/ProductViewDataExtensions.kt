@@ -32,10 +32,10 @@ private fun Molecule.name() = stringResource(
 )
 
 @Composable
-fun Product.dosePerIntake() = "$dosePerIntake ${unitName()}"
+fun Product.dosePerIntake() = "${dosePerIntake.stripTrailingZeros()} ${unitName()}"
 
 @Composable
-fun Product.containerCapacity() = "$capacity ${unitName()}"
+fun Product.containerCapacity() = "${capacity.stripTrailingZeros()} ${unitName()}"
 
 @Composable
 fun Product.intakeInterval() = pluralStringResource(R.plurals.global_days_text_template, intakeInterval, intakeInterval)
