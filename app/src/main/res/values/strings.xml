@@ -54,7 +54,7 @@
         <item>Spironolactone</item>
         <item>Triptorelin</item>
     </string-array>
-    <string name="feature_products_beeing_used">Beeing used</string>
+    <string name="feature_products_beeing_used">Being used</string>
     <string name="feature_products_intake_periodicity">Intake every</string>
     <plurals name="global_days_text_template">
         <item quantity="one">%d day</item>
@@ -76,4 +76,10 @@
     <string name="feature_products_add_dialog_title">Add a product</string>
     <string name="feature_products_add_dialog_add_button">Add</string>
     <string name="feature_product_unit">Unit</string>
+    <string name="feature_products_delete_button_content_description">Delete this product</string>
+    <string name="global_confirm">Confirm</string>
+    <string name="feature_products_delete_dialog_title">Deletion</string>
+    <string name="feature_products_delete_dialog_text">Confirm the product deletion ?</string>
+    <string name="feature_products_add_success">Product added!</string>
+    <string name="feature_products_delete_success">Product deleted!</string>
 </resources>

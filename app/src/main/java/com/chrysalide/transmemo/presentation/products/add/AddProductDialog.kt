@@ -198,7 +198,7 @@ private fun AddProductDialog(
                     .padding(horizontal = 8.dp)
                     .clickable(onClick = onDismiss)
             )
-        },
+        }
     )
 }
 

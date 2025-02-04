@@ -22,10 +22,10 @@ fun NavController.navigateToProducts(navOptions: NavOptions) = navigate(route = 
  *  The Products screen of the app.
  *  This should be supplied from a separate module.
  */
-fun NavGraphBuilder.productsScreen() {
+fun NavGraphBuilder.productsScreen(onShowSnackbar: suspend (String, String?) -> Boolean) {
     navigation<ProductsBaseRoute>(startDestination = ProductsRoute) {
         composable<ProductsRoute> {
-            ProductsScreen()
+            ProductsScreen(onShowSnackbar = onShowSnackbar)
         }
     }
 }

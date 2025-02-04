@@ -29,6 +29,12 @@ class ProductsViewModel(
             databaseRepository.updateProduct(product)
         }
     }
+
+    fun deleteProduct(product: Product) {
+        viewModelScope.launch {
+            databaseRepository.deleteProduct(product)
+        }
+    }
 }
 
 sealed interface ProductsUiState {

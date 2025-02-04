@@ -25,4 +25,6 @@ interface DatabaseRepository {
     suspend fun updateProduct(product: Product)
 
     suspend fun insertProduct(product: Product)
+
+    suspend fun deleteProduct(product: Product)
 }

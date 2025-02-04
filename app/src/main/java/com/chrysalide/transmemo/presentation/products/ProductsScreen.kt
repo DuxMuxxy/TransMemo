@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
@@ -41,6 +43,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -73,27 +76,68 @@ import com.chrysalide.transmemo.presentation.extension.unitName
 import com.chrysalide.transmemo.presentation.products.ProductsUiState.Loading
 import com.chrysalide.transmemo.presentation.products.ProductsUiState.Products
 import com.chrysalide.transmemo.presentation.products.add.AddProductDialog
+import com.chrysalide.transmemo.presentation.products.delete.AskDeleteProductDialog
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
+import dev.sergiobelda.compose.vectorize.images.Images
+import dev.sergiobelda.compose.vectorize.images.icons.rounded.Pill
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ProductsScreen(
     viewModel: ProductsViewModel = koinViewModel(),
+    onShowSnackbar: suspend (String, String?) -> Boolean
 ) {
     val productsUiState by viewModel.productsUiState.collectAsStateWithLifecycle()
     var showAddProductDialog by remember { mutableStateOf(false) }
+    var showAddSuccessSnackbar by remember { mutableStateOf(false) }
+    var showDeleteProductDialog by remember { mutableStateOf(false) }
+    var showDeleteSuccessSnackbar by remember { mutableStateOf(false) }
+    var productToDelete by remember { mutableStateOf<Product?>(null) }
 
     if (showAddProductDialog) {
         AddProductDialog(
             onDismiss = { showAddProductDialog = false },
-            onAddedProduct = { /* show added product snackbar ? */ }
+            onAddedProduct = { showAddSuccessSnackbar = true }
         )
+    }
+
+    if (showDeleteProductDialog) {
+        AskDeleteProductDialog(
+            onDismiss = {
+                productToDelete = null
+                showDeleteProductDialog = false
+            },
+            onConfirm = {
+                productToDelete?.let { viewModel.deleteProduct(it) }
+                showDeleteProductDialog = false
+                showDeleteSuccessSnackbar = true
+            }
+        )
+    }
+
+    val addProductSuccessText = stringResource(string.feature_products_add_success)
+    val deleteProductSuccessText = stringResource(string.feature_products_delete_success)
+    LaunchedEffect(showAddSuccessSnackbar, showDeleteSuccessSnackbar) {
+        when {
+            showAddSuccessSnackbar -> {
+                onShowSnackbar(addProductSuccessText, null)
+                showAddSuccessSnackbar = false
+            }
+            showDeleteSuccessSnackbar -> {
+                onShowSnackbar(deleteProductSuccessText, null)
+                showDeleteSuccessSnackbar = false
+            }
+        }
     }
 
     ProductsView(
         productsUiState,
         saveProduct = viewModel::saveProduct,
-        addProduct = { showAddProductDialog = true }
+        addProduct = { showAddProductDialog = true },
+        deleteProduct = {
+            productToDelete = it
+            showDeleteProductDialog = true
+        }
     )
 }
 
@@ -101,7 +145,8 @@ fun ProductsScreen(
 private fun ProductsView(
     productsUiState: ProductsUiState,
     saveProduct: (Product) -> Unit,
-    addProduct: () -> Unit
+    addProduct: () -> Unit,
+    deleteProduct: (Product) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         when (productsUiState) {
@@ -119,8 +164,20 @@ private fun ProductsView(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp),
                 ) {
+                    item {
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                            // Replace by an illustration ?
+                            Icon(
+                                Images.Icons.Rounded.Pill,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primaryContainer,
+                                modifier = Modifier.size(120.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(32.dp))
+                    }
                     itemsIndexed(items = productsUiState.products) { index, product ->
-                        ProductCard(product, saveProduct)
+                        ProductCard(product, saveProduct, deleteProduct)
                         if (index < productsUiState.products.lastIndex) {
                             Spacer(modifier = Modifier.height(16.dp))
                         }
@@ -143,7 +200,8 @@ private fun ProductsView(
 @Composable
 private fun ProductCard(
     product: Product,
-    saveProduct: (Product) -> Unit
+    saveProduct: (Product) -> Unit,
+    deleteProduct: (Product) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     var isExtented by remember { mutableStateOf(false) }
@@ -165,113 +223,113 @@ private fun ProductCard(
         onClick = { isExtented = !isExtented },
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
-            Row {
-                AnimatedContent(isEditing) { isBeingEdited ->
+            AnimatedContent(isEditing) { isBeingEdited ->
+                if (isBeingEdited) {
                     Column {
-                        if (isBeingEdited) {
-                            OutlinedTextField(
-                                modifier = Modifier.fillMaxWidth(),
-                                value = editableProduct.name,
-                                onValueChange = { editableProduct = editableProduct.copy(name = it) },
-                                label = { Text(stringResource(string.feature_product_name)) },
-                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next,),
-                                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) })
+                        OutlinedTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = editableProduct.name,
+                            onValueChange = { editableProduct = editableProduct.copy(name = it) },
+                            label = { Text(stringResource(string.feature_product_name)) },
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next,),
+                            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) })
+                        )
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            var isMoleculeDropDownExtended by remember { mutableStateOf(false) }
+                            Text(stringResource(string.feature_product_molecule))
+                            HorizontalDivider(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .widthIn(min = 16.dp)
+                                    .padding(horizontal = 24.dp)
                             )
-                            Spacer(modifier = Modifier.height(24.dp))
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                var isMoleculeDropDownExtended by remember { mutableStateOf(false) }
-                                Text(stringResource(string.feature_product_molecule))
-                                HorizontalDivider(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .widthIn(min = 16.dp)
-                                        .padding(horizontal = 24.dp)
+                            Row(
+                                modifier = Modifier
+                                    .background(
+                                        color = MaterialTheme.colorScheme.surfaceVariant,
+                                        shape = MaterialTheme.shapes.small
+                                    ).clickable { isMoleculeDropDownExtended = !isMoleculeDropDownExtended }
+                                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                            ) {
+                                Text(
+                                    text = editableProduct.moleculeName(),
+                                    overflow = TextOverflow.Ellipsis
                                 )
-                                Row(
-                                    modifier = Modifier
-                                        .background(
-                                            color = MaterialTheme.colorScheme.surfaceVariant,
-                                            shape = MaterialTheme.shapes.small
-                                        ).clickable { isMoleculeDropDownExtended = !isMoleculeDropDownExtended }
-                                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                                ) {
-                                    Text(
-                                        text = editableProduct.moleculeName(),
-                                        overflow = TextOverflow.Ellipsis
+                                Spacer(modifier = Modifier.width(16.dp))
+                                Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+                            }
+                            DropdownMenu(
+                                expanded = isMoleculeDropDownExtended,
+                                onDismissRequest = { isMoleculeDropDownExtended = false }
+                            ) {
+                                stringArrayResource(R.array.molecules).forEachIndexed { index, moleculeName ->
+                                    DropdownMenuItem(
+                                        text = { Text(moleculeName) },
+                                        onClick = {
+                                            editableProduct = editableProduct.copy(molecule = index)
+                                            isMoleculeDropDownExtended = false
+                                        }
                                     )
-                                    Spacer(modifier = Modifier.width(16.dp))
-                                    Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
-                                }
-                                DropdownMenu(
-                                    expanded = isMoleculeDropDownExtended,
-                                    onDismissRequest = { isMoleculeDropDownExtended = false }
-                                ) {
-                                    stringArrayResource(R.array.molecules).forEachIndexed { index, moleculeName ->
-                                        DropdownMenuItem(
-                                            text = { Text(moleculeName) },
-                                            onClick = {
-                                                editableProduct = editableProduct.copy(molecule = index)
-                                                isMoleculeDropDownExtended = false
-                                            }
-                                        )
-                                    }
                                 }
                             }
-                            Spacer(modifier = Modifier.height(24.dp))
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                var isUnitDropDownExtended by remember { mutableStateOf(false) }
-                                Text(stringResource(string.feature_product_unit))
-                                HorizontalDivider(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .widthIn(min = 16.dp)
-                                        .padding(horizontal = 16.dp)
+                        }
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            var isUnitDropDownExtended by remember { mutableStateOf(false) }
+                            Text(stringResource(string.feature_product_unit))
+                            HorizontalDivider(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .widthIn(min = 16.dp)
+                                    .padding(horizontal = 16.dp)
+                            )
+                            Row(
+                                modifier = Modifier
+                                    .background(
+                                        color = MaterialTheme.colorScheme.surfaceVariant,
+                                        shape = MaterialTheme.shapes.small
+                                    ).clickable { isUnitDropDownExtended = !isUnitDropDownExtended }
+                                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                            ) {
+                                Text(
+                                    text = editableProduct.unitName(),
+                                    overflow = TextOverflow.Ellipsis
                                 )
-                                Row(
-                                    modifier = Modifier
-                                        .background(
-                                            color = MaterialTheme.colorScheme.surfaceVariant,
-                                            shape = MaterialTheme.shapes.small
-                                        ).clickable { isUnitDropDownExtended = !isUnitDropDownExtended }
-                                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                                ) {
-                                    Text(
-                                        text = editableProduct.unitName(),
-                                        overflow = TextOverflow.Ellipsis
+                                Spacer(modifier = Modifier.width(16.dp))
+                                Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+                            }
+                            DropdownMenu(
+                                expanded = isUnitDropDownExtended,
+                                onDismissRequest = { isUnitDropDownExtended = false }
+                            ) {
+                                stringArrayResource(R.array.units).forEachIndexed { index, unit ->
+                                    DropdownMenuItem(
+                                        text = { Text(unit) },
+                                        onClick = {
+                                            editableProduct = editableProduct.copy(unit = index)
+                                            isUnitDropDownExtended = false
+                                        }
                                     )
-                                    Spacer(modifier = Modifier.width(16.dp))
-                                    Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
-                                }
-                                DropdownMenu(
-                                    expanded = isUnitDropDownExtended,
-                                    onDismissRequest = { isUnitDropDownExtended = false }
-                                ) {
-                                    stringArrayResource(R.array.units).forEachIndexed { index, unit ->
-                                        DropdownMenuItem(
-                                            text = { Text(unit) },
-                                            onClick = {
-                                                editableProduct = editableProduct.copy(unit = index)
-                                                isUnitDropDownExtended = false
-                                            }
-                                        )
-                                    }
                                 }
                             }
-                        } else {
+                        }
+                    }
+                } else {
+                    Row {
+                        Column(modifier = Modifier.weight(1f)) {
                             Text(product.name, style = MaterialTheme.typography.headlineMedium)
                             Text(product.moleculeName(), style = MaterialTheme.typography.titleMedium)
                         }
-                    }
-                }
-                Spacer(
-                    modifier = Modifier
-                        .weight(1f)
-                        .widthIn(min = 16.dp)
-                )
-                AnimatedVisibility(!isEditing) {
-                    val editButtonContentDescription = stringResource(string.feature_products_edit_button_content_description)
-                    IconButton(onClick = { isEditing = true },) {
-                        Icon(Icons.Rounded.Edit, contentDescription = editButtonContentDescription)
+
+                        val deleteButtonContentDescription = stringResource(string.feature_products_delete_button_content_description)
+                        IconButton(onClick = { deleteProduct(product) }, modifier = Modifier.padding(start = 8.dp)) {
+                            Icon(Icons.Rounded.Delete, contentDescription = deleteButtonContentDescription)
+                        }
+                        val editButtonContentDescription = stringResource(string.feature_products_edit_button_content_description)
+                        IconButton(onClick = { isEditing = true },) {
+                            Icon(Icons.Rounded.Edit, contentDescription = editButtonContentDescription)
+                        }
                     }
                 }
             }
@@ -499,7 +557,7 @@ private fun TextValueRow(
 @Composable
 private fun ProductsScreenLoadingPreviews() {
     TransMemoTheme {
-        ProductsView(Loading, {}, {})
+        ProductsView(Loading, {}, {}, {})
     }
 }
 
@@ -526,7 +584,8 @@ private fun ProductsScreenListPreviews() {
                 ),
             ),
             saveProduct = {},
-            addProduct = {}
+            addProduct = {},
+            deleteProduct = {}
         )
     }
 }

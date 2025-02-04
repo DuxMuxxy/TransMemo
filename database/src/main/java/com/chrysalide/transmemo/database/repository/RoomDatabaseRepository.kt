@@ -61,6 +61,8 @@ internal class RoomDatabaseRepository(
 
     override suspend fun insertProduct(product: Product) = productDao.insert(product.toProductEntity())
 
+    override suspend fun deleteProduct(product: Product) = productDao.delete(product.toProductEntity())
+
     private fun List<ProductDBEntity>.toProducts() = map { it.toProduct() }
 
     private fun ProductDBEntity.toProduct() = Product(

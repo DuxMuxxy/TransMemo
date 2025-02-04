@@ -22,7 +22,7 @@ fun TransMemoNavHost(
         modifier = modifier
     ) {
         calendarScreen()
-        productsScreen()
+        productsScreen(onShowSnackbar)
         settingsScreen(onShowSnackbar)
     }
 }
