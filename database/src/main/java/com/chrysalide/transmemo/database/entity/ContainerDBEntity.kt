@@ -2,6 +2,7 @@ package com.chrysalide.transmemo.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.chrysalide.transmemo.domain.model.MeasureUnit
 
 @Entity(
     tableName = "containers"
@@ -10,7 +11,7 @@ data class ContainerDBEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val productId: Int,
-    val unit: Int,
+    val unit: MeasureUnit,
     val remainingCapacity: Float,
     val usedCapacity: Float,
     val openDate: Int,

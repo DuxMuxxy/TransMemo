@@ -21,39 +21,36 @@
     <string name="feature_settings_database_title">Données</string>
     <string name="feature_settings_database_import_title">Importer</string>
     <string name="feature_settings_database_import_action">Importer</string>
-    <string name="feature_settings_database_import_description">Importer un fichier de données.\\nAttention: cette opération écrase de façon définitive vos données actuelles !</string>
+    <string name="feature_settings_database_import_description">Importer un fichier de données.\nAttention: cette opération écrase de façon définitive vos données actuelles !</string>
     <string name="feature_settings_database_import_success">Le fichier de données a été importé avec succès !</string>
     <string name="feature_settings_database_import_error">Une erreur a été rencontrée pendant l\'import du fichier de données</string>
 
     <!-- measures / units -->
-    <string-array name="units">
-        <item>unité autre</item>
-        <item>ampoule(s)</item>
-        <item>comprimé(s)</item>
-        <item>mg</item>
-        <item>ml</item>
-        <item>oz</item>
-        <item>patch(s)</item>
-        <item>pression(s)</item>
-        <item>sachet(s)</item>
-    </string-array>
+    <string name="unit_other">unité autre</string>
+    <string name="unit_vial">ampoule(s)</string>
+    <string name="unit_pill">comprimé(s)</string>
+    <string name="unit_milligram">mg</string>
+    <string name="unit_milliliter">ml</string>
+    <string name="unit_oz">oz</string>
+    <string name="unit_patch">patch(s)</string>
+    <string name="unit_pump">pression(s)</string>
+    <string name="unit_sachet">sachet(s)</string>
 
     <!-- molecules -->
-    <string-array name="molecules">
-        <item>Autre molécule</item>
-        <item>Acétate de chlormadinone </item>
-        <item>Acétate de cyprotérone</item>
-        <item>Acétate de nomégestrol</item>
-        <item>Androstanolone</item>
-        <item>Bicalutamide</item>
-        <item>Dutastéride</item>
-        <item>Estradiol</item>
-        <item>Finastéride</item>
-        <item>Testostérone</item>
-        <item>Progestérone</item>
-        <item>Spironolactone</item>
-        <item>Triptoréline</item>
-    </string-array>
+    <string name="molecule_other">Autre molécule</string>
+    <string name="molecule_chlormadinone_acetate">Acétate de chlormadinone </string>
+    <string name="molecule_cyproterone_acetate">Acétate de cyprotérone</string>
+    <string name="molecule_nomegestrol_acetate">Acétate de nomégestrol</string>
+    <string name="molecule_androstanolone">Androstanolone</string>
+    <string name="molecule_bicalutamide">Bicalutamide</string>
+    <string name="molecule_dutasteride">Dutastéride</string>
+    <string name="molecule_estradiol">Estradiol</string>
+    <string name="molecule_finasteride">Finastéride</string>
+    <string name="molecule_testosterone">Testostérone</string>
+    <string name="molecule_progesterone">Progestérone</string>
+    <string name="molecule_spironolactone">Spironolactone</string>
+    <string name="molecule_triptorelin">Triptoréline</string>
+
     <string name="feature_products_beeing_used">Utilisé actuellement</string>
     <string name="feature_products_intake_periodicity">Prise tous les</string>
     <plurals name="global_days_text_template">

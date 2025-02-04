@@ -50,6 +50,8 @@ import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.W
 import com.chrysalide.transmemo.domain.boundary.DatabaseRepository
 import com.chrysalide.transmemo.domain.model.Container
 import com.chrysalide.transmemo.domain.model.Intake
+import com.chrysalide.transmemo.domain.model.MeasureUnit
+import com.chrysalide.transmemo.domain.model.Molecule
 import com.chrysalide.transmemo.domain.model.Note
 import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.domain.model.Wellbeing
@@ -221,7 +223,7 @@ class ImportDatabaseHelper(
     private fun Cursor.toContainer() = Container(
         id = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_IDCONTENANT)),
         productId = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_IDPRODUIT)),
-        unit = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_UNITE)),
+        unit = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_UNITE)).toUnit(),
         remainingCapacity = getFloat(getColumnIndexOrThrow(CONTAINERS_COLUMN_CAPACITE_RESTANTE)),
         usedCapacity = getFloat(getColumnIndexOrThrow(CONTAINERS_COLUMN_CAPACITE_UTILISEE)),
         openDate = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_DATE_OUVERTURE)),
@@ -232,7 +234,7 @@ class ImportDatabaseHelper(
     private fun Cursor.toIntake() = Intake(
         id = getInt(getColumnIndexOrThrow(TAKES_COLUMN_IDPRISE)),
         productId = getInt(getColumnIndexOrThrow(TAKES_COLUMN_IDPRODUIT)),
-        unit = getInt(getColumnIndexOrThrow(TAKES_COLUMN_UNITE)),
+        unit = getInt(getColumnIndexOrThrow(TAKES_COLUMN_UNITE)).toUnit(),
         plannedDose = getFloat(getColumnIndexOrThrow(TAKES_COLUMN_DOSE_PREVUE)),
         realDose = getFloat(getColumnIndexOrThrow(TAKES_COLUMN_DOSE_REELLE)),
         plannedDate = getInt(getColumnIndexOrThrow(TAKES_COLUMN_DATE_PREVUE)),
@@ -244,8 +246,8 @@ class ImportDatabaseHelper(
     private fun Cursor.toProduct() = Product(
         id = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_IDPRODUIT)),
         name = getString(getColumnIndexOrThrow(PRODUCTS_COLUMN_NOM_PRODUIT)),
-        molecule = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_IDMOLECULE)),
-        unit = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_UNITE)),
+        molecule = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_IDMOLECULE)).toMolecule(),
+        unit = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_UNITE)).toUnit(),
         dosePerIntake = getFloat(getColumnIndexOrThrow(PRODUCTS_COLUMN_DOSE_PRISE)),
         capacity = getFloat(getColumnIndexOrThrow(PRODUCTS_COLUMN_CAPACITE)),
         expirationDays = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_JOURS_DLC)),
@@ -266,4 +268,32 @@ class ImportDatabaseHelper(
         date = getInt(getColumnIndexOrThrow(NOTES_COLUMN_DATE)),
         text = getString(getColumnIndexOrThrow(NOTES_COLUMN_NOTES)),
     )
+
+    private fun Int.toMolecule() = when (this) {
+        0 -> Molecule.OTHER
+        1 -> Molecule.CHLORMADINONE_ACETATE
+        2 -> Molecule.CYPROTERONE_ACETATE
+        3 -> Molecule.NOMEGESTROL_ACETATE
+        4 -> Molecule.ANDROSTANOLONE
+        5 -> Molecule.BICALUTAMIDE
+        6 -> Molecule.DUTASTERIDE
+        7 -> Molecule.ESTRADIOL
+        8 -> Molecule.FINASTERIDE
+        9 -> Molecule.TESTOSTERONE
+        10 -> Molecule.PROGESTERONE
+        11 -> Molecule.SPIRONOLACTONE
+        12 -> Molecule.TRIPTORELIN
+        else -> Molecule.OTHER
+    }
+
+    private fun Int.toUnit() = when (this) {
+        0 -> MeasureUnit.VIAL
+        1 -> MeasureUnit.PILL
+        2 -> MeasureUnit.MILLIGRAM
+        3 -> MeasureUnit.MILLILITER
+        4 -> MeasureUnit.OZ
+        5 -> MeasureUnit.PATCH
+        6 -> MeasureUnit.PUMP
+        else -> MeasureUnit.OTHER
+    }
 }

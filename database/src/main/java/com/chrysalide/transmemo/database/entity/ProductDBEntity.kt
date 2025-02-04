@@ -2,6 +2,8 @@ package com.chrysalide.transmemo.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.chrysalide.transmemo.domain.model.MeasureUnit
+import com.chrysalide.transmemo.domain.model.Molecule
 
 @Entity(
     tableName = "products"
@@ -10,8 +12,8 @@ data class ProductDBEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val name: String,
-    val molecule: Int,
-    val unit: Int,
+    val molecule: Molecule,
+    val unit: MeasureUnit,
     val dosePerIntake: Float,
     val capacity: Float,
     val expirationDays: Int,

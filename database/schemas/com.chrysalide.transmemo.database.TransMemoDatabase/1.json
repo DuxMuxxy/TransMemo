@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "26b91873351cf1aa7db095e031f39e21",
+    "identityHash": "99ae3f57883ea548e65bbe01fe888d32",
     "entities": [
       {
         "tableName": "containers",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `productId` INTEGER NOT NULL, `unit` INTEGER NOT NULL, `remainingCapacity` REAL NOT NULL, `usedCapacity` REAL NOT NULL, `openDate` INTEGER NOT NULL, `expirationDate` INTEGER NOT NULL, `state` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `productId` INTEGER NOT NULL, `unit` TEXT NOT NULL, `remainingCapacity` REAL NOT NULL, `usedCapacity` REAL NOT NULL, `openDate` INTEGER NOT NULL, `expirationDate` INTEGER NOT NULL, `state` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -23,7 +23,7 @@
           {
             "fieldPath": "unit",
             "columnName": "unit",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -100,7 +100,7 @@
       },
       {
         "tableName": "products",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `molecule` INTEGER NOT NULL, `unit` INTEGER NOT NULL, `dosePerIntake` REAL NOT NULL, `capacity` REAL NOT NULL, `expirationDays` INTEGER NOT NULL, `intakeInterval` INTEGER NOT NULL, `alertDelay` INTEGER NOT NULL, `handleSide` INTEGER NOT NULL, `inUse` INTEGER NOT NULL, `notifications` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `molecule` TEXT NOT NULL, `unit` TEXT NOT NULL, `dosePerIntake` REAL NOT NULL, `capacity` REAL NOT NULL, `expirationDays` INTEGER NOT NULL, `intakeInterval` INTEGER NOT NULL, `alertDelay` INTEGER NOT NULL, `handleSide` INTEGER NOT NULL, `inUse` INTEGER NOT NULL, `notifications` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -117,13 +117,13 @@
           {
             "fieldPath": "molecule",
             "columnName": "molecule",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "unit",
             "columnName": "unit",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -186,7 +186,7 @@
       },
       {
         "tableName": "intakes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `productId` INTEGER NOT NULL, `unit` INTEGER NOT NULL, `plannedDose` REAL NOT NULL, `realDose` REAL NOT NULL, `plannedDate` INTEGER NOT NULL, `realDate` INTEGER NOT NULL, `plannedSide` INTEGER NOT NULL, `realSide` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `productId` INTEGER NOT NULL, `unit` TEXT NOT NULL, `plannedDose` REAL NOT NULL, `realDose` REAL NOT NULL, `plannedDate` INTEGER NOT NULL, `realDate` INTEGER NOT NULL, `plannedSide` INTEGER NOT NULL, `realSide` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -203,7 +203,7 @@
           {
             "fieldPath": "unit",
             "columnName": "unit",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -294,7 +294,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '26b91873351cf1aa7db095e031f39e21')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '99ae3f57883ea548e65bbe01fe888d32')"
     ]
   }
 }

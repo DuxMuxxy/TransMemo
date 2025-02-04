@@ -1,0 +1,17 @@
+package com.chrysalide.transmemo.domain.model
+
+enum class Molecule {
+    CHLORMADINONE_ACETATE,
+    CYPROTERONE_ACETATE,
+    NOMEGESTROL_ACETATE,
+    ANDROSTANOLONE,
+    BICALUTAMIDE,
+    DUTASTERIDE,
+    ESTRADIOL,
+    FINASTERIDE,
+    TESTOSTERONE,
+    PROGESTERONE,
+    SPIRONOLACTONE,
+    TRIPTORELIN,
+    OTHER
+}

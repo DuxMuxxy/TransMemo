@@ -32,16 +32,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.chrysalide.transmemo.R
 import com.chrysalide.transmemo.R.string
 import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
+import com.chrysalide.transmemo.presentation.extension.getAllMoleculeNames
 import com.chrysalide.transmemo.presentation.extension.isValidIntegerValue
 import com.chrysalide.transmemo.presentation.extension.moleculeName
 import com.chrysalide.transmemo.presentation.products.SwitchRow
@@ -115,11 +114,11 @@ private fun AddProductDialog(
                         expanded = isMoleculeDropDownExtended,
                         onDismissRequest = { isMoleculeDropDownExtended = false }
                     ) {
-                        stringArrayResource(R.array.molecules).forEachIndexed { index, moleculeName ->
+                        getAllMoleculeNames().forEach { (molecule, name) ->
                             DropdownMenuItem(
-                                text = { Text(moleculeName) },
+                                text = { Text(name) },
                                 onClick = {
-                                    product = product.copy(molecule = index)
+                                    product = product.copy(molecule = molecule)
                                     isMoleculeDropDownExtended = false
                                 }
                             )

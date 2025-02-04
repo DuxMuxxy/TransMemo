@@ -3,8 +3,8 @@ package com.chrysalide.transmemo.domain.model
 data class Product(
     val id: Int = 0,
     val name: String,
-    val molecule: Int,
-    val unit: Int,
+    val molecule: Molecule,
+    val unit: MeasureUnit,
     val dosePerIntake: Float,
     val capacity: Float,
     val expirationDays: Int,
@@ -17,8 +17,8 @@ data class Product(
     companion object {
         fun default() = Product(
             name = "",
-            molecule = 8,
-            unit = 0,
+            molecule = Molecule.TESTOSTERONE,
+            unit = MeasureUnit.OTHER,
             dosePerIntake = 0f,
             capacity = 0f,
             expirationDays = 0,

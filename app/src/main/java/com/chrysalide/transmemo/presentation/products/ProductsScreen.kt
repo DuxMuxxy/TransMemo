@@ -53,21 +53,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.chrysalide.transmemo.R
 import com.chrysalide.transmemo.R.string
+import com.chrysalide.transmemo.domain.model.MeasureUnit
+import com.chrysalide.transmemo.domain.model.Molecule
 import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.extension.alertDelay
 import com.chrysalide.transmemo.presentation.extension.containerCapacity
 import com.chrysalide.transmemo.presentation.extension.dosePerIntake
 import com.chrysalide.transmemo.presentation.extension.expirationDate
+import com.chrysalide.transmemo.presentation.extension.getAllMoleculeNames
+import com.chrysalide.transmemo.presentation.extension.getAllUnitNames
 import com.chrysalide.transmemo.presentation.extension.intakeInterval
 import com.chrysalide.transmemo.presentation.extension.isValidDecimalValue
 import com.chrysalide.transmemo.presentation.extension.isValidIntegerValue
@@ -263,11 +265,11 @@ private fun ProductCard(
                                 expanded = isMoleculeDropDownExtended,
                                 onDismissRequest = { isMoleculeDropDownExtended = false }
                             ) {
-                                stringArrayResource(R.array.molecules).forEachIndexed { index, moleculeName ->
+                                getAllMoleculeNames().forEach { (molecule, name) ->
                                     DropdownMenuItem(
-                                        text = { Text(moleculeName) },
+                                        text = { Text(name) },
                                         onClick = {
-                                            editableProduct = editableProduct.copy(molecule = index)
+                                            editableProduct = editableProduct.copy(molecule = molecule)
                                             isMoleculeDropDownExtended = false
                                         }
                                     )
@@ -303,11 +305,11 @@ private fun ProductCard(
                                 expanded = isUnitDropDownExtended,
                                 onDismissRequest = { isUnitDropDownExtended = false }
                             ) {
-                                stringArrayResource(R.array.units).forEachIndexed { index, unit ->
+                                getAllUnitNames().forEach { (unit, name) ->
                                     DropdownMenuItem(
-                                        text = { Text(unit) },
+                                        text = { Text(name) },
                                         onClick = {
-                                            editableProduct = editableProduct.copy(unit = index)
+                                            editableProduct = editableProduct.copy(unit = unit)
                                             isUnitDropDownExtended = false
                                         }
                                     )
@@ -570,8 +572,8 @@ private fun ProductsScreenListPreviews() {
                 products = listOf(
                     Product(
                         name = "Testosterone",
-                        molecule = 9,
-                        unit = 4,
+                        molecule = Molecule.TESTOSTERONE,
+                        unit = MeasureUnit.VIAL,
                         dosePerIntake = 1f,
                         capacity = 2f,
                         expirationDays = 365,
