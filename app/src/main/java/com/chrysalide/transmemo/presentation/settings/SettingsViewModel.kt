@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.chrysalide.transmemo.core.usecase.ImportOldDatabaseUseCase
+import com.chrysalide.transmemo.database.usecase.ImportOldDatabaseUseCase
 import com.chrysalide.transmemo.domain.boundary.UserDataRepository
 import com.chrysalide.transmemo.domain.model.DarkThemeConfig
 import com.chrysalide.transmemo.presentation.settings.SettingsUiState.Loading

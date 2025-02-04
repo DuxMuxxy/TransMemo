@@ -9,6 +9,8 @@ import com.chrysalide.transmemo.database.dao.ProductDao
 import com.chrysalide.transmemo.database.dao.WellbeingDao
 import com.chrysalide.transmemo.database.helper.ImportDatabaseHelper
 import com.chrysalide.transmemo.database.repository.RoomDatabaseRepository
+import com.chrysalide.transmemo.database.usecase.AutoImportOldDatabaseUseCase
+import com.chrysalide.transmemo.database.usecase.ImportOldDatabaseUseCase
 import com.chrysalide.transmemo.domain.boundary.DatabaseRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.singleOf
@@ -42,4 +44,9 @@ private val dbModule = module {
     }
 }
 
-val databaseModule = repositoryModule + daoModule + helperModule + dbModule
+private val useCaseModule = module {
+    singleOf(::ImportOldDatabaseUseCase)
+    singleOf(::AutoImportOldDatabaseUseCase)
+}
+
+val databaseModule = repositoryModule + daoModule + helperModule + dbModule + useCaseModule

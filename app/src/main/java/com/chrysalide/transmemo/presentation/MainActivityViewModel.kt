@@ -2,7 +2,7 @@ package com.chrysalide.transmemo.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.chrysalide.transmemo.core.usecase.AutoImportOldDatabaseUseCase
+import com.chrysalide.transmemo.database.usecase.AutoImportOldDatabaseUseCase
 import com.chrysalide.transmemo.domain.boundary.UserDataRepository
 import com.chrysalide.transmemo.domain.model.UserData
 import com.chrysalide.transmemo.presentation.MainActivityUiState.Loading

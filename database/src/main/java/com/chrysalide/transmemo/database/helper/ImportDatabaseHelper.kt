@@ -62,7 +62,7 @@ private const val TMP_DATABASE_NAME = "tmp_database.db"
 
 class ImportDatabaseHelper(
     private val context: Context,
-    private val databaseRepository: DatabaseRepository,
+    private val databaseRepository: DatabaseRepository
 ) {
     suspend fun copyFileToInternalStorage(fileUri: Uri) = withContext(Dispatchers.IO) {
         val destinationFile = File(context.getDatabasePath(DATABASE_NAME).parentFile, TMP_DATABASE_NAME)

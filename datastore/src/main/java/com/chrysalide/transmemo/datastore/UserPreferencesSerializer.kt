@@ -1,12 +1,13 @@
-package com.chrysalide.transmemo.core.datastore
+package com.chrysalide.transmemo.datastore
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
+import com.chrysalide.transmemo.core.datastore.UserPreferences
 import com.google.protobuf.InvalidProtocolBufferException
 import java.io.InputStream
 import java.io.OutputStream
 
-class UserPreferencesSerializer : Serializer<UserPreferences> {
+internal class UserPreferencesSerializer : Serializer<UserPreferences> {
     override val defaultValue: UserPreferences = UserPreferences.getDefaultInstance()
 
     override suspend fun readFrom(input: InputStream): UserPreferences =

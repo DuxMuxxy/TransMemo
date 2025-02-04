@@ -24,3 +24,4 @@ rootProject.name = "TransMemo"
 include(":app")
 include(":domain")
 include(":database")
+include(":datastore")

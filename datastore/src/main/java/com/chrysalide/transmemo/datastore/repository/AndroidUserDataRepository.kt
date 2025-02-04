@@ -1,12 +1,12 @@
-package com.chrysalide.transmemo.core.repository
+package com.chrysalide.transmemo.datastore.repository
 
-import com.chrysalide.transmemo.core.datastore.PreferencesDataSource
+import com.chrysalide.transmemo.datastore.PreferencesDataSource
 import com.chrysalide.transmemo.domain.boundary.UserDataRepository
 import com.chrysalide.transmemo.domain.model.DarkThemeConfig
 import com.chrysalide.transmemo.domain.model.UserData
 import kotlinx.coroutines.flow.Flow
 
-class AndroidUserDataRepository(
+internal class AndroidUserDataRepository(
     private val preferencesDataSource: PreferencesDataSource
 ) : UserDataRepository {
     override val userData: Flow<UserData> = preferencesDataSource.userData

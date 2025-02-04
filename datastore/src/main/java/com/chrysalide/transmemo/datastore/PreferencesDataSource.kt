@@ -1,11 +1,14 @@
-package com.chrysalide.transmemo.core.datastore
+package com.chrysalide.transmemo.datastore
 
 import androidx.datastore.core.DataStore
+import com.chrysalide.transmemo.core.datastore.DarkThemeConfigProto
+import com.chrysalide.transmemo.core.datastore.UserPreferences
+import com.chrysalide.transmemo.core.datastore.copy
 import com.chrysalide.transmemo.domain.model.DarkThemeConfig
 import com.chrysalide.transmemo.domain.model.UserData
 import kotlinx.coroutines.flow.map
 
-class PreferencesDataSource(
+internal class PreferencesDataSource(
     private val userPreferences: DataStore<UserPreferences>
 ) {
     val userData = userPreferences.data.map {

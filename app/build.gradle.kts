@@ -1,12 +1,10 @@
 import org.jmailen.gradle.kotlinter.tasks.FormatTask
 import org.jmailen.gradle.kotlinter.tasks.LintTask
-import kotlin.jvm.kotlin
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose)
-    alias(libs.plugins.protobuf)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlinter)
     alias(libs.plugins.vectorize)
@@ -44,38 +42,18 @@ android {
     }
 }
 
-// Setup protobuf configuration, generating lite Java and Kotlin classes
-protobuf {
-    protoc {
-        artifact = libs.protobuf.protoc.get().toString()
-    }
-    generateProtoTasks {
-        all().forEach { task ->
-            task.builtins {
-                register("java") {
-                    option("lite")
-                }
-                register("kotlin") {
-                    option("lite")
-                }
-            }
-        }
-    }
-}
-
 dependencies {
     implementation(project(":domain"))
     implementation(project(":database"))
+    implementation(project(":datastore"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.runtimeCompose)
     implementation(libs.androidx.lifecycle.viewModelCompose)
     implementation(libs.bundles.androidx.compose)
-    implementation(libs.bundles.androidx.dataStore)
     implementation(libs.bundles.koin)
     implementation(libs.bundles.kotlinx)
-    implementation(libs.protobuf.kotlin.lite)
     implementation(libs.vectorize)
 
     testImplementation(libs.junit)

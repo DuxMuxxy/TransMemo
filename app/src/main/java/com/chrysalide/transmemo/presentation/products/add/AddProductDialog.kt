@@ -100,8 +100,7 @@ private fun AddProductDialog(
                             .background(
                                 color = MaterialTheme.colorScheme.surfaceVariant,
                                 shape = MaterialTheme.shapes.small
-                            )
-                            .clickable { isMoleculeDropDownExtended = !isMoleculeDropDownExtended }
+                            ).clickable { isMoleculeDropDownExtended = !isMoleculeDropDownExtended }
                             .padding(horizontal = 16.dp, vertical = 8.dp)
                     ) {
                         Text(

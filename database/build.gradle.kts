@@ -23,6 +23,7 @@ android {
 
 dependencies {
     implementation(project(":domain"))
+    implementation(project(":datastore"))
 
     implementation(libs.bundles.koin)
     implementation(libs.bundles.kotlinx)

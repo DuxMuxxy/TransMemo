@@ -1,4 +1,4 @@
-package com.chrysalide.transmemo.core.usecase
+package com.chrysalide.transmemo.database.usecase
 
 import com.chrysalide.transmemo.database.helper.ImportDatabaseHelper
 import com.chrysalide.transmemo.domain.boundary.UserDataRepository

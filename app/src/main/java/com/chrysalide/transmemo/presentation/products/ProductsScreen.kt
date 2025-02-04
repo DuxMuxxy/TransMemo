@@ -86,7 +86,7 @@ fun ProductsScreen(
     if (showAddProductDialog) {
         AddProductDialog(
             onDismiss = { showAddProductDialog = false },
-            onAddedProduct = { /* show added product snackbar ? */}
+            onAddedProduct = { /* show added product snackbar ? */ }
         )
     }
 
@@ -192,8 +192,7 @@ private fun ProductCard(
                                         .background(
                                             color = MaterialTheme.colorScheme.surfaceVariant,
                                             shape = MaterialTheme.shapes.small
-                                        )
-                                        .clickable { isMoleculeDropDownExtended = !isMoleculeDropDownExtended }
+                                        ).clickable { isMoleculeDropDownExtended = !isMoleculeDropDownExtended }
                                         .padding(horizontal = 16.dp, vertical = 8.dp)
                                 ) {
                                     Text(
@@ -233,8 +232,7 @@ private fun ProductCard(
                                         .background(
                                             color = MaterialTheme.colorScheme.surfaceVariant,
                                             shape = MaterialTheme.shapes.small
-                                        )
-                                        .clickable { isUnitDropDownExtended = !isUnitDropDownExtended }
+                                        ).clickable { isUnitDropDownExtended = !isUnitDropDownExtended }
                                         .padding(horizontal = 16.dp, vertical = 8.dp)
                                 ) {
                                     Text(

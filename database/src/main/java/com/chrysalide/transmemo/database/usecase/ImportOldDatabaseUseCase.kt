@@ -1,4 +1,4 @@
-package com.chrysalide.transmemo.core.usecase
+package com.chrysalide.transmemo.database.usecase
 
 import android.net.Uri
 import com.chrysalide.transmemo.database.helper.ImportDatabaseHelper

@@ -8,8 +8,7 @@ import kotlinx.coroutines.launch
 
 class AddProductViewModel(
     private val databaseRepository: DatabaseRepository
-): ViewModel() {
-
+) : ViewModel() {
     fun addProduct(product: Product) {
         viewModelScope.launch {
             databaseRepository.insertProduct(product)
