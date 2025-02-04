@@ -1,0 +1,29 @@
+package com.chrysalide.transmemo.database.dao
+
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import com.chrysalide.transmemo.database.entity.WellbeingDBEntity
+
+@Dao
+interface WellbeingDao {
+    @Query("SELECT * FROM wellness")
+    suspend fun getAll(): List<WellbeingDBEntity>
+
+    @Query("SELECT * FROM wellness WHERE id = :id")
+    suspend fun getById(id: Long): WellbeingDBEntity
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(entity: WellbeingDBEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(entities: List<WellbeingDBEntity>)
+
+    @Delete
+    suspend fun delete(entity: WellbeingDBEntity)
+
+    @Query("DELETE FROM wellness")
+    suspend fun deleteAll()
+}

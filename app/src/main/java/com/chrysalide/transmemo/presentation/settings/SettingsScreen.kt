@@ -29,10 +29,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.chrysalide.transmemo.R.string
-import com.chrysalide.transmemo.core.model.DarkThemeConfig
-import com.chrysalide.transmemo.core.model.DarkThemeConfig.DARK
-import com.chrysalide.transmemo.core.model.DarkThemeConfig.FOLLOW_SYSTEM
-import com.chrysalide.transmemo.core.model.DarkThemeConfig.LIGHT
+import com.chrysalide.transmemo.domain.model.DarkThemeConfig
+import com.chrysalide.transmemo.domain.model.DarkThemeConfig.DARK
+import com.chrysalide.transmemo.domain.model.DarkThemeConfig.FOLLOW_SYSTEM
+import com.chrysalide.transmemo.domain.model.DarkThemeConfig.LIGHT
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.settings.SettingsUiState.Loading
 import com.chrysalide.transmemo.presentation.settings.SettingsUiState.UserEditableSettings

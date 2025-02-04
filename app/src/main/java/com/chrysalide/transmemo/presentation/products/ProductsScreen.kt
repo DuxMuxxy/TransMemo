@@ -59,7 +59,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.chrysalide.transmemo.R
 import com.chrysalide.transmemo.R.string
-import com.chrysalide.transmemo.core.model.entities.ProductEntity
+import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.extension.alertDelay
 import com.chrysalide.transmemo.presentation.extension.containerCapacity
@@ -100,7 +100,7 @@ fun ProductsScreen(
 @Composable
 private fun ProductsView(
     productsUiState: ProductsUiState,
-    saveProduct: (ProductEntity) -> Unit,
+    saveProduct: (Product) -> Unit,
     addProduct: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -142,8 +142,8 @@ private fun ProductsView(
 
 @Composable
 private fun ProductCard(
-    product: ProductEntity,
-    saveProduct: (ProductEntity) -> Unit
+    product: Product,
+    saveProduct: (Product) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     var isExtented by remember { mutableStateOf(false) }
@@ -512,7 +512,7 @@ private fun ProductsScreenListPreviews() {
         ProductsView(
             Products(
                 products = listOf(
-                    ProductEntity(
+                    Product(
                         name = "Testosterone",
                         molecule = 9,
                         unit = 4,

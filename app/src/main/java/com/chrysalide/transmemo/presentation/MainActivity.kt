@@ -15,7 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.chrysalide.transmemo.core.model.DarkThemeConfig
+import com.chrysalide.transmemo.domain.model.DarkThemeConfig
 import com.chrysalide.transmemo.presentation.MainActivityUiState.Loading
 import com.chrysalide.transmemo.presentation.MainActivityUiState.Success
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme

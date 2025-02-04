@@ -1,8 +1,8 @@
 package com.chrysalide.transmemo.core.datastore
 
 import androidx.datastore.core.DataStore
-import com.chrysalide.transmemo.core.model.DarkThemeConfig
-import com.chrysalide.transmemo.core.model.UserData
+import com.chrysalide.transmemo.domain.model.DarkThemeConfig
+import com.chrysalide.transmemo.domain.model.UserData
 import kotlinx.coroutines.flow.map
 
 class PreferencesDataSource(

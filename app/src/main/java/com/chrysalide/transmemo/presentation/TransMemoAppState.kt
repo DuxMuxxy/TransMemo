@@ -72,7 +72,7 @@ class TransMemoAppState(
 
             when (topLevelDestination) {
                 CALENDAR -> navController.navigateToCalendar(topLevelNavOptions)
-                TAKES -> {} // navController.navigateToTakes(topLevelNavOptions)
+                TAKES -> {} // navController.navigateToIntakes(topLevelNavOptions)
                 CONTAINERS -> {} // navController.navigateToContainers(topLevelNavOptions)
                 PRODUCTS -> navController.navigateToProducts(topLevelNavOptions)
                 WELLBEING -> {} // navController.navigateToWellbeing(topLevelNavOptions)

@@ -1,9 +1,9 @@
 package com.chrysalide.transmemo.core.usecase
 
 import android.net.Uri
-import com.chrysalide.transmemo.core.database.ImportDatabaseHelper
-import com.chrysalide.transmemo.core.repository.DatabaseRepository
-import com.chrysalide.transmemo.core.repository.UserDataRepository
+import com.chrysalide.transmemo.database.helper.ImportDatabaseHelper
+import com.chrysalide.transmemo.domain.boundary.DatabaseRepository
+import com.chrysalide.transmemo.domain.boundary.UserDataRepository
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
 

@@ -2,7 +2,7 @@ package com.chrysalide.transmemo.presentation.calendar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.chrysalide.transmemo.core.model.IncomingEvent
+import com.chrysalide.transmemo.domain.model.IncomingEvent
 import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.IncomingEvents
 import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.Loading
 import kotlinx.coroutines.delay

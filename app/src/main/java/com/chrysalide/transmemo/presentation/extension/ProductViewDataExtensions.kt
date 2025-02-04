@@ -4,25 +4,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringArrayResource
 import com.chrysalide.transmemo.R
-import com.chrysalide.transmemo.core.model.entities.ProductEntity
+import com.chrysalide.transmemo.domain.model.Product
 
 @Composable
-fun ProductEntity.moleculeName() = stringArrayResource(R.array.molecules)[molecule]
+fun Product.moleculeName() = stringArrayResource(R.array.molecules)[molecule]
 
 @Composable
-fun ProductEntity.dosePerIntake() = "$dosePerIntake ${unitName()}"
+fun Product.dosePerIntake() = "$dosePerIntake ${unitName()}"
 
 @Composable
-fun ProductEntity.containerCapacity() = "$capacity ${unitName()}"
+fun Product.containerCapacity() = "$capacity ${unitName()}"
 
 @Composable
-fun ProductEntity.intakeInterval() = pluralStringResource(R.plurals.global_days_text_template, intakeInterval, intakeInterval)
+fun Product.intakeInterval() = pluralStringResource(R.plurals.global_days_text_template, intakeInterval, intakeInterval)
 
 @Composable
-fun ProductEntity.expirationDate() = pluralStringResource(R.plurals.global_days_text_template, expirationDays, expirationDays)
+fun Product.expirationDate() = pluralStringResource(R.plurals.global_days_text_template, expirationDays, expirationDays)
 
 @Composable
-fun ProductEntity.alertDelay() = pluralStringResource(R.plurals.global_days_text_template, alertDelay, alertDelay)
+fun Product.alertDelay() = pluralStringResource(R.plurals.global_days_text_template, alertDelay, alertDelay)
 
 @Composable
-fun ProductEntity.unitName() = stringArrayResource(R.array.units)[unit]
+fun Product.unitName() = stringArrayResource(R.array.units)[unit]

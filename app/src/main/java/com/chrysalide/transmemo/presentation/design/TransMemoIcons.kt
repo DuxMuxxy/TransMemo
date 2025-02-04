@@ -2,7 +2,6 @@ package com.chrysalide.transmemo.presentation.design
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DateRange
-import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material.icons.rounded.Menu
@@ -22,8 +21,8 @@ object TransMemoIcons {
     val Menu = Icons.Rounded.Menu
     val Calendar = Icons.Rounded.DateRange
     val CalendarUnselected = Icons.Outlined.DateRange
-    val Takes = Images.Icons.Rounded.Vaccines
-    val TakesUnselected = Images.Icons.Outlined.Vaccines
+    val Intakes = Images.Icons.Rounded.Vaccines
+    val IntakesUnselected = Images.Icons.Outlined.Vaccines
     val Containers = Images.Icons.Rounded.Medication
     val ContainersUnselected = Images.Icons.Outlined.Medication
     val Products = Images.Icons.Rounded.Pill

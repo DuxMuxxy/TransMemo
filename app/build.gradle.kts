@@ -1,11 +1,11 @@
 import org.jmailen.gradle.kotlinter.tasks.FormatTask
 import org.jmailen.gradle.kotlinter.tasks.LintTask
+import kotlin.jvm.kotlin
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose)
-    alias(libs.plugins.ksp)
     alias(libs.plugins.protobuf)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlinter)
@@ -23,14 +23,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-            arg("room.generateKotlin", "true")
-        }
-
-        androidResources {
-            generateLocaleConfig = true
-        }
+        androidResources.generateLocaleConfig = true
     }
 
     buildTypes {
@@ -71,6 +64,9 @@ protobuf {
 }
 
 dependencies {
+    implementation(project(":domain"))
+    implementation(project(":database"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.runtimeCompose)
@@ -79,17 +75,11 @@ dependencies {
     implementation(libs.bundles.androidx.dataStore)
     implementation(libs.bundles.koin)
     implementation(libs.bundles.kotlinx)
-    implementation(libs.bundles.room)
     implementation(libs.protobuf.kotlin.lite)
-    ksp(libs.room.compiler)
     implementation(libs.vectorize)
 
     testImplementation(libs.junit)
     testImplementation(libs.koinTest)
-}
-
-tasks.named("generateImages").configure {
-    dependsOn("kspDebugKotlin")
 }
 
 tasks.withType<LintTask> {

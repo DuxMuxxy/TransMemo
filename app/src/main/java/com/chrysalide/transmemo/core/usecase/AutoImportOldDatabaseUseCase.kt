@@ -1,7 +1,7 @@
 package com.chrysalide.transmemo.core.usecase
 
-import com.chrysalide.transmemo.core.database.ImportDatabaseHelper
-import com.chrysalide.transmemo.core.repository.UserDataRepository
+import com.chrysalide.transmemo.database.helper.ImportDatabaseHelper
+import com.chrysalide.transmemo.domain.boundary.UserDataRepository
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
  */
 class AutoImportOldDatabaseUseCase(
     private val userDataRepository: UserDataRepository,
-    private val importDatabaseHelper: ImportDatabaseHelper,
+    private val importDatabaseHelper: ImportDatabaseHelper
 ) {
     suspend operator fun invoke() {
         coroutineScope {

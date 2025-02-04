@@ -29,8 +29,8 @@ enum class TopLevelDestination(
         baseRoute = CalendarBaseRoute::class
     ),
     TAKES(
-        selectedIcon = TransMemoIcons.Takes,
-        unselectedIcon = TransMemoIcons.TakesUnselected,
+        selectedIcon = TransMemoIcons.Intakes,
+        unselectedIcon = TransMemoIcons.IntakesUnselected,
         iconTextId = string.feature_intakes_title,
         titleTextId = string.feature_intakes_title,
         route = CalendarRoute::class,

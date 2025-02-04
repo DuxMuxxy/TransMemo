@@ -2,8 +2,8 @@ package com.chrysalide.transmemo.presentation.products
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.chrysalide.transmemo.core.model.entities.ProductEntity
-import com.chrysalide.transmemo.core.repository.DatabaseRepository
+import com.chrysalide.transmemo.domain.boundary.DatabaseRepository
+import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.presentation.products.ProductsUiState.Products
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -24,9 +24,9 @@ class ProductsViewModel(
             initialValue = ProductsUiState.Loading
         )
 
-    fun saveProduct(productEntity: ProductEntity) {
+    fun saveProduct(product: Product) {
         viewModelScope.launch {
-            databaseRepository.updateProduct(productEntity)
+            databaseRepository.updateProduct(product)
         }
     }
 }
@@ -35,6 +35,6 @@ sealed interface ProductsUiState {
     data object Loading : ProductsUiState
 
     data class Products(
-        val products: List<ProductEntity>
+        val products: List<Product>
     ) : ProductsUiState
 }

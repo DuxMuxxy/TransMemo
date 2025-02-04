@@ -2,9 +2,9 @@ package com.chrysalide.transmemo.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.chrysalide.transmemo.core.model.UserData
-import com.chrysalide.transmemo.core.repository.UserDataRepository
 import com.chrysalide.transmemo.core.usecase.AutoImportOldDatabaseUseCase
+import com.chrysalide.transmemo.domain.boundary.UserDataRepository
+import com.chrysalide.transmemo.domain.model.UserData
 import com.chrysalide.transmemo.presentation.MainActivityUiState.Loading
 import com.chrysalide.transmemo.presentation.MainActivityUiState.Success
 import kotlinx.coroutines.flow.SharingStarted

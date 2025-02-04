@@ -39,14 +39,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.chrysalide.transmemo.R
-import org.koin.androidx.compose.koinViewModel
 import com.chrysalide.transmemo.R.string
-import com.chrysalide.transmemo.core.model.entities.ProductEntity
+import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.extension.isValidIntegerValue
 import com.chrysalide.transmemo.presentation.extension.moleculeName
-import com.chrysalide.transmemo.presentation.extension.unitName
 import com.chrysalide.transmemo.presentation.products.SwitchRow
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AddProductDialog(
@@ -66,10 +65,10 @@ fun AddProductDialog(
 @Composable
 private fun AddProductDialog(
     onDismiss: () -> Unit,
-    addProduct: (ProductEntity) -> Unit
+    addProduct: (Product) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
-    var product by remember { mutableStateOf(ProductEntity.default()) }
+    var product by remember { mutableStateOf(Product.default()) }
     var intakePeriodicityValue by remember { mutableStateOf(product.intakeInterval.toString()) }
     val isIntakePeriodicityValid = intakePeriodicityValue.isValidIntegerValue()
 
