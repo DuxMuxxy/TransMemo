@@ -1,13 +1,11 @@
 package com.chrysalide.transmemo.presentation.extension
 
 import androidx.compose.runtime.Composable
+import com.chrysalide.transmemo.domain.extension.formatToSystemDate
 import com.chrysalide.transmemo.domain.model.Container
 import kotlinx.datetime.DatePeriod
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
-import kotlinx.datetime.toJavaLocalDate
-import kotlinx.datetime.toLocalDateTime
+import kotlin.math.roundToInt
 
 fun Container.productName() = product.name
 
@@ -29,3 +27,10 @@ fun Container.remainingCapacity() = "${(product.capacity - usedCapacity).stripTr
 fun Container.openDate() = openDate.formatToSystemDate()
 
 fun Container.expirationDate() = openDate.plus(DatePeriod(days = product.expirationDays)).formatToSystemDate()
+
+fun Container.emptyDate(): String {
+    val remainingCapacity = product.capacity - usedCapacity
+    val remainingIntakes = (remainingCapacity / product.dosePerIntake).roundToInt()
+    val emptyDate = openDate.plus(DatePeriod(days = remainingIntakes * product.intakeInterval))
+    return emptyDate.formatToSystemDate()
+}

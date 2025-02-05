@@ -5,9 +5,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.chrysalide.transmemo.R.string
 import com.chrysalide.transmemo.presentation.calendar.CalendarBaseRoute
 import com.chrysalide.transmemo.presentation.calendar.CalendarRoute
-import com.chrysalide.transmemo.presentation.containers.ContainersBaseRoute
-import com.chrysalide.transmemo.presentation.containers.ContainersRoute
 import com.chrysalide.transmemo.presentation.design.TransMemoIcons
+import com.chrysalide.transmemo.presentation.inventory.InventoryBaseRoute
+import com.chrysalide.transmemo.presentation.inventory.InventoryRoute
 import com.chrysalide.transmemo.presentation.products.ProductsBaseRoute
 import com.chrysalide.transmemo.presentation.products.ProductsRoute
 import com.chrysalide.transmemo.presentation.settings.SettingsBaseRoute
@@ -38,13 +38,13 @@ enum class TopLevelDestination(
         route = CalendarRoute::class,
         baseRoute = CalendarBaseRoute::class
     ),
-    CONTAINERS(
-        selectedIcon = TransMemoIcons.Containers,
-        unselectedIcon = TransMemoIcons.ContainersUnselected,
-        iconTextId = string.feature_containers_title,
-        titleTextId = string.feature_containers_title,
-        route = ContainersRoute::class,
-        baseRoute = ContainersBaseRoute::class
+    INVENTORY(
+        selectedIcon = TransMemoIcons.Inventory,
+        unselectedIcon = TransMemoIcons.InventoryUnselected,
+        iconTextId = string.feature_inventory_title,
+        titleTextId = string.feature_inventory_title,
+        route = InventoryRoute::class,
+        baseRoute = InventoryBaseRoute::class
     ),
     PRODUCTS(
         selectedIcon = TransMemoIcons.Products,

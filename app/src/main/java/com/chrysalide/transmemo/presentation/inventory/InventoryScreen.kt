@@ -1,5 +1,6 @@
-package com.chrysalide.transmemo.presentation.containers
+package com.chrysalide.transmemo.presentation.inventory
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -16,10 +17,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.KeyboardArrowDown
+import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,37 +42,41 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.chrysalide.transmemo.R.string
 import com.chrysalide.transmemo.domain.model.Container
+import com.chrysalide.transmemo.domain.model.ContainerState
 import com.chrysalide.transmemo.domain.model.MeasureUnit
 import com.chrysalide.transmemo.domain.model.Molecule
 import com.chrysalide.transmemo.domain.model.Product
-import com.chrysalide.transmemo.presentation.containers.ContainersUiState.Containers
-import com.chrysalide.transmemo.presentation.containers.ContainersUiState.Loading
 import com.chrysalide.transmemo.presentation.design.LinearProgressBar
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.extension.capacity
+import com.chrysalide.transmemo.presentation.extension.emptyDate
 import com.chrysalide.transmemo.presentation.extension.expirationDate
 import com.chrysalide.transmemo.presentation.extension.moleculeName
 import com.chrysalide.transmemo.presentation.extension.openDate
 import com.chrysalide.transmemo.presentation.extension.productName
 import com.chrysalide.transmemo.presentation.extension.remainingCapacity
 import com.chrysalide.transmemo.presentation.extension.usedCapacity
+import com.chrysalide.transmemo.presentation.inventory.InventoryUiState.Containers
+import com.chrysalide.transmemo.presentation.inventory.InventoryUiState.Loading
+import com.chrysalide.transmemo.presentation.inventory.recycle.AskRecycleContainerDialog
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 import dev.sergiobelda.compose.vectorize.images.Images
-import dev.sergiobelda.compose.vectorize.images.icons.rounded.Medication
+import dev.sergiobelda.compose.vectorize.images.icons.outlined.Inventory
+import dev.sergiobelda.compose.vectorize.images.icons.outlined.Recycling
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ContainersScreen(
+fun InventoryScreen(
     viewModel: ContainersViewModel = koinViewModel(),
     onShowSnackbar: suspend (String, String?) -> Boolean
 ) {
-    val containersUiState by viewModel.containersUiState.collectAsStateWithLifecycle()
+    val containersUiState by viewModel.inventoryUiState.collectAsStateWithLifecycle()
     var showRecycleContainerDialog by remember { mutableStateOf(false) }
     var showRecycleSuccessSnackbar by remember { mutableStateOf(false) }
     var containerToRecycle by remember { mutableStateOf<Container?>(null) }
 
-    /*if (showRecycleContainerDialog) {
+    if (showRecycleContainerDialog) {
         AskRecycleContainerDialog(
             onDismiss = {
                 containerToRecycle = null
@@ -81,15 +90,15 @@ fun ContainersScreen(
         )
     }
 
-    val recycleContainerSuccessText = stringResource(string.feature_containers_recycle_success)
+    val recycleContainerSuccessText = stringResource(string.feature_inventory_recycle_success)
     LaunchedEffect(showRecycleSuccessSnackbar) {
         if (showRecycleSuccessSnackbar) {
             onShowSnackbar(recycleContainerSuccessText, null)
             showRecycleSuccessSnackbar = false
         }
-    }*/
+    }
 
-    ContainersView(
+    InventoryView(
         containersUiState,
         recycleContainer = {
             containerToRecycle = it
@@ -99,8 +108,8 @@ fun ContainersScreen(
 }
 
 @Composable
-private fun ContainersView(
-    containersUiState: ContainersUiState,
+private fun InventoryView(
+    containersUiState: InventoryUiState,
     recycleContainer: (Container) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -123,7 +132,7 @@ private fun ContainersView(
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                             // Replace by an illustration ?
                             Icon(
-                                Images.Icons.Rounded.Medication,
+                                Images.Icons.Outlined.Inventory,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primaryContainer,
                                 modifier = Modifier.size(120.dp)
@@ -148,50 +157,90 @@ private fun ContainerCard(
     container: Container,
     recycleContainer: (Container) -> Unit
 ) {
-    Card(modifier = Modifier.fillMaxWidth()) {
+    var isExtented by remember { mutableStateOf(false) }
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        onClick = { isExtented = !isExtented }
+    ) {
         Column {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(24.dp)
             ) {
-                Text(container.productName(), style = MaterialTheme.typography.headlineMedium)
-                Text(container.moleculeName(), style = MaterialTheme.typography.titleMedium)
-                Spacer(modifier = Modifier.height(16.dp))
+                Row {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(container.productName(), style = MaterialTheme.typography.headlineMedium)
+                        Text(container.moleculeName(), style = MaterialTheme.typography.titleMedium)
+                    }
+                    val recycleButtonContentDescription = stringResource(string.feature_inventory_recycle_button_content_description)
+                    IconButton(onClick = { recycleContainer(container) }, modifier = Modifier.padding(start = 8.dp)) {
+                        Icon(Images.Icons.Outlined.Recycling, contentDescription = recycleButtonContentDescription)
+                    }
+                }
 
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Text(stringResource(string.feature_containers_open_date))
-                    HorizontalDivider(
-                        modifier = Modifier
-                            .weight(1f)
-                            .align(Alignment.CenterVertically)
-                            .padding(horizontal = 24.dp)
-                    )
-                    Text(container.openDate())
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Text(stringResource(string.feature_containers_expiration_date))
-                    HorizontalDivider(
-                        modifier = Modifier
-                            .weight(1f)
-                            .align(Alignment.CenterVertically)
-                            .padding(horizontal = 24.dp)
-                    )
-                    Text(container.expirationDate())
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Text(stringResource(string.feature_containers_total_capacity))
-                    HorizontalDivider(
-                        modifier = Modifier
-                            .weight(1f)
-                            .align(Alignment.CenterVertically)
-                            .padding(horizontal = 24.dp)
-                    )
-                    Text(container.capacity())
+                AnimatedVisibility(isExtented) {
+                    Column {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(stringResource(string.feature_inventory_open_date))
+                            HorizontalDivider(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .align(Alignment.CenterVertically)
+                                    .padding(horizontal = 24.dp)
+                            )
+                            Text(container.openDate())
+                        }
+
+                        if (container.product.expirationDays > 0) {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Row(modifier = Modifier.fillMaxWidth()) {
+                                Text(stringResource(string.feature_inventory_expiration_date))
+                                HorizontalDivider(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .align(Alignment.CenterVertically)
+                                        .padding(horizontal = 24.dp),
+                                )
+                                Text(container.expirationDate())
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(stringResource(string.feature_inventory_empty_date))
+                            HorizontalDivider(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .align(Alignment.CenterVertically)
+                                    .padding(horizontal = 24.dp)
+                            )
+                            Text(container.emptyDate())
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text(stringResource(string.feature_inventory_total_capacity))
+                            HorizontalDivider(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .align(Alignment.CenterVertically)
+                                    .padding(horizontal = 24.dp)
+                            )
+                            Text(container.capacity())
+                        }
+                    }
                 }
             }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                val icon = if (isExtented) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown
+                Icon(icon, contentDescription = null)
+            }
+            Spacer(modifier = Modifier.height(16.dp))
             HorizontalDivider()
             Box {
                 var progress by remember { mutableFloatStateOf(1F) }
@@ -216,7 +265,7 @@ private fun ContainerCard(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            stringResource(string.feature_containers_remaining_capacity),
+                            stringResource(string.feature_inventory_remaining_capacity),
                             color = MaterialTheme.colorScheme.onPrimary
                         )
                         Text(
@@ -230,7 +279,7 @@ private fun ContainerCard(
                         horizontalAlignment = Alignment.End
                     ) {
                         Text(
-                            stringResource(string.feature_containers_used_capacity),
+                            stringResource(string.feature_inventory_used_capacity),
                             color = MaterialTheme.colorScheme.onSecondaryContainer
                         )
                         Text(
@@ -248,23 +297,23 @@ private fun ContainerCard(
 
 @ThemePreviews
 @Composable
-private fun ContainersScreenLoadingPreviews() {
+private fun InventoryScreenLoadingPreviews() {
     TransMemoTheme {
-        ContainersView(Loading, {})
+        InventoryView(Loading, {})
     }
 }
 
 @ThemePreviews
 @Composable
-private fun ContainersScreenListPreviews() {
+private fun InventoryScreenListPreviews() {
     TransMemoTheme {
-        ContainersView(
+        InventoryView(
             Containers(
                 containers = listOf(
                     Container(
                         usedCapacity = 3f,
                         openDate = LocalDate(2020, 4, 5),
-                        state = 2,
+                        state = ContainerState.OPEN,
                         product = Product(
                             name = "Testosterone",
                             molecule = Molecule.TESTOSTERONE,

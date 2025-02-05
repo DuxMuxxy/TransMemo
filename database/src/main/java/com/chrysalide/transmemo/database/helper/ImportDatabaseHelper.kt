@@ -9,7 +9,6 @@ import android.util.Log
 import com.chrysalide.transmemo.database.di.DATABASE_NAME
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_CAPACITE_UTILISEE
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_DATE_OUVERTURE
-import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_DATE_PEREMPTION
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_ETAT
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_IDCONTENANT
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_IDPRODUIT
@@ -47,6 +46,7 @@ import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.W
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.WELLNESS_TABLE_NAME
 import com.chrysalide.transmemo.domain.boundary.DatabaseRepository
 import com.chrysalide.transmemo.domain.model.Container
+import com.chrysalide.transmemo.domain.model.ContainerState
 import com.chrysalide.transmemo.domain.model.Intake
 import com.chrysalide.transmemo.domain.model.MeasureUnit
 import com.chrysalide.transmemo.domain.model.Molecule
@@ -227,7 +227,7 @@ class ImportDatabaseHelper(
         product = Product.default().copy(id = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_IDPRODUIT)) + 1),
         usedCapacity = getFloat(getColumnIndexOrThrow(CONTAINERS_COLUMN_CAPACITE_UTILISEE)),
         openDate = getLong(getColumnIndexOrThrow(CONTAINERS_COLUMN_DATE_OUVERTURE)).toLocalDate(),
-        state = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_ETAT))
+        state = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_ETAT)).toContainerState()
     )
 
     private fun Cursor.toIntake() = Intake(
@@ -300,5 +300,10 @@ class ImportDatabaseHelper(
         val instant = Instant.fromEpochMilliseconds(this)
         val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
         return localDateTime.date
+    }
+
+    private fun Int.toContainerState() = when (this) {
+        0, 1, 2 -> ContainerState.OPEN
+        else -> ContainerState.EMPTY
     }
 }

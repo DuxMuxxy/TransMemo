@@ -84,7 +84,7 @@ import com.chrysalide.transmemo.presentation.products.add.AddProductDialog
 import com.chrysalide.transmemo.presentation.products.delete.AskDeleteProductDialog
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 import dev.sergiobelda.compose.vectorize.images.Images
-import dev.sergiobelda.compose.vectorize.images.icons.rounded.Pill
+import dev.sergiobelda.compose.vectorize.images.icons.rounded.Medication
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -173,7 +173,7 @@ private fun ProductsView(
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                             // Replace by an illustration ?
                             Icon(
-                                Images.Icons.Rounded.Pill,
+                                Images.Icons.Rounded.Medication,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primaryContainer,
                                 modifier = Modifier.size(120.dp)
@@ -225,7 +225,7 @@ private fun ProductCard(
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        onClick = { isExtented = !isExtented },
+        onClick = { isExtented = !isExtented }
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
             AnimatedContent(isEditing) { isBeingEdited ->

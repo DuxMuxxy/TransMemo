@@ -13,6 +13,7 @@ import com.chrysalide.transmemo.database.entity.WellbeingDBEntity
 import com.chrysalide.transmemo.database.entity.relation.ContainerWithProductDBEntity
 import com.chrysalide.transmemo.domain.boundary.DatabaseRepository
 import com.chrysalide.transmemo.domain.model.Container
+import com.chrysalide.transmemo.domain.model.ContainerState
 import com.chrysalide.transmemo.domain.model.Intake
 import com.chrysalide.transmemo.domain.model.Note
 import com.chrysalide.transmemo.domain.model.Product
@@ -28,45 +29,59 @@ internal class RoomDatabaseRepository(
     private val intakeDao: IntakeDao,
     private val wellbeingDao: WellbeingDao,
 ) : DatabaseRepository {
-    override suspend fun insertContainers(containers: List<Container>) = insertDBContainers(containers.toContainerEntities())
+    override suspend fun insertContainers(containers: List<Container>) = containerDao.insertAll(containers.toContainerEntities())
 
-    suspend fun insertDBContainers(containers: List<ContainerDBEntity>) = containerDao.insertAll(containers)
+    override suspend fun insertIntakes(intakes: List<Intake>) = intakeDao.insertAll(intakes.toIntakeEntities())
 
-    override suspend fun insertIntakes(intakes: List<Intake>) = insertDBIntakes(intakes.toIntakeEntities())
+    override suspend fun insertProducts(products: List<Product>) = productDao.insertAll(products.toProductEntities())
 
-    suspend fun insertDBIntakes(intakes: List<IntakeDBEntity>) = intakeDao.insertAll(intakes)
+    override suspend fun insertWellbeings(wellbeings: List<Wellbeing>) = wellbeingDao.insertAll(wellbeings.toWellbeingEntities())
 
-    override suspend fun insertProducts(products: List<Product>) = insertDBProducts(products.toProductEntities())
-
-    suspend fun insertDBProducts(products: List<ProductDBEntity>) = productDao.insertAll(products)
-
-    override suspend fun insertWellbeings(wellbeings: List<Wellbeing>) = insertDBWellbeings(wellbeings.toWellbeingEntities())
-
-    suspend fun insertDBWellbeings(wellbeings: List<WellbeingDBEntity>) = wellbeingDao.insertAll(wellbeings)
-
-    override suspend fun insertNotes(notes: List<Note>) = insertDBNotes(notes.toNoteEntities())
-
-    suspend fun insertDBNotes(notes: List<NoteDBEntity>) = noteDao.insertAll(notes)
+    override suspend fun insertNotes(notes: List<Note>) = noteDao.insertAll(notes.toNoteEntities())
 
     override suspend fun deleteAllData() {
         containerDao.deleteAll()
         noteDao.deleteAll()
         productDao.deleteAll()
+        productDao.deletePrimaryKeyIndex()
         intakeDao.deleteAll()
         wellbeingDao.deleteAll()
     }
 
     override fun getAllProducts(): Flow<List<Product>> = productDao.getAll().map { it.toProducts() }
 
-    override suspend fun updateProduct(product: Product) = productDao.update(product.toProductEntity())
+    override suspend fun updateProduct(product: Product) {
+        val wasNotInUse = !productDao.getBy(product.id).inUse
+        val updatedProductIsInUse = !productDao.getBy(product.id).inUse
+        productDao.update(product.toProductEntity())
+        if (wasNotInUse && updatedProductIsInUse) {
+            insertNewContainerForProduct(product)
+        }
+    }
 
-    override suspend fun insertProduct(product: Product) = productDao.insert(product.toProductEntity())
+    override suspend fun insertProduct(product: Product) {
+        productDao.insert(product.toProductEntity())
+        insertNewContainerForProduct(product)
+    }
 
     override suspend fun deleteProduct(product: Product) = productDao.delete(product.toProductEntity())
 
     override fun getAllContainers(): Flow<List<Container>> = containerDao.getAll().map { it.toContainers() }
 
     override suspend fun deleteContainer(container: Container) = containerDao.delete(container.toContainerEntity())
+
+    override suspend fun updateContainer(container: Container) = containerDao.update(container.toContainerEntity())
+
+    override suspend fun recycleContainer(container: Container) {
+        containerDao.update(container.copy(state = ContainerState.EMPTY).toContainerEntity())
+        containerDao.insert(Container.new(container.product).toContainerEntity())
+    }
+
+    private suspend fun insertNewContainerForProduct(product: Product) {
+        if (!containerDao.existsForProduct(product.id)) {
+            containerDao.insert(Container.new(product).toContainerEntity())
+        }
+    }
 
     private fun List<ProductDBEntity>.toProducts() = map { it.toProduct() }
 

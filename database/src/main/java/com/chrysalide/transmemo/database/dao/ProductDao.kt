@@ -33,4 +33,7 @@ interface ProductDao {
 
     @Update
     suspend fun update(productDBEntity: ProductDBEntity)
+
+    @Query("DELETE FROM sqlite_sequence WHERE name = 'products'")
+    suspend fun deletePrimaryKeyIndex()
 }

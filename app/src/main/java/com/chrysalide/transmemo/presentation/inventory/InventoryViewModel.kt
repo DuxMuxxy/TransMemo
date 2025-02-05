@@ -1,10 +1,11 @@
-package com.chrysalide.transmemo.presentation.containers
+package com.chrysalide.transmemo.presentation.inventory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chrysalide.transmemo.domain.boundary.DatabaseRepository
 import com.chrysalide.transmemo.domain.model.Container
-import com.chrysalide.transmemo.presentation.containers.ContainersUiState.Containers
+import com.chrysalide.transmemo.domain.model.ContainerState
+import com.chrysalide.transmemo.presentation.inventory.InventoryUiState.Containers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -15,26 +16,28 @@ import kotlin.time.Duration.Companion.seconds
 class ContainersViewModel(
     private val databaseRepository: DatabaseRepository
 ) : ViewModel() {
-    val containersUiState: StateFlow<ContainersUiState> = databaseRepository
+    val inventoryUiState: StateFlow<InventoryUiState> = databaseRepository
         .getAllContainers()
-        .map(::Containers)
+        .map {
+            it.filter { container -> container.product.inUse && container.state == ContainerState.OPEN }
+        }.map(::Containers)
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5.seconds.inWholeMilliseconds),
-            initialValue = ContainersUiState.Loading
+            initialValue = InventoryUiState.Loading
         )
 
-    fun deleteContainer(container: Container) {
+    fun recycleContainer(container: Container) {
         viewModelScope.launch {
-            databaseRepository.deleteContainer(container)
+            databaseRepository.recycleContainer(container)
         }
     }
 }
 
-sealed interface ContainersUiState {
-    data object Loading : ContainersUiState
+sealed interface InventoryUiState {
+    data object Loading : InventoryUiState
 
     data class Containers(
         val containers: List<Container>
-    ) : ContainersUiState
+    ) : InventoryUiState
 }

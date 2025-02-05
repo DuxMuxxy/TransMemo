@@ -1,31 +1,31 @@
-package com.chrysalide.transmemo.presentation.products.delete
+package com.chrysalide.transmemo.presentation.inventory.recycle
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.chrysalide.transmemo.R.string
+import com.chrysalide.transmemo.R
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 
 @Composable
-fun AskDeleteProductDialog(
+fun AskRecycleContainerDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(string.feature_products_delete_dialog_title)) },
-        text = { Text(stringResource(string.feature_products_delete_dialog_text)) },
+        title = { Text(stringResource(R.string.feature_inventory_recycle_dialog_title)) },
+        text = { Text(stringResource(R.string.feature_inventory_recycle_dialog_text)) },
         confirmButton = {
             TextButton(onClick = onConfirm) {
-                Text(text = stringResource(string.global_confirm))
+                Text(text = stringResource(R.string.global_confirm))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(text = stringResource(string.global_cancel))
+                Text(text = stringResource(R.string.global_cancel))
             }
         }
     )
@@ -33,8 +33,8 @@ fun AskDeleteProductDialog(
 
 @ThemePreviews
 @Composable
-private fun AskDeleteProductDialogPreview() {
+private fun AskRecycleContainerDialogPreview() {
     TransMemoTheme {
-        AskDeleteProductDialog({}, {})
+        AskRecycleContainerDialog({}, {})
     }
 }

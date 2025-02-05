@@ -31,4 +31,8 @@ interface DatabaseRepository {
     fun getAllContainers(): Flow<List<Container>>
 
     suspend fun deleteContainer(container: Container)
+
+    suspend fun updateContainer(container: Container)
+
+    suspend fun recycleContainer(container: Container)
 }

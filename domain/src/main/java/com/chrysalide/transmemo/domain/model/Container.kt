@@ -1,5 +1,6 @@
 package com.chrysalide.transmemo.domain.model
 
+import com.chrysalide.transmemo.domain.extension.getCurrentLocalDate
 import kotlinx.datetime.LocalDate
 
 data class Container(
@@ -7,5 +8,14 @@ data class Container(
     val product: Product,
     val usedCapacity: Float,
     val openDate: LocalDate,
-    val state: Int
-)
+    val state: ContainerState
+) {
+    companion object {
+        fun new(product: Product) = Container(
+            product = product,
+            usedCapacity = 0f,
+            openDate = getCurrentLocalDate(),
+            state = ContainerState.OPEN
+        )
+    }
+}

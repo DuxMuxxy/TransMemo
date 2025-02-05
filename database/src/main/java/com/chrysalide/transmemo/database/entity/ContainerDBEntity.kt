@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.chrysalide.transmemo.domain.model.ContainerState
 import kotlinx.datetime.LocalDate
 
 @Entity(
@@ -24,5 +25,5 @@ data class ContainerDBEntity(
     val productId: Int,
     val usedCapacity: Float,
     val openDate: LocalDate,
-    val state: Int
+    val state: ContainerState
 )

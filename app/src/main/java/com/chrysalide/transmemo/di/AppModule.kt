@@ -2,7 +2,7 @@ package com.chrysalide.transmemo.di
 
 import com.chrysalide.transmemo.presentation.MainActivityViewModel
 import com.chrysalide.transmemo.presentation.calendar.CalendarViewModel
-import com.chrysalide.transmemo.presentation.containers.ContainersViewModel
+import com.chrysalide.transmemo.presentation.inventory.ContainersViewModel
 import com.chrysalide.transmemo.presentation.products.ProductsViewModel
 import com.chrysalide.transmemo.presentation.products.add.AddProductViewModel
 import com.chrysalide.transmemo.presentation.settings.SettingsViewModel

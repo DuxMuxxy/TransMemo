@@ -6,4 +6,4 @@ fun String.isValidIntegerValue() = isNotBlank() && isDigitsOnly()
 
 fun String.isValidDecimalValue() = isNotBlank() && matches("^[0-9]+(\\.[0-9]+)?$".toRegex())
 
-fun Float.stripTrailingZeros() = toBigDecimal().stripTrailingZeros().toPlainString()
+fun Float.stripTrailingZeros(): String = toBigDecimal().stripTrailingZeros().toPlainString()

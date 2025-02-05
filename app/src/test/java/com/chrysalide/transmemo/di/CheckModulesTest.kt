@@ -1,5 +1,7 @@
 package com.chrysalide.transmemo.di
 
+import com.chrysalide.transmemo.database.di.databaseModule
+import com.chrysalide.transmemo.datastore.di.dataStoreModule
 import org.junit.Test
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.test.KoinTest
@@ -9,6 +11,6 @@ class CheckModulesTest : KoinTest {
     @OptIn(KoinExperimentalAPI::class)
     @Test
     fun checkAllModules() {
-        appModule.verifyAll()
+        (appModule + databaseModule + dataStoreModule).verifyAll()
     }
 }
