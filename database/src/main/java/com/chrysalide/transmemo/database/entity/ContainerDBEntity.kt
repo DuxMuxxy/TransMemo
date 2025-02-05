@@ -1,20 +1,28 @@
 package com.chrysalide.transmemo.database.entity
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.chrysalide.transmemo.domain.model.MeasureUnit
+import kotlinx.datetime.LocalDate
 
 @Entity(
-    tableName = "containers"
+    tableName = "containers",
+    foreignKeys = [
+        ForeignKey(
+            entity = ProductDBEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["productId"],
+            onDelete = ForeignKey.CASCADE // Do we use cascade or something else ?
+        )
+    ],
+    indices = [Index("productId", name = "containers_productId_index")]
 )
 data class ContainerDBEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val productId: Int,
-    val unit: MeasureUnit,
-    val remainingCapacity: Float,
     val usedCapacity: Float,
-    val openDate: Int,
-    val expirationDate: Int,
+    val openDate: LocalDate,
     val state: Int
 )

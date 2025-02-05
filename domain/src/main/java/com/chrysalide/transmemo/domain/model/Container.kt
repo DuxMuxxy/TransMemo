@@ -1,12 +1,11 @@
 package com.chrysalide.transmemo.domain.model
 
+import kotlinx.datetime.LocalDate
+
 data class Container(
     val id: Int = 0,
-    val productId: Int,
-    val unit: MeasureUnit,
-    val remainingCapacity: Float,
+    val product: Product,
     val usedCapacity: Float,
-    val openDate: Int,
-    val expirationDate: Int,
+    val openDate: LocalDate,
     val state: Int
 )

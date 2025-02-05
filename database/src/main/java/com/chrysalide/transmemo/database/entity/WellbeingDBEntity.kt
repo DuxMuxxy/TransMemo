@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "wellness"
+    tableName = "wellbeing"
 )
 data class WellbeingDBEntity(
     @PrimaryKey(autoGenerate = true)

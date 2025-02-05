@@ -9,10 +9,10 @@ import com.chrysalide.transmemo.database.entity.WellbeingDBEntity
 
 @Dao
 interface WellbeingDao {
-    @Query("SELECT * FROM wellness")
+    @Query("SELECT * FROM wellbeing")
     suspend fun getAll(): List<WellbeingDBEntity>
 
-    @Query("SELECT * FROM wellness WHERE id = :id")
+    @Query("SELECT * FROM wellbeing WHERE id = :id")
     suspend fun getById(id: Long): WellbeingDBEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -24,6 +24,6 @@ interface WellbeingDao {
     @Delete
     suspend fun delete(entity: WellbeingDBEntity)
 
-    @Query("DELETE FROM wellness")
+    @Query("DELETE FROM wellbeing")
     suspend fun deleteAll()
 }

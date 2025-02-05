@@ -7,14 +7,12 @@ import android.database.sqlite.SQLiteException
 import android.net.Uri
 import android.util.Log
 import com.chrysalide.transmemo.database.di.DATABASE_NAME
-import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_CAPACITE_RESTANTE
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_CAPACITE_UTILISEE
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_DATE_OUVERTURE
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_DATE_PEREMPTION
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_ETAT
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_IDCONTENANT
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_IDPRODUIT
-import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_UNITE
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.CONTAINERS_TABLE_NAME
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.LEGACY_DATABASE_NAME
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.NOTES_COLUMN_DATE
@@ -57,6 +55,10 @@ import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.domain.model.Wellbeing
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import java.io.File
 import java.io.FileOutputStream
 
@@ -64,7 +66,7 @@ private const val TMP_DATABASE_NAME = "tmp_database.db"
 
 class ImportDatabaseHelper(
     private val context: Context,
-    private val databaseRepository: DatabaseRepository
+    private val databaseRepository: DatabaseRepository,
 ) {
     suspend fun copyFileToInternalStorage(fileUri: Uri) = withContext(Dispatchers.IO) {
         val destinationFile = File(context.getDatabasePath(DATABASE_NAME).parentFile, TMP_DATABASE_NAME)
@@ -121,9 +123,9 @@ class ImportDatabaseHelper(
         context.getDatabasePath(LEGACY_DATABASE_NAME).renameTo(tmpDBFile)
         val legacyDatabaseHelper = LegacyDatabaseHelper(context, TMP_DATABASE_NAME)
         with(legacyDatabaseHelper.readableDatabase) {
+            copyProducts()
             copyContainers()
             copyIntakes()
-            copyProducts()
             copyWellbeing()
             copyNotes()
             close()
@@ -222,13 +224,10 @@ class ImportDatabaseHelper(
 
     private fun Cursor.toContainer() = Container(
         id = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_IDCONTENANT)),
-        productId = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_IDPRODUIT)),
-        unit = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_UNITE)).toUnit(),
-        remainingCapacity = getFloat(getColumnIndexOrThrow(CONTAINERS_COLUMN_CAPACITE_RESTANTE)),
+        product = Product.default().copy(id = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_IDPRODUIT)) + 1),
         usedCapacity = getFloat(getColumnIndexOrThrow(CONTAINERS_COLUMN_CAPACITE_UTILISEE)),
-        openDate = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_DATE_OUVERTURE)),
-        expirationDate = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_DATE_PEREMPTION)),
-        state = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_ETAT)),
+        openDate = getLong(getColumnIndexOrThrow(CONTAINERS_COLUMN_DATE_OUVERTURE)).toLocalDate(),
+        state = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_ETAT))
     )
 
     private fun Cursor.toIntake() = Intake(
@@ -240,7 +239,7 @@ class ImportDatabaseHelper(
         plannedDate = getInt(getColumnIndexOrThrow(TAKES_COLUMN_DATE_PREVUE)),
         realDate = getInt(getColumnIndexOrThrow(TAKES_COLUMN_DATE_REELLE)),
         plannedSide = getInt(getColumnIndexOrThrow(TAKES_COLUMN_COTE_PREVU)),
-        realSide = getInt(getColumnIndexOrThrow(TAKES_COLUMN_COTE_REEL)),
+        realSide = getInt(getColumnIndexOrThrow(TAKES_COLUMN_COTE_REEL))
     )
 
     private fun Cursor.toProduct() = Product(
@@ -255,18 +254,18 @@ class ImportDatabaseHelper(
         alertDelay = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_DELAI_ALERTE)),
         handleSide = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_GESTION_COTE)) == 1,
         inUse = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_ETAT)) == 2,
-        notifications = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_NOTIFICATIONS)),
+        notifications = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_NOTIFICATIONS))
     )
 
     private fun Cursor.toWellbeing() = Wellbeing(
         date = getInt(getColumnIndexOrThrow(WELLNESS_COLUMN_DATE)),
         criteriaId = getInt(getColumnIndexOrThrow(WELLNESS_COLUMN_IDCRITERE)),
-        value = getFloat(getColumnIndexOrThrow(WELLNESS_COLUMN_VALEUR)),
+        value = getFloat(getColumnIndexOrThrow(WELLNESS_COLUMN_VALEUR))
     )
 
     private fun Cursor.toNote() = Note(
         date = getInt(getColumnIndexOrThrow(NOTES_COLUMN_DATE)),
-        text = getString(getColumnIndexOrThrow(NOTES_COLUMN_NOTES)),
+        text = getString(getColumnIndexOrThrow(NOTES_COLUMN_NOTES))
     )
 
     private fun Int.toMolecule() = when (this) {
@@ -295,5 +294,11 @@ class ImportDatabaseHelper(
         5 -> MeasureUnit.PATCH
         6 -> MeasureUnit.PUMP
         else -> MeasureUnit.OTHER
+    }
+
+    private fun Long.toLocalDate(): LocalDate {
+        val instant = Instant.fromEpochMilliseconds(this)
+        val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+        return localDateTime.date
     }
 }

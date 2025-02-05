@@ -5,15 +5,16 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.chrysalide.transmemo.database.entity.ContainerDBEntity
+import com.chrysalide.transmemo.database.entity.relation.ContainerWithProductDBEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ContainerDao {
+    @Transaction
     @Query("SELECT * FROM containers")
-    suspend fun getAll(): List<ContainerDBEntity>
-
-    @Query("SELECT * FROM containers WHERE id = :id")
-    suspend fun getById(id: Int): ContainerDBEntity
+    fun getAll(): Flow<List<ContainerWithProductDBEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(container: ContainerDBEntity)

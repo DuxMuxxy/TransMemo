@@ -10,6 +10,7 @@ import com.chrysalide.transmemo.database.entity.IntakeDBEntity
 import com.chrysalide.transmemo.database.entity.NoteDBEntity
 import com.chrysalide.transmemo.database.entity.ProductDBEntity
 import com.chrysalide.transmemo.database.entity.WellbeingDBEntity
+import com.chrysalide.transmemo.database.entity.relation.ContainerWithProductDBEntity
 import com.chrysalide.transmemo.domain.boundary.DatabaseRepository
 import com.chrysalide.transmemo.domain.model.Container
 import com.chrysalide.transmemo.domain.model.Intake
@@ -63,6 +64,10 @@ internal class RoomDatabaseRepository(
 
     override suspend fun deleteProduct(product: Product) = productDao.delete(product.toProductEntity())
 
+    override fun getAllContainers(): Flow<List<Container>> = containerDao.getAll().map { it.toContainers() }
+
+    override suspend fun deleteContainer(container: Container) = containerDao.delete(container.toContainerEntity())
+
     private fun List<ProductDBEntity>.toProducts() = map { it.toProduct() }
 
     private fun ProductDBEntity.toProduct() = Product(
@@ -97,29 +102,23 @@ internal class RoomDatabaseRepository(
         notifications = notifications
     )
 
-    private fun List<ContainerDBEntity>.toContainers() = map { it.toContainer() }
+    private fun List<ContainerWithProductDBEntity>.toContainers() = map { it.toContainer() }
 
-    private fun ContainerDBEntity.toContainer() = Container(
-        id = id,
-        productId = productId,
-        unit = unit,
-        remainingCapacity = remainingCapacity,
-        usedCapacity = usedCapacity,
-        openDate = openDate,
-        expirationDate = expirationDate,
-        state = state
+    private fun ContainerWithProductDBEntity.toContainer() = Container(
+        id = container.id,
+        product = product.toProduct(),
+        usedCapacity = container.usedCapacity,
+        openDate = container.openDate,
+        state = container.state
     )
 
     private fun List<Container>.toContainerEntities() = map { it.toContainerEntity() }
 
     private fun Container.toContainerEntity() = ContainerDBEntity(
         id = id,
-        productId = productId,
-        unit = unit,
-        remainingCapacity = remainingCapacity,
+        productId = product.id,
         usedCapacity = usedCapacity,
         openDate = openDate,
-        expirationDate = expirationDate,
         state = state
     )
 

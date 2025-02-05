@@ -27,8 +27,8 @@ private val daoModule = module {
     single<ContainerDao> { get<TransMemoDatabase>().containerDao() }
     single<NoteDao> { get<TransMemoDatabase>().noteDao() }
     single<ProductDao> { get<TransMemoDatabase>().productDao() }
-    single<IntakeDao> { get<TransMemoDatabase>().takeDao() }
-    single<WellbeingDao> { get<TransMemoDatabase>().wellnessDao() }
+    single<IntakeDao> { get<TransMemoDatabase>().intakeDao() }
+    single<WellbeingDao> { get<TransMemoDatabase>().wellbeingDao() }
 }
 
 private val helperModule = module {

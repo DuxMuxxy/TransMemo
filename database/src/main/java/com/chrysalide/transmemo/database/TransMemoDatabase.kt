@@ -2,6 +2,8 @@ package com.chrysalide.transmemo.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.chrysalide.transmemo.database.converter.Converters
 import com.chrysalide.transmemo.database.dao.ContainerDao
 import com.chrysalide.transmemo.database.dao.IntakeDao
 import com.chrysalide.transmemo.database.dao.NoteDao
@@ -23,6 +25,7 @@ import com.chrysalide.transmemo.database.entity.WellbeingDBEntity
     ],
     version = 1
 )
+@TypeConverters(Converters::class)
 abstract class TransMemoDatabase : RoomDatabase() {
     abstract fun containerDao(): ContainerDao
 
@@ -30,7 +33,7 @@ abstract class TransMemoDatabase : RoomDatabase() {
 
     abstract fun productDao(): ProductDao
 
-    abstract fun takeDao(): IntakeDao
+    abstract fun intakeDao(): IntakeDao
 
-    abstract fun wellnessDao(): WellbeingDao
+    abstract fun wellbeingDao(): WellbeingDao
 }

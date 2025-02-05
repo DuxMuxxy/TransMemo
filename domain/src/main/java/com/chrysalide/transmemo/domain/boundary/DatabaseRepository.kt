@@ -27,4 +27,8 @@ interface DatabaseRepository {
     suspend fun insertProduct(product: Product)
 
     suspend fun deleteProduct(product: Product)
+
+    fun getAllContainers(): Flow<List<Container>>
+
+    suspend fun deleteContainer(container: Container)
 }

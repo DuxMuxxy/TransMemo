@@ -5,6 +5,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.chrysalide.transmemo.R.string
 import com.chrysalide.transmemo.presentation.calendar.CalendarBaseRoute
 import com.chrysalide.transmemo.presentation.calendar.CalendarRoute
+import com.chrysalide.transmemo.presentation.containers.ContainersBaseRoute
+import com.chrysalide.transmemo.presentation.containers.ContainersRoute
 import com.chrysalide.transmemo.presentation.design.TransMemoIcons
 import com.chrysalide.transmemo.presentation.products.ProductsBaseRoute
 import com.chrysalide.transmemo.presentation.products.ProductsRoute
@@ -41,8 +43,8 @@ enum class TopLevelDestination(
         unselectedIcon = TransMemoIcons.ContainersUnselected,
         iconTextId = string.feature_containers_title,
         titleTextId = string.feature_containers_title,
-        route = CalendarRoute::class,
-        baseRoute = CalendarBaseRoute::class
+        route = ContainersRoute::class,
+        baseRoute = ContainersBaseRoute::class
     ),
     PRODUCTS(
         selectedIcon = TransMemoIcons.Products,
@@ -55,8 +57,8 @@ enum class TopLevelDestination(
     WELLBEING(
         selectedIcon = TransMemoIcons.Wellbeing,
         unselectedIcon = TransMemoIcons.WellbeingUnselected,
-        iconTextId = string.feature_wellness_title,
-        titleTextId = string.feature_wellness_title,
+        iconTextId = string.feature_wellbeing_title,
+        titleTextId = string.feature_wellbeing_title,
         route = CalendarRoute::class,
         baseRoute = CalendarBaseRoute::class
     ),
