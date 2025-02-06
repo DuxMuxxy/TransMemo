@@ -10,4 +10,6 @@ interface UserDataRepository {
     suspend fun setDarkThemeConfig(darkThemeConfig: DarkThemeConfig)
 
     suspend fun setLegacyDatabaseHasBeenImported()
+
+    suspend fun setAskAuthentication(askAuthentication: Boolean)
 }

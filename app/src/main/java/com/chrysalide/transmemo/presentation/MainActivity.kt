@@ -2,7 +2,6 @@ package com.chrysalide.transmemo.presentation
 
 import android.graphics.Color
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -12,6 +11,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
     private val viewModel: MainActivityViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
             val appState = rememberTransMemoAppState()
 
             TransMemoTheme(darkTheme = darkTheme) {
-                TransMemoApp(appState)
+                TransMemoApp(appState, viewModel.shouldAskAuthenticationAtLaunch)
             }
         }
     }
@@ -78,7 +78,7 @@ private fun shouldUseDarkTheme(uiState: MainActivityUiState): Boolean =
     when (uiState) {
         Loading -> isSystemInDarkTheme()
         is Success ->
-            when (uiState.userData.darkThemeConfig) {
+            when (uiState.darkThemeConfig) {
                 DarkThemeConfig.FOLLOW_SYSTEM -> isSystemInDarkTheme()
                 DarkThemeConfig.LIGHT -> false
                 DarkThemeConfig.DARK -> true

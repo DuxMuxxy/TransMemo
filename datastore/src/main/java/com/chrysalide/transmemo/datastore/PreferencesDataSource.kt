@@ -18,7 +18,8 @@ internal class PreferencesDataSource(
                 DarkThemeConfigProto.DARK_THEME_CONFIG_DARK -> DarkThemeConfig.DARK
                 else -> DarkThemeConfig.FOLLOW_SYSTEM
             },
-            legacyDatabaseHasBeenImported = it.legacyDatabaseHasBeenImported
+            legacyDatabaseHasBeenImported = it.legacyDatabaseHasBeenImported,
+            askAuthentication = it.askAuthentication
         )
     }
 
@@ -36,9 +37,13 @@ internal class PreferencesDataSource(
 
     suspend fun setLegacyDatabaseHasBeenImported() {
         userPreferences.updateData {
-            it.copy {
-                this.legacyDatabaseHasBeenImported = true
-            }
+            it.copy { this.legacyDatabaseHasBeenImported = true }
+        }
+    }
+
+    suspend fun setAskAuthentication(askAuthentication: Boolean) {
+        userPreferences.updateData {
+            it.copy { this.askAuthentication = askAuthentication }
         }
     }
 }

@@ -89,4 +89,9 @@
     <string name="feature_inventory_recycle_success">The container has been replaced by a new one!</string>
     <string name="feature_inventory_recycle_dialog_title">Do you really want to replace this box?</string>
     <string name="feature_inventory_recycle_dialog_text">Confirm that you are actually going to throw away this box and use another one.</string>
+    <string name="biometric_prompt_title">Authentication</string>
+    <string name="biometric_prompt_subtitle">Authenticate yourself using your biometric credential</string>
+    <string name="feature_settings_ask_authentication_title">Fingerprint app unlock</string>
+    <string name="feature_settings_ask_authentication_description">Ask to authenticate with fingerprint (or PIN or scheme) to be able to use the app.</string>
+    <string name="feature_settings_security_title">Security</string>
 </resources>

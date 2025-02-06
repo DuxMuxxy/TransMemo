@@ -6,6 +6,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -19,10 +20,14 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -33,6 +38,7 @@ import com.chrysalide.transmemo.domain.model.DarkThemeConfig
 import com.chrysalide.transmemo.domain.model.DarkThemeConfig.DARK
 import com.chrysalide.transmemo.domain.model.DarkThemeConfig.FOLLOW_SYSTEM
 import com.chrysalide.transmemo.domain.model.DarkThemeConfig.LIGHT
+import com.chrysalide.transmemo.presentation.design.BiometricPromptContainer
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.settings.SettingsUiState.Loading
 import com.chrysalide.transmemo.presentation.settings.SettingsUiState.UserEditableSettings
@@ -66,6 +72,7 @@ fun SettingsScreen(
     SettingsView(
         settingsUiState = settingsUiState,
         onChangeDarkThemeConfig = viewModel::updateDarkThemeConfig,
+        setAskAuthentication = viewModel::updateAskAuthentication,
         importDatabaseFile = viewModel::importDatabaseFile
     )
 }
@@ -74,12 +81,23 @@ fun SettingsScreen(
 private fun SettingsView(
     settingsUiState: SettingsUiState,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
+    setAskAuthentication: (Boolean) -> Unit,
     importDatabaseFile: (Uri) -> Unit
 ) {
     val importFileLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument()
     ) { fileUri ->
         fileUri?.let(importDatabaseFile)
+    }
+
+    var showBiometricPrompt by remember { mutableStateOf(false) }
+    if (showBiometricPrompt) {
+        BiometricPromptContainer(
+            onAuthSucceeded = {
+                setAskAuthentication(true)
+                showBiometricPrompt = false
+            }
+        )
     }
 
     Column(
@@ -102,7 +120,14 @@ private fun SettingsView(
                 SettingsPanel(
                     settings = settingsUiState,
                     onChangeDarkThemeConfig = onChangeDarkThemeConfig,
-                    onImportClick = { importFileLauncher.launch(arrayOf("*/*")) }
+                    onChangeAskAuthentication = { askAuthentication ->
+                        if (askAuthentication) {
+                            showBiometricPrompt = true
+                        } else {
+                            setAskAuthentication(false)
+                        }
+                    },
+                    onImportClick = { importFileLauncher.launch(arrayOf("*/*")) },
                 )
             }
         }
@@ -113,18 +138,25 @@ private fun SettingsView(
 private fun ColumnScope.SettingsPanel(
     settings: UserEditableSettings,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
+    onChangeAskAuthentication: (Boolean) -> Unit,
     onImportClick: () -> Unit
 ) {
-    AppearancePanel(settings, onChangeDarkThemeConfig)
+    AppearancePanel(settings.darkThemeConfig, onChangeDarkThemeConfig)
     Spacer(modifier = Modifier.height(16.dp))
     HorizontalDivider()
     Spacer(modifier = Modifier.height(16.dp))
+    if (settings.canDeviceAskAuthentication) {
+        SecurityPanel(settings.askAuthentication, onChangeAskAuthentication)
+        Spacer(modifier = Modifier.height(16.dp))
+        HorizontalDivider()
+        Spacer(modifier = Modifier.height(16.dp))
+    }
     DatabasePanel(onImportClick)
 }
 
 @Composable
 private fun ColumnScope.AppearancePanel(
-    settings: UserEditableSettings,
+    darkThemeConfig: DarkThemeConfig,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit
 ) {
     SettingsSectionTitle(text = stringResource(string.feature_settings_appearance_title))
@@ -137,21 +169,42 @@ private fun ColumnScope.AppearancePanel(
         SegmentedButton(
             shape = SegmentedButtonDefaults.itemShape(index = 0, count = 3),
             onClick = { onChangeDarkThemeConfig(FOLLOW_SYSTEM) },
-            selected = settings.darkThemeConfig == FOLLOW_SYSTEM,
+            selected = darkThemeConfig == FOLLOW_SYSTEM,
             label = { Text(stringResource(string.feature_settings_dark_mode_config_system_default)) }
         )
         SegmentedButton(
             shape = SegmentedButtonDefaults.itemShape(index = 1, count = 3),
             onClick = { onChangeDarkThemeConfig(LIGHT) },
-            selected = settings.darkThemeConfig == LIGHT,
+            selected = darkThemeConfig == LIGHT,
             label = { Text(stringResource(string.feature_settings_dark_mode_config_light)) }
         )
         SegmentedButton(
             shape = SegmentedButtonDefaults.itemShape(index = 2, count = 3),
             onClick = { onChangeDarkThemeConfig(DARK) },
-            selected = settings.darkThemeConfig == DARK,
+            selected = darkThemeConfig == DARK,
             label = { Text(stringResource(string.feature_settings_dark_mode_config_dark)) }
         )
+    }
+}
+
+@Composable
+private fun ColumnScope.SecurityPanel(
+    askAuthentication: Boolean,
+    onChangeAskAuthentication: (Boolean) -> Unit
+) {
+    SettingsSectionTitle(text = stringResource(string.feature_settings_security_title))
+    Spacer(modifier = Modifier.height(16.dp))
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Column(
+            Modifier
+                .weight(1f)
+                .padding(end = 16.dp)
+        ) {
+            SettingsSectionSubtitle(text = stringResource(string.feature_settings_ask_authentication_title))
+            Spacer(modifier = Modifier.height(4.dp))
+            SettingsDescription(text = stringResource(string.feature_settings_ask_authentication_description))
+        }
+        Switch(checked = askAuthentication, onCheckedChange = onChangeAskAuthentication)
     }
 }
 
@@ -161,12 +214,19 @@ private fun ColumnScope.DatabasePanel(
 ) {
     SettingsSectionTitle(text = stringResource(string.feature_settings_database_title))
     Spacer(modifier = Modifier.height(16.dp))
-    SettingsSectionSubtitle(text = stringResource(string.feature_settings_database_import_title))
-    Spacer(modifier = Modifier.height(4.dp))
-    SettingsDescription(text = stringResource(string.feature_settings_database_import_description))
-    Spacer(modifier = Modifier.height(4.dp))
-    OutlinedButton(onClick = onImportClick) {
-        Text(stringResource(string.feature_settings_database_import_action))
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Column(
+            Modifier
+                .weight(1f)
+                .padding(end = 16.dp)
+        ) {
+            SettingsSectionSubtitle(text = stringResource(string.feature_settings_database_import_title))
+            Spacer(modifier = Modifier.height(4.dp))
+            SettingsDescription(text = stringResource(string.feature_settings_database_import_description))
+        }
+        OutlinedButton(onClick = onImportClick) {
+            Text(stringResource(string.feature_settings_database_import_action))
+        }
     }
 }
 
@@ -196,11 +256,12 @@ private fun SettingsDescription(text: String) {
 
 @ThemePreviews
 @Composable
-private fun PreviewSettingsDialog() {
+private fun SettingsScreenLoadingPreview() {
     TransMemoTheme {
         SettingsView(
-            settingsUiState = UserEditableSettings(darkThemeConfig = FOLLOW_SYSTEM),
+            settingsUiState = Loading,
             onChangeDarkThemeConfig = {},
+            setAskAuthentication = {},
             importDatabaseFile = {}
         )
     }
@@ -208,11 +269,33 @@ private fun PreviewSettingsDialog() {
 
 @ThemePreviews
 @Composable
-private fun PreviewSettingsDialogLoading() {
+private fun SettingsScreenPreview() {
     TransMemoTheme {
         SettingsView(
-            settingsUiState = Loading,
+            settingsUiState = UserEditableSettings(
+                darkThemeConfig = FOLLOW_SYSTEM,
+                canDeviceAskAuthentication = true,
+                askAuthentication = true,
+            ),
             onChangeDarkThemeConfig = {},
+            setAskAuthentication = {},
+            importDatabaseFile = {}
+        )
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun SettingsScreenNoDeviceAuthenticatorPreview() {
+    TransMemoTheme {
+        SettingsView(
+            settingsUiState = UserEditableSettings(
+                darkThemeConfig = FOLLOW_SYSTEM,
+                canDeviceAskAuthentication = false,
+                askAuthentication = false
+            ),
+            onChangeDarkThemeConfig = {},
+            setAskAuthentication = {},
             importDatabaseFile = {}
         )
     }

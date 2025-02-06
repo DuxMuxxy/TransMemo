@@ -18,4 +18,8 @@ internal class AndroidUserDataRepository(
     override suspend fun setLegacyDatabaseHasBeenImported() {
         preferencesDataSource.setLegacyDatabaseHasBeenImported()
     }
+
+    override suspend fun setAskAuthentication(askAuthentication: Boolean) {
+        preferencesDataSource.setAskAuthentication(askAuthentication)
+    }
 }

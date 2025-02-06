@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.chrysalide.transmemo.data.AndroidBiometricRepository
 import com.chrysalide.transmemo.database.usecase.ImportOldDatabaseUseCase
 import com.chrysalide.transmemo.domain.boundary.UserDataRepository
 import com.chrysalide.transmemo.domain.model.DarkThemeConfig
@@ -20,13 +21,18 @@ import kotlin.time.Duration.Companion.seconds
 
 class SettingsViewModel(
     private val userDataRepository: UserDataRepository,
-    private val importOldDatabaseUseCase: ImportOldDatabaseUseCase
+    private val importOldDatabaseUseCase: ImportOldDatabaseUseCase,
+    private val biometricRepository: AndroidBiometricRepository
 ) : ViewModel() {
     var importResultSnackbar by mutableStateOf<ImportDatabaseFileResultSnackbar>(ImportDatabaseFileResultSnackbar.Idle)
 
     val settingsUiState: StateFlow<SettingsUiState> = userDataRepository.userData
         .map { userData ->
-            UserEditableSettings(darkThemeConfig = userData.darkThemeConfig)
+            UserEditableSettings(
+                darkThemeConfig = userData.darkThemeConfig,
+                canDeviceAskAuthentication = biometricRepository.canDeviceAskAuthentication(),
+                askAuthentication = userData.askAuthentication,
+            )
         }.stateIn(
             scope = viewModelScope,
             started = WhileSubscribed(5.seconds.inWholeMilliseconds),
@@ -36,6 +42,12 @@ class SettingsViewModel(
     fun updateDarkThemeConfig(darkThemeConfig: DarkThemeConfig) {
         viewModelScope.launch {
             userDataRepository.setDarkThemeConfig(darkThemeConfig)
+        }
+    }
+
+    fun updateAskAuthentication(askAuthentication: Boolean) {
+        viewModelScope.launch {
+            userDataRepository.setAskAuthentication(askAuthentication)
         }
     }
 
@@ -58,7 +70,9 @@ sealed interface SettingsUiState {
     data object Loading : SettingsUiState
 
     data class UserEditableSettings(
-        val darkThemeConfig: DarkThemeConfig
+        val darkThemeConfig: DarkThemeConfig,
+        val canDeviceAskAuthentication: Boolean,
+        val askAuthentication: Boolean
     ) : SettingsUiState
 }
 

@@ -90,4 +90,9 @@
     <string name="feature_inventory_recycle_success">La boîte a été remplacée par une nouvelle !</string>
     <string name="feature_inventory_recycle_dialog_title">Voulez-vous vraiment remplacer cette boîte?</string>
     <string name="feature_inventory_recycle_dialog_text">Confirmez si vous allez vraiment jeter cette boîte et en prendre une nouvelle.</string>
+    <string name="biometric_prompt_title">Authentification</string>
+    <string name="biometric_prompt_subtitle">Authentifiez-vous en utilisant votre identifiant biométrique</string>
+    <string name="feature_settings_ask_authentication_title">Déverrouillage de l\'application par empreinte digitale</string>
+    <string name="feature_settings_ask_authentication_description">Demande une authentification par empreinte digitale (ou PIN ou schéma) pour pouvoir utiliser l\'app.</string>
+    <string name="feature_settings_security_title">Sécurité</string>
 </resources>
