@@ -1,11 +1,10 @@
 package com.chrysalide.transmemo.presentation.design
 
-import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_WEAK
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
 import androidx.biometric.BiometricPrompt.PromptInfo
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -29,19 +28,21 @@ fun BiometricPromptContainer(
             override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                 onAuthSucceeded()
             }
+
+            override fun onAuthenticationFailed() {
+                onAuthError()
+            }
         }
     }
 
     val promptTitle = stringResource(R.string.biometric_prompt_title)
     val promptSubtitle = stringResource(R.string.biometric_prompt_subtitle)
-    LaunchedEffect(Unit) {
-        val prompt = BiometricPrompt(context as MainActivity, executor, callback)
-        val promptInfo = PromptInfo
-            .Builder()
-            .setTitle(promptTitle)
-            .setSubtitle(promptSubtitle)
-            .setAllowedAuthenticators(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)
-            .build()
-        prompt.authenticate(promptInfo)
-    }
+    val prompt = BiometricPrompt(context as MainActivity, executor, callback)
+    val promptInfo = PromptInfo
+        .Builder()
+        .setTitle(promptTitle)
+        .setSubtitle(promptSubtitle)
+        .setAllowedAuthenticators(BIOMETRIC_WEAK or DEVICE_CREDENTIAL)
+        .build()
+    prompt.authenticate(promptInfo)
 }

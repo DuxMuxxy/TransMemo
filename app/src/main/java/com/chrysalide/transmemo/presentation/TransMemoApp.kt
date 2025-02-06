@@ -54,90 +54,89 @@ fun TransMemoApp(appState: TransMemoAppState, shouldAskAuthentication: Boolean) 
         val currentDestination = appState.currentDestination
         val destination = appState.currentTopLevelDestination
 
-        if (shouldAskAuthentication && !isUserAuthenticated) {
-            AuthScreen { isUserAuthenticated = true }
-        } else {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
-            ) {
-                val drawerState = rememberDrawerState(DrawerValue.Closed)
-                val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-                NavigationDrawerScaffold(
-                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-                    navigationItems = {
-                        appState.topLevelDestinations.forEach { destination ->
-                            val isSelected = currentDestination.isRouteInHierarchy(destination.baseRoute)
-                            NavigationDrawerItem(
-                                label = { Text(stringResource(destination.iconTextId)) },
-                                selected = isSelected,
-                                onClick = {
-                                    appState.navigateToTopLevelDestination(destination)
-                                    coroutineScope.launch { drawerState.close() }
-                                },
-                                icon = {
-                                    if (isSelected) {
-                                        Icon(
-                                            imageVector = destination.selectedIcon,
-                                            contentDescription = null,
-                                        )
-                                    } else {
-                                        Icon(
-                                            imageVector = destination.unselectedIcon,
-                                            contentDescription = null,
-                                        )
-                                    }
-                                },
-                            )
-                        }
-                    },
-                    drawerState = drawerState,
-                    snackbarHostState = snackbarHostState,
-                    navigateToChrysalide = {},
-                    navigateToHelpUs = {},
-                    navigateToFacebook = {},
-                    navigateToContributors = {},
-                    navigateToHelp = {},
-                    navigateToAbout = {},
-                ) { padding ->
-                    Column(
-                        Modifier
-                            .fillMaxSize()
-                            .padding(padding)
-                            .consumeWindowInsets(padding)
-                            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
-                    ) {
-                        destination?.let {
-                            TransMemoTopAppBar(
-                                titleRes = destination.titleTextId,
-                                navigationIcon = TransMemoIcons.Menu,
-                                navigationIconContentDescription = stringResource(string.menu_content_description),
-                                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
-                                onNavigationClick = {
-                                    coroutineScope.launch { drawerState.open() }
-                                },
-                                scrollBehavior = scrollBehavior,
-                            )
-                        }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
+        ) {
+            val drawerState = rememberDrawerState(DrawerValue.Closed)
+            val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+            NavigationDrawerScaffold(
+                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                navigationItems = {
+                    appState.topLevelDestinations.forEach { destination ->
+                        val isSelected = currentDestination.isRouteInHierarchy(destination.baseRoute)
+                        NavigationDrawerItem(
+                            label = { Text(stringResource(destination.iconTextId)) },
+                            selected = isSelected,
+                            onClick = {
+                                appState.navigateToTopLevelDestination(destination)
+                                coroutineScope.launch { drawerState.close() }
+                            },
+                            icon = {
+                                if (isSelected) {
+                                    Icon(
+                                        imageVector = destination.selectedIcon,
+                                        contentDescription = null,
+                                    )
+                                } else {
+                                    Icon(
+                                        imageVector = destination.unselectedIcon,
+                                        contentDescription = null,
+                                    )
+                                }
+                            },
+                        )
+                    }
+                },
+                drawerState = drawerState,
+                snackbarHostState = snackbarHostState,
+                navigateToChrysalide = {},
+                navigateToHelpUs = {},
+                navigateToFacebook = {},
+                navigateToContributors = {},
+                navigateToHelp = {},
+                navigateToAbout = {},
+            ) { padding ->
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                        .consumeWindowInsets(padding)
+                        .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
+                ) {
+                    destination?.let {
+                        TransMemoTopAppBar(
+                            titleRes = destination.titleTextId,
+                            navigationIcon = TransMemoIcons.Menu,
+                            navigationIconContentDescription = stringResource(string.menu_content_description),
+                            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
+                            onNavigationClick = {
+                                coroutineScope.launch { drawerState.open() }
+                            },
+                            scrollBehavior = scrollBehavior,
+                        )
+                    }
 
-                        Box(
-                            modifier = Modifier.consumeWindowInsets(WindowInsets.safeDrawing.only(WindowInsetsSides.Top)),
-                        ) {
-                            TransMemoNavHost(
-                                appState = appState,
-                                onShowSnackbar = { message, action ->
-                                    snackbarHostState.showSnackbar(
-                                        message = message,
-                                        actionLabel = action,
-                                        duration = Short,
-                                    ) == ActionPerformed
-                                },
-                            )
-                        }
+                    Box(
+                        modifier = Modifier.consumeWindowInsets(WindowInsets.safeDrawing.only(WindowInsetsSides.Top)),
+                    ) {
+                        TransMemoNavHost(
+                            appState = appState,
+                            onShowSnackbar = { message, action ->
+                                snackbarHostState.showSnackbar(
+                                    message = message,
+                                    actionLabel = action,
+                                    duration = Short,
+                                ) == ActionPerformed
+                            },
+                        )
                     }
                 }
             }
+        }
+        if (shouldAskAuthentication && !isUserAuthenticated) {
+            AuthScreen(onAuthSucceeded = { isUserAuthenticated = true })
         }
     }
 }

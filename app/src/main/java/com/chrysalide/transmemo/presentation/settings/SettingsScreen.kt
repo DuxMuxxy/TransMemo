@@ -93,11 +93,9 @@ private fun SettingsView(
     var showBiometricPrompt by remember { mutableStateOf(false) }
     if (showBiometricPrompt) {
         BiometricPromptContainer(
-            onAuthSucceeded = {
-                setAskAuthentication(true)
-                showBiometricPrompt = false
-            }
+            onAuthSucceeded = { setAskAuthentication(true) }
         )
+        showBiometricPrompt = false
     }
 
     Column(
