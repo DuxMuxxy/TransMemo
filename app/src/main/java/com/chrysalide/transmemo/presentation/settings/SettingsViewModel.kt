@@ -32,6 +32,7 @@ class SettingsViewModel(
                 darkThemeConfig = userData.darkThemeConfig,
                 canDeviceAskAuthentication = biometricRepository.canDeviceAskAuthentication(),
                 askAuthentication = userData.askAuthentication,
+                useAlternativeAppIconAndName = userData.useAlternativeAppIconAndName
             )
         }.stateIn(
             scope = viewModelScope,
@@ -48,6 +49,12 @@ class SettingsViewModel(
     fun updateAskAuthentication(askAuthentication: Boolean) {
         viewModelScope.launch {
             userDataRepository.setAskAuthentication(askAuthentication)
+        }
+    }
+
+    fun updateUseAlternativeAppIconAndName(useAlternativeAppIconAndName: Boolean) {
+        viewModelScope.launch {
+            userDataRepository.setUseAlternativeAppIconAndName(useAlternativeAppIconAndName)
         }
     }
 
@@ -72,7 +79,8 @@ sealed interface SettingsUiState {
     data class UserEditableSettings(
         val darkThemeConfig: DarkThemeConfig,
         val canDeviceAskAuthentication: Boolean,
-        val askAuthentication: Boolean
+        val askAuthentication: Boolean,
+        val useAlternativeAppIconAndName: Boolean
     ) : SettingsUiState
 }
 

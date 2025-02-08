@@ -1,5 +1,6 @@
 package com.chrysalide.transmemo.presentation
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.SystemBarStyle
@@ -18,6 +19,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.chrysalide.transmemo.domain.model.DarkThemeConfig
 import com.chrysalide.transmemo.presentation.MainActivityUiState.Loading
 import com.chrysalide.transmemo.presentation.MainActivityUiState.Success
+import com.chrysalide.transmemo.presentation.service.UpdateAppIconService
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -29,6 +31,7 @@ class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        startService(Intent(this, UpdateAppIconService::class.java))
         var uiState: MainActivityUiState by mutableStateOf(Loading)
 
         // Update the uiState

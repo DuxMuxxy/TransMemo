@@ -18,12 +18,31 @@
         <activity
             android:name=".presentation.MainActivity"
             android:exported="true"
+            android:enabled="true"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity-alias
+            android:name=".presentation.IconAlternativeTodo"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_alternative_todo"
+            android:label="@string/app_name_alternative_todo"
+            android:roundIcon="@mipmap/ic_alternative_todo_round"
+            android:targetActivity=".presentation.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <service
+            android:name=".presentation.service.UpdateAppIconService"
+            android:stopWithTask="false" />
     </application>
 
 </manifest>

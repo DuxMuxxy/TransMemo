@@ -3,6 +3,9 @@ package com.chrysalide.transmemo.presentation.settings
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -12,7 +15,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -30,9 +36,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.chrysalide.transmemo.R
 import com.chrysalide.transmemo.R.string
 import com.chrysalide.transmemo.domain.model.DarkThemeConfig
 import com.chrysalide.transmemo.domain.model.DarkThemeConfig.DARK
@@ -73,6 +84,7 @@ fun SettingsScreen(
         settingsUiState = settingsUiState,
         onChangeDarkThemeConfig = viewModel::updateDarkThemeConfig,
         setAskAuthentication = viewModel::updateAskAuthentication,
+        setUseAlternativeAppIconAndName = viewModel::updateUseAlternativeAppIconAndName,
         importDatabaseFile = viewModel::importDatabaseFile
     )
 }
@@ -82,6 +94,7 @@ private fun SettingsView(
     settingsUiState: SettingsUiState,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
     setAskAuthentication: (Boolean) -> Unit,
+    setUseAlternativeAppIconAndName: (Boolean) -> Unit,
     importDatabaseFile: (Uri) -> Unit
 ) {
     val importFileLauncher = rememberLauncherForActivityResult(
@@ -125,6 +138,7 @@ private fun SettingsView(
                             setAskAuthentication(false)
                         }
                     },
+                    onChangeUseAlternativeAppIconAndName = setUseAlternativeAppIconAndName,
                     onImportClick = { importFileLauncher.launch(arrayOf("*/*")) },
                 )
             }
@@ -137,18 +151,23 @@ private fun ColumnScope.SettingsPanel(
     settings: UserEditableSettings,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
     onChangeAskAuthentication: (Boolean) -> Unit,
+    onChangeUseAlternativeAppIconAndName: (Boolean) -> Unit,
     onImportClick: () -> Unit
 ) {
     AppearancePanel(settings.darkThemeConfig, onChangeDarkThemeConfig)
     Spacer(modifier = Modifier.height(16.dp))
     HorizontalDivider()
     Spacer(modifier = Modifier.height(16.dp))
-    if (settings.canDeviceAskAuthentication) {
-        SecurityPanel(settings.askAuthentication, onChangeAskAuthentication)
-        Spacer(modifier = Modifier.height(16.dp))
-        HorizontalDivider()
-        Spacer(modifier = Modifier.height(16.dp))
-    }
+    SecurityPanel(
+        settings.canDeviceAskAuthentication,
+        settings.askAuthentication,
+        settings.useAlternativeAppIconAndName,
+        onChangeAskAuthentication,
+        onChangeUseAlternativeAppIconAndName,
+    )
+    Spacer(modifier = Modifier.height(16.dp))
+    HorizontalDivider()
+    Spacer(modifier = Modifier.height(16.dp))
     DatabasePanel(onImportClick)
 }
 
@@ -187,22 +206,76 @@ private fun ColumnScope.AppearancePanel(
 
 @Composable
 private fun ColumnScope.SecurityPanel(
+    canDeviceAskAuthentication: Boolean,
     askAuthentication: Boolean,
-    onChangeAskAuthentication: (Boolean) -> Unit
+    useAlternativeAppIconAndName: Boolean,
+    onChangeAskAuthentication: (Boolean) -> Unit,
+    onChangeUseAlternativeAppIconAndName: (Boolean) -> Unit
 ) {
+    var showAlternativeIconPreview by remember { mutableStateOf(false) }
+
     SettingsSectionTitle(text = stringResource(string.feature_settings_security_title))
-    Spacer(modifier = Modifier.height(16.dp))
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Column(
-            Modifier
-                .weight(1f)
-                .padding(end = 16.dp)
-        ) {
-            SettingsSectionSubtitle(text = stringResource(string.feature_settings_ask_authentication_title))
-            Spacer(modifier = Modifier.height(4.dp))
-            SettingsDescription(text = stringResource(string.feature_settings_ask_authentication_description))
+    if (canDeviceAskAuthentication) {
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(
+                Modifier
+                    .weight(1f)
+                    .padding(end = 16.dp),
+            ) {
+                SettingsSectionSubtitle(text = stringResource(string.feature_settings_ask_authentication_title))
+                Spacer(modifier = Modifier.height(4.dp))
+                SettingsDescription(text = stringResource(string.feature_settings_ask_authentication_description))
+            }
+            Switch(checked = askAuthentication, onCheckedChange = onChangeAskAuthentication)
         }
-        Switch(checked = askAuthentication, onCheckedChange = onChangeAskAuthentication)
+    }
+    Spacer(modifier = Modifier.height(16.dp))
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(
+                Modifier
+                    .weight(1f)
+                    .padding(end = 16.dp)
+            ) {
+                SettingsSectionSubtitle(text = stringResource(string.feature_settings_alt_app_icon_title))
+                Spacer(modifier = Modifier.height(4.dp))
+                SettingsDescription(text = stringResource(string.feature_settings_alt_app_icon_description))
+            }
+            Switch(
+                checked = useAlternativeAppIconAndName,
+                onCheckedChange = {
+                    onChangeUseAlternativeAppIconAndName(it)
+                    showAlternativeIconPreview = it
+                }
+            )
+        }
+        AnimatedVisibility(showAlternativeIconPreview) {
+            AlternativeIconPreview()
+        }
+    }
+}
+
+@Composable
+private fun AlternativeIconPreview() {
+    Column {
+        Spacer(modifier = Modifier.height(16.dp))
+        Card(colors = CardDefaults.cardColors().copy(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(16.dp),
+            ) {
+                Text(stringResource(string.feature_settings_alt_app_icon_example))
+                Spacer(modifier = Modifier.height(16.dp))
+                Image(
+                    ImageBitmap.imageResource(R.mipmap.ic_alternative_todo_foreground),
+                    contentDescription = null,
+                    modifier = Modifier.background(Color.White, shape = RoundedCornerShape(100)),
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(stringResource(string.app_name_alternative_todo), fontWeight = FontWeight.Bold)
+            }
+        }
     }
 }
 
@@ -260,6 +333,7 @@ private fun SettingsScreenLoadingPreview() {
             settingsUiState = Loading,
             onChangeDarkThemeConfig = {},
             setAskAuthentication = {},
+            setUseAlternativeAppIconAndName = {},
             importDatabaseFile = {}
         )
     }
@@ -274,9 +348,11 @@ private fun SettingsScreenPreview() {
                 darkThemeConfig = FOLLOW_SYSTEM,
                 canDeviceAskAuthentication = true,
                 askAuthentication = true,
+                useAlternativeAppIconAndName = false
             ),
             onChangeDarkThemeConfig = {},
             setAskAuthentication = {},
+            setUseAlternativeAppIconAndName = {},
             importDatabaseFile = {}
         )
     }
@@ -290,10 +366,12 @@ private fun SettingsScreenNoDeviceAuthenticatorPreview() {
             settingsUiState = UserEditableSettings(
                 darkThemeConfig = FOLLOW_SYSTEM,
                 canDeviceAskAuthentication = false,
-                askAuthentication = false
+                askAuthentication = false,
+                useAlternativeAppIconAndName = false
             ),
             onChangeDarkThemeConfig = {},
             setAskAuthentication = {},
+            setUseAlternativeAppIconAndName = {},
             importDatabaseFile = {}
         )
     }

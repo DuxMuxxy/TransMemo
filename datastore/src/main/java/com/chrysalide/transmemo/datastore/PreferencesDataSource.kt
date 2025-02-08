@@ -19,7 +19,8 @@ internal class PreferencesDataSource(
                 else -> DarkThemeConfig.FOLLOW_SYSTEM
             },
             legacyDatabaseHasBeenImported = it.legacyDatabaseHasBeenImported,
-            askAuthentication = it.askAuthentication
+            askAuthentication = it.askAuthentication,
+            useAlternativeAppIconAndName = it.useAlternativeAppIconAndName
         )
     }
 
@@ -44,6 +45,12 @@ internal class PreferencesDataSource(
     suspend fun setAskAuthentication(askAuthentication: Boolean) {
         userPreferences.updateData {
             it.copy { this.askAuthentication = askAuthentication }
+        }
+    }
+
+    suspend fun setUseAlternativeAppIconAndName(useAlternativeAppIconAndName: Boolean) {
+        userPreferences.updateData {
+            it.copy { this.useAlternativeAppIconAndName = useAlternativeAppIconAndName }
         }
     }
 }

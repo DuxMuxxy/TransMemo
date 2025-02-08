@@ -12,4 +12,6 @@ interface UserDataRepository {
     suspend fun setLegacyDatabaseHasBeenImported()
 
     suspend fun setAskAuthentication(askAuthentication: Boolean)
+
+    suspend fun setUseAlternativeAppIconAndName(useAlternativeAppIconAndName: Boolean)
 }

@@ -96,4 +96,7 @@
     <string name="feature_settings_ask_authentication_description">Demande une authentification par empreinte digitale (ou PIN ou schéma) pour pouvoir utiliser l\'app.</string>
     <string name="feature_settings_security_title">Sécurité</string>
     <string name="feature_authentication_unlock_button">Déverrouiller</string>
+    <string name="feature_settings_alt_app_icon_title">Icône alternative</string>
+    <string name="feature_settings_alt_app_icon_description">Utiliser une icône et un nom alternatifs dans le lanceur d\'app</string>
+    <string name="feature_settings_alt_app_icon_example">Le changement sera appliqué à la fermeture totale de l\'app. L\'icône ressemblera à cela</string>
 </resources>

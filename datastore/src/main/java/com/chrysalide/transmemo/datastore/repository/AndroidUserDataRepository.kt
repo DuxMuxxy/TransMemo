@@ -22,4 +22,8 @@ internal class AndroidUserDataRepository(
     override suspend fun setAskAuthentication(askAuthentication: Boolean) {
         preferencesDataSource.setAskAuthentication(askAuthentication)
     }
+
+    override suspend fun setUseAlternativeAppIconAndName(useAlternativeAppIconAndName: Boolean) {
+        preferencesDataSource.setUseAlternativeAppIconAndName(useAlternativeAppIconAndName)
+    }
 }
