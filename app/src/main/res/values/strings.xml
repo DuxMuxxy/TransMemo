@@ -99,4 +99,13 @@
     <string name="feature_settings_alt_app_icon_title">Alternative app icon</string>
     <string name="feature_settings_alt_app_icon_description">Use an alternative icon and name in app launcher</string>
     <string name="feature_settings_alt_app_icon_example">The change will be applied after the app is closed. The icon will look like this</string>
+    <string name="feature_intakes_done_date">Done date</string>
+    <string name="feature_intakes_planned_date">Planned date</string>
+    <string name="feature_intakes_done_dose">Done dose</string>
+    <string name="feature_intakes_planned_dose">Planned dose</string>
+    <string name="feature_intakes_done_side">Done side</string>
+    <string name="feature_intakes_planned_side">Planned side</string>
+    <string name="intake_side_left">Left side</string>
+    <string name="intake_side_right">Right side</string>
+    <string name="intake_side_undefined">Unknown side</string>
 </resources>

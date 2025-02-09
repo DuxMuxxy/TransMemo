@@ -12,14 +12,15 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.chrysalide.transmemo.presentation.calendar.navigateToCalendar
+import com.chrysalide.transmemo.presentation.intakes.navigateToIntakes
 import com.chrysalide.transmemo.presentation.inventory.navigateToInventory
 import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination
 import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.CALENDAR
+import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.INTAKES
 import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.INVENTORY
 import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.PRODUCTS
 import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.SETTINGS
 import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.STATISTICS
-import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.TAKES
 import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.WELLBEING
 import com.chrysalide.transmemo.presentation.products.navigateToProducts
 import com.chrysalide.transmemo.presentation.settings.navigateToSettings
@@ -73,7 +74,7 @@ class TransMemoAppState(
 
             when (topLevelDestination) {
                 CALENDAR -> navController.navigateToCalendar(topLevelNavOptions)
-                TAKES -> {} // navController.navigateToIntakes(topLevelNavOptions)
+                INTAKES -> navController.navigateToIntakes(topLevelNavOptions)
                 INVENTORY -> navController.navigateToInventory(topLevelNavOptions)
                 PRODUCTS -> navController.navigateToProducts(topLevelNavOptions)
                 WELLBEING -> {} // navController.navigateToWellbeing(topLevelNavOptions)

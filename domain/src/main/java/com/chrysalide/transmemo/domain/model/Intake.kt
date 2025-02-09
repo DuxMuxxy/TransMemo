@@ -1,13 +1,14 @@
 package com.chrysalide.transmemo.domain.model
 
+import kotlinx.datetime.LocalDate
+
 data class Intake(
     val id: Int = 0,
-    val productId: Int,
-    val unit: MeasureUnit,
+    val product: Product,
     val plannedDose: Float,
     val realDose: Float,
-    val plannedDate: Int,
-    val realDate: Int,
-    val plannedSide: Int,
-    val realSide: Int
+    val plannedDate: LocalDate,
+    val realDate: LocalDate,
+    val plannedSide: IntakeSide,
+    val realSide: IntakeSide
 )

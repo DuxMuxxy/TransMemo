@@ -16,13 +16,13 @@ interface NoteDao {
     suspend fun getById(id: Int): NoteDBEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(products: List<NoteDBEntity>)
+    suspend fun insertAll(notes: List<NoteDBEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(product: NoteDBEntity)
+    suspend fun insert(note: NoteDBEntity)
 
     @Delete
-    suspend fun delete(product: NoteDBEntity)
+    suspend fun delete(note: NoteDBEntity)
 
     @Query("DELETE FROM notes")
     suspend fun deleteAll()

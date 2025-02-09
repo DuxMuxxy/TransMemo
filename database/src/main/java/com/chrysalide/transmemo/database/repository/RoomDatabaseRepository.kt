@@ -11,6 +11,7 @@ import com.chrysalide.transmemo.database.entity.NoteDBEntity
 import com.chrysalide.transmemo.database.entity.ProductDBEntity
 import com.chrysalide.transmemo.database.entity.WellbeingDBEntity
 import com.chrysalide.transmemo.database.entity.relation.ContainerWithProductDBEntity
+import com.chrysalide.transmemo.database.entity.relation.IntakeWithProductDBEntity
 import com.chrysalide.transmemo.domain.boundary.DatabaseRepository
 import com.chrysalide.transmemo.domain.model.Container
 import com.chrysalide.transmemo.domain.model.ContainerState
@@ -77,6 +78,10 @@ internal class RoomDatabaseRepository(
         containerDao.insert(Container.new(container.product).toContainerEntity())
     }
 
+    override suspend fun getAllIntakes(): List<Intake> = intakeDao.getAll().toIntakes()
+
+    override suspend fun getLastIntakeForProduct(productId: Int): Intake = intakeDao.getLastIntakeForProduct(productId).toIntake()
+
     private suspend fun insertNewContainerForProduct(product: Product) {
         if (!containerDao.existsForProduct(product.id)) {
             containerDao.insert(Container.new(product).toContainerEntity())
@@ -137,26 +142,24 @@ internal class RoomDatabaseRepository(
         state = state
     )
 
-    private fun List<IntakeDBEntity>.toIntakes() = map { it.toIntake() }
+    private fun List<IntakeWithProductDBEntity>.toIntakes() = map { it.toIntake() }
 
-    private fun IntakeDBEntity.toIntake() = Intake(
-        id = id,
-        productId = productId,
-        unit = unit,
-        plannedDose = plannedDose,
-        realDose = realDose,
-        plannedDate = plannedDate,
-        realDate = realDate,
-        plannedSide = plannedSide,
-        realSide = realSide
+    private fun IntakeWithProductDBEntity.toIntake() = Intake(
+        id = intake.id,
+        product = product.toProduct(),
+        plannedDose = intake.plannedDose,
+        realDose = intake.realDose,
+        plannedDate = intake.plannedDate,
+        realDate = intake.realDate,
+        plannedSide = intake.plannedSide,
+        realSide = intake.realSide
     )
 
     private fun List<Intake>.toIntakeEntities() = map { it.toIntakeEntity() }
 
     private fun Intake.toIntakeEntity() = IntakeDBEntity(
         id = id,
-        productId = productId,
-        unit = unit,
+        productId = product.id,
         plannedDose = plannedDose,
         realDose = realDose,
         plannedDate = plannedDate,

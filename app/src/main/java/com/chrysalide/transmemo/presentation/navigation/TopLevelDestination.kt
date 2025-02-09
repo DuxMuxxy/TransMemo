@@ -6,6 +6,8 @@ import com.chrysalide.transmemo.R.string
 import com.chrysalide.transmemo.presentation.calendar.CalendarBaseRoute
 import com.chrysalide.transmemo.presentation.calendar.CalendarRoute
 import com.chrysalide.transmemo.presentation.design.TransMemoIcons
+import com.chrysalide.transmemo.presentation.intakes.IntakesBaseRoute
+import com.chrysalide.transmemo.presentation.intakes.IntakesRoute
 import com.chrysalide.transmemo.presentation.inventory.InventoryBaseRoute
 import com.chrysalide.transmemo.presentation.inventory.InventoryRoute
 import com.chrysalide.transmemo.presentation.products.ProductsBaseRoute
@@ -30,13 +32,13 @@ enum class TopLevelDestination(
         route = CalendarRoute::class,
         baseRoute = CalendarBaseRoute::class
     ),
-    TAKES(
+    INTAKES(
         selectedIcon = TransMemoIcons.Intakes,
         unselectedIcon = TransMemoIcons.IntakesUnselected,
         iconTextId = string.feature_intakes_title,
         titleTextId = string.feature_intakes_title,
-        route = CalendarRoute::class,
-        baseRoute = CalendarBaseRoute::class
+        route = IntakesRoute::class,
+        baseRoute = IntakesBaseRoute::class
     ),
     INVENTORY(
         selectedIcon = TransMemoIcons.Inventory,

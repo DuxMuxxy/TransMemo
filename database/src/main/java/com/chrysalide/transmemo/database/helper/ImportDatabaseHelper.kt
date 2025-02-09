@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.net.Uri
 import android.util.Log
+import androidx.collection.mutableIntSetOf
 import com.chrysalide.transmemo.database.di.DATABASE_NAME
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_CAPACITE_UTILISEE
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_DATE_OUVERTURE
@@ -13,6 +14,15 @@ import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.C
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_IDCONTENANT
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.CONTAINERS_COLUMN_IDPRODUIT
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.CONTAINERS_TABLE_NAME
+import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.INTAKES_COLUMN_COTE_PREVU
+import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.INTAKES_COLUMN_COTE_REEL
+import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.INTAKES_COLUMN_DATE_PREVUE
+import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.INTAKES_COLUMN_DATE_REELLE
+import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.INTAKES_COLUMN_DOSE_PREVUE
+import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.INTAKES_COLUMN_DOSE_REELLE
+import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.INTAKES_COLUMN_IDPRISE
+import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.INTAKES_COLUMN_IDPRODUIT
+import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.INTAKES_TABLE_NAME
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.LEGACY_DATABASE_NAME
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.NOTES_COLUMN_DATE
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.NOTES_COLUMN_NOTES
@@ -30,16 +40,6 @@ import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.P
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.PRODUCTS_COLUMN_NOTIFICATIONS
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.PRODUCTS_COLUMN_UNITE
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.PRODUCTS_TABLE_NAME
-import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.TAKES_COLUMN_COTE_PREVU
-import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.TAKES_COLUMN_COTE_REEL
-import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.TAKES_COLUMN_DATE_PREVUE
-import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.TAKES_COLUMN_DATE_REELLE
-import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.TAKES_COLUMN_DOSE_PREVUE
-import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.TAKES_COLUMN_DOSE_REELLE
-import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.TAKES_COLUMN_IDPRISE
-import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.TAKES_COLUMN_IDPRODUIT
-import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.TAKES_COLUMN_UNITE
-import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.TAKES_TABLE_NAME
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.WELLNESS_COLUMN_DATE
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.WELLNESS_COLUMN_IDCRITERE
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.WELLNESS_COLUMN_VALEUR
@@ -48,6 +48,7 @@ import com.chrysalide.transmemo.domain.boundary.DatabaseRepository
 import com.chrysalide.transmemo.domain.model.Container
 import com.chrysalide.transmemo.domain.model.ContainerState
 import com.chrysalide.transmemo.domain.model.Intake
+import com.chrysalide.transmemo.domain.model.IntakeSide
 import com.chrysalide.transmemo.domain.model.MeasureUnit
 import com.chrysalide.transmemo.domain.model.Molecule
 import com.chrysalide.transmemo.domain.model.Note
@@ -68,6 +69,8 @@ class ImportDatabaseHelper(
     private val context: Context,
     private val databaseRepository: DatabaseRepository,
 ) {
+    private val extractedProductIds = mutableIntSetOf()
+
     suspend fun copyFileToInternalStorage(fileUri: Uri) = withContext(Dispatchers.IO) {
         val destinationFile = File(context.getDatabasePath(DATABASE_NAME).parentFile, TMP_DATABASE_NAME)
 
@@ -163,7 +166,8 @@ class ImportDatabaseHelper(
         val containerList = mutableListOf<Container>()
         if (cursor.moveToFirst()) {
             do {
-                containerList.add(cursor.toContainer())
+                val container = cursor.toContainer()
+                if (extractedProductIds.contains(container.product.id)) containerList.add(container)
             } while (cursor.moveToNext())
         }
         if (containerList.isNotEmpty()) databaseRepository.insertContainers(containerList)
@@ -171,12 +175,13 @@ class ImportDatabaseHelper(
     }
 
     private suspend fun SQLiteDatabase.copyIntakes() {
-        val query = "SELECT * FROM $TAKES_TABLE_NAME"
+        val query = "SELECT * FROM $INTAKES_TABLE_NAME"
         val cursor: Cursor = rawQuery(query, null)
         val takeList = mutableListOf<Intake>()
         if (cursor.moveToFirst()) {
             do {
-                takeList.add(cursor.toIntake())
+                val intake = cursor.toIntake()
+                if (extractedProductIds.contains(intake.product.id)) takeList.add(intake)
             } while (cursor.moveToNext())
         }
         if (takeList.isNotEmpty()) databaseRepository.insertIntakes(takeList)
@@ -189,7 +194,9 @@ class ImportDatabaseHelper(
         val productList = mutableListOf<Product>()
         if (cursor.moveToFirst()) {
             do {
-                productList.add(cursor.toProduct())
+                val product = cursor.toProduct()
+                productList.add(product)
+                extractedProductIds.add(product.id)
             } while (cursor.moveToNext())
         }
         if (productList.isNotEmpty()) databaseRepository.insertProducts(productList)
@@ -222,8 +229,10 @@ class ImportDatabaseHelper(
         cursor.close()
     }
 
+    // We have to add 1 to every model indexes because room primary keys auto increment starts at 1, 0 is for not yet id defined
+
     private fun Cursor.toContainer() = Container(
-        id = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_IDCONTENANT)),
+        id = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_IDCONTENANT)) + 1,
         product = Product.default().copy(id = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_IDPRODUIT)) + 1),
         usedCapacity = getFloat(getColumnIndexOrThrow(CONTAINERS_COLUMN_CAPACITE_UTILISEE)),
         openDate = getLong(getColumnIndexOrThrow(CONTAINERS_COLUMN_DATE_OUVERTURE)).toLocalDate(),
@@ -231,19 +240,18 @@ class ImportDatabaseHelper(
     )
 
     private fun Cursor.toIntake() = Intake(
-        id = getInt(getColumnIndexOrThrow(TAKES_COLUMN_IDPRISE)),
-        productId = getInt(getColumnIndexOrThrow(TAKES_COLUMN_IDPRODUIT)),
-        unit = getInt(getColumnIndexOrThrow(TAKES_COLUMN_UNITE)).toUnit(),
-        plannedDose = getFloat(getColumnIndexOrThrow(TAKES_COLUMN_DOSE_PREVUE)),
-        realDose = getFloat(getColumnIndexOrThrow(TAKES_COLUMN_DOSE_REELLE)),
-        plannedDate = getInt(getColumnIndexOrThrow(TAKES_COLUMN_DATE_PREVUE)),
-        realDate = getInt(getColumnIndexOrThrow(TAKES_COLUMN_DATE_REELLE)),
-        plannedSide = getInt(getColumnIndexOrThrow(TAKES_COLUMN_COTE_PREVU)),
-        realSide = getInt(getColumnIndexOrThrow(TAKES_COLUMN_COTE_REEL))
+        id = getInt(getColumnIndexOrThrow(INTAKES_COLUMN_IDPRISE)) + 1,
+        product = Product.default().copy(id = getInt(getColumnIndexOrThrow(INTAKES_COLUMN_IDPRODUIT)) + 1),
+        plannedDose = getFloat(getColumnIndexOrThrow(INTAKES_COLUMN_DOSE_PREVUE)),
+        realDose = getFloat(getColumnIndexOrThrow(INTAKES_COLUMN_DOSE_REELLE)),
+        plannedDate = getLong(getColumnIndexOrThrow(INTAKES_COLUMN_DATE_PREVUE)).toLocalDate(),
+        realDate = getLong(getColumnIndexOrThrow(INTAKES_COLUMN_DATE_REELLE)).toLocalDate(),
+        plannedSide = getInt(getColumnIndexOrThrow(INTAKES_COLUMN_COTE_PREVU)).toIntakeSide(),
+        realSide = getInt(getColumnIndexOrThrow(INTAKES_COLUMN_COTE_REEL)).toIntakeSide()
     )
 
     private fun Cursor.toProduct() = Product(
-        id = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_IDPRODUIT)),
+        id = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_IDPRODUIT)) + 1,
         name = getString(getColumnIndexOrThrow(PRODUCTS_COLUMN_NOM_PRODUIT)),
         molecule = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_IDMOLECULE)).toMolecule(),
         unit = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_UNITE)).toUnit(),
@@ -305,5 +313,11 @@ class ImportDatabaseHelper(
     private fun Int.toContainerState() = when (this) {
         0, 1, 2 -> ContainerState.OPEN
         else -> ContainerState.EMPTY
+    }
+
+    private fun Int.toIntakeSide() = when (this) {
+        1 -> IntakeSide.LEFT
+        2 -> IntakeSide.RIGHT
+        else -> IntakeSide.UNDEFINED
     }
 }

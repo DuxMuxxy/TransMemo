@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "1a967d3a2246af9cae7c3f9406f532ec",
+    "identityHash": "8cfbcb8d5d3fc79916c78c6a07d49b45",
     "entities": [
       {
         "tableName": "containers",
@@ -190,7 +190,7 @@
       },
       {
         "tableName": "intakes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `productId` INTEGER NOT NULL, `unit` TEXT NOT NULL, `plannedDose` REAL NOT NULL, `realDose` REAL NOT NULL, `plannedDate` INTEGER NOT NULL, `realDate` INTEGER NOT NULL, `plannedSide` INTEGER NOT NULL, `realSide` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `productId` INTEGER NOT NULL, `plannedDose` REAL NOT NULL, `realDose` REAL NOT NULL, `plannedDate` TEXT NOT NULL, `realDate` TEXT NOT NULL, `plannedSide` TEXT NOT NULL, `realSide` TEXT NOT NULL, FOREIGN KEY(`productId`) REFERENCES `products`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -202,12 +202,6 @@
             "fieldPath": "productId",
             "columnName": "productId",
             "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "unit",
-            "columnName": "unit",
-            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -225,25 +219,25 @@
           {
             "fieldPath": "plannedDate",
             "columnName": "plannedDate",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "realDate",
             "columnName": "realDate",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "plannedSide",
             "columnName": "plannedSide",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "realSide",
             "columnName": "realSide",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -253,8 +247,30 @@
             "id"
           ]
         },
-        "indices": [],
-        "foreignKeys": []
+        "indices": [
+          {
+            "name": "intakes_productId_index",
+            "unique": false,
+            "columnNames": [
+              "productId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `intakes_productId_index` ON `${TABLE_NAME}` (`productId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "products",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "productId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       },
       {
         "tableName": "wellbeing",
@@ -298,7 +314,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1a967d3a2246af9cae7c3f9406f532ec')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8cfbcb8d5d3fc79916c78c6a07d49b45')"
     ]
   }
 }

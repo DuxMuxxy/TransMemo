@@ -2,9 +2,11 @@ package com.chrysalide.transmemo.di
 
 import androidx.biometric.BiometricManager
 import com.chrysalide.transmemo.data.AndroidBiometricRepository
+import com.chrysalide.transmemo.data.usecase.ComputeNextIntakeForProductUseCase
 import com.chrysalide.transmemo.domain.boundary.BiometricRepository
 import com.chrysalide.transmemo.presentation.MainActivityViewModel
 import com.chrysalide.transmemo.presentation.calendar.CalendarViewModel
+import com.chrysalide.transmemo.presentation.intakes.IntakesViewModel
 import com.chrysalide.transmemo.presentation.inventory.ContainersViewModel
 import com.chrysalide.transmemo.presentation.products.ProductsViewModel
 import com.chrysalide.transmemo.presentation.products.add.AddProductViewModel
@@ -18,6 +20,7 @@ import org.koin.dsl.module
 private val viewModelModule = module {
     viewModelOf(::MainActivityViewModel)
     viewModelOf(::CalendarViewModel)
+    viewModelOf(::IntakesViewModel)
     viewModelOf(::ContainersViewModel)
     viewModelOf(::ProductsViewModel)
     viewModelOf(::AddProductViewModel)
@@ -29,4 +32,8 @@ private val repositoryModule = module {
     singleOf(::AndroidBiometricRepository) bind BiometricRepository::class
 }
 
-val appModule = viewModelModule + repositoryModule
+private val useCaseModule = module {
+    singleOf(::ComputeNextIntakeForProductUseCase)
+}
+
+val appModule = viewModelModule + repositoryModule + useCaseModule

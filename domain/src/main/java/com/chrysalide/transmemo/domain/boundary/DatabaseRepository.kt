@@ -35,4 +35,8 @@ interface DatabaseRepository {
     suspend fun updateContainer(container: Container)
 
     suspend fun recycleContainer(container: Container)
+
+    suspend fun getAllIntakes(): List<Intake>
+
+    suspend fun getLastIntakeForProduct(productId: Int): Intake
 }

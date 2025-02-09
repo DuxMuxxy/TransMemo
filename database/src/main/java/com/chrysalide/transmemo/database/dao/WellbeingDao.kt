@@ -16,13 +16,13 @@ interface WellbeingDao {
     suspend fun getById(id: Long): WellbeingDBEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(entity: WellbeingDBEntity): Long
+    suspend fun insert(wellbeing: WellbeingDBEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(entities: List<WellbeingDBEntity>)
 
     @Delete
-    suspend fun delete(entity: WellbeingDBEntity)
+    suspend fun delete(wellbeing: WellbeingDBEntity)
 
     @Query("DELETE FROM wellbeing")
     suspend fun deleteAll()

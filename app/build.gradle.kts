@@ -57,7 +57,7 @@ dependencies {
     implementation(libs.vectorize)
     implementation(libs.biometric)
 
-    testImplementation(libs.junit)
+    testImplementation(libs.bundles.test)
     testImplementation(libs.koinTest)
 }
 
