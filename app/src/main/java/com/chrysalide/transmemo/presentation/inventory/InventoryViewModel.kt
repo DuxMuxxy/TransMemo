@@ -17,7 +17,7 @@ class ContainersViewModel(
     private val databaseRepository: DatabaseRepository
 ) : ViewModel() {
     val inventoryUiState: StateFlow<InventoryUiState> = databaseRepository
-        .getAllContainers()
+        .observeAllContainers()
         .map {
             it.filter { container -> container.product.inUse && container.state == ContainerState.OPEN }
         }.map(::Containers)

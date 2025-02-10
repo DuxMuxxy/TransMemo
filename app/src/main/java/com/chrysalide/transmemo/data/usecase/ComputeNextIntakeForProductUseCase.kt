@@ -8,7 +8,6 @@ import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.plus
 
-// TODO to unit test
 class ComputeNextIntakeForProductUseCase(
     private val databaseRepository: DatabaseRepository
 ) {

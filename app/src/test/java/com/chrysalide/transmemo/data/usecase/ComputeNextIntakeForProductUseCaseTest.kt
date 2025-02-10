@@ -8,12 +8,11 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.plus
 import org.junit.Test
 
 class ComputeNextIntakeForProductUseCaseTest {
     private val databaseRepository = mockk<DatabaseRepository>()
-    private val computeNextIntakeForProductUseCase = ComputeNextIntakeForProductUseCase(databaseRepository)
+    private val useCase = ComputeNextIntakeForProductUseCase(databaseRepository)
 
     @Test
     fun shouldComputeNextIntakeForProduct() = runTest {
@@ -34,7 +33,7 @@ class ComputeNextIntakeForProductUseCaseTest {
         coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
 
         // Act
-        val result = computeNextIntakeForProductUseCase(product)
+        val result = useCase(product)
 
         // Assert
         assert(result.plannedDose == product.dosePerIntake)

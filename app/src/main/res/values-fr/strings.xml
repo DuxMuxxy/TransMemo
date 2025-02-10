@@ -58,6 +58,11 @@
         <item quantity="many">%d jours</item>
         <item quantity="other">%d jours</item>
     </plurals>
+    <plurals name="global_days_until_text_template">
+        <item quantity="one">Dans %d jour</item>
+        <item quantity="many">Dans %d jours</item>
+        <item quantity="other">Dans %d jours</item>
+    </plurals>
     <string name="feature_products_handle_side">Gestion du côté de la prise</string>
     <string name="feature_products_dosing_per_intake">Dose par prise</string>
     <string name="feature_products_capacity">Capacité de la boîte</string>
@@ -108,4 +113,7 @@
     <string name="intake_side_left">Côté gauche</string>
     <string name="intake_side_right">Côté droit</string>
     <string name="intake_side_undefined">Côté inconnu</string>
+    <string name="feature_calendar_type_intake">Prise à venir</string>
+    <string name="feature_calendar_type_empty">Boîte vide</string>
+    <string name="feature_calendar_type_expiration">Péremption de la boîte</string>
 </resources>

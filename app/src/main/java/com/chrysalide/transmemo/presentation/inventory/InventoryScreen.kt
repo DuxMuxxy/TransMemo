@@ -41,6 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.chrysalide.transmemo.R.string
+import com.chrysalide.transmemo.domain.extension.formatToSystemDate
 import com.chrysalide.transmemo.domain.model.Container
 import com.chrysalide.transmemo.domain.model.ContainerState
 import com.chrysalide.transmemo.domain.model.MeasureUnit
@@ -49,7 +50,6 @@ import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.presentation.design.LinearProgressBar
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.extension.capacity
-import com.chrysalide.transmemo.presentation.extension.emptyDate
 import com.chrysalide.transmemo.presentation.extension.expirationDate
 import com.chrysalide.transmemo.presentation.extension.moleculeName
 import com.chrysalide.transmemo.presentation.extension.openDate
@@ -217,7 +217,7 @@ private fun ContainerCard(
                                     .align(Alignment.CenterVertically)
                                     .padding(horizontal = 24.dp)
                             )
-                            Text(container.emptyDate())
+                            Text(container.emptyDate().formatToSystemDate())
                         }
                         Spacer(modifier = Modifier.height(16.dp))
                         Row(modifier = Modifier.fillMaxWidth()) {

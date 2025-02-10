@@ -16,7 +16,7 @@ class ProductsViewModel(
     private val databaseRepository: DatabaseRepository
 ) : ViewModel() {
     val productsUiState: StateFlow<ProductsUiState> = databaseRepository
-        .getAllProducts()
+        .observeAllProducts()
         .map(::Products)
         .stateIn(
             scope = viewModelScope,

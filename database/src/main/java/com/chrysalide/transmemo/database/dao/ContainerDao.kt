@@ -15,10 +15,13 @@ import kotlinx.coroutines.flow.Flow
 interface ContainerDao {
     @Transaction
     @Query("SELECT * FROM containers WHERE state == 'OPEN'")
-    fun getAll(): Flow<List<ContainerWithProductDBEntity>>
+    fun observeAll(): Flow<List<ContainerWithProductDBEntity>>
 
     @Query("SELECT EXISTS(SELECT * FROM containers WHERE productId = :productId)")
     fun existsForProduct(productId: Int): Boolean
+
+    @Query("SELECT * FROM containers WHERE productId = :productId AND state == 'OPEN'")
+    suspend fun getByProductId(productId: Int): ContainerWithProductDBEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(container: ContainerDBEntity)

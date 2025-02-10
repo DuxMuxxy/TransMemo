@@ -49,7 +49,9 @@ internal class RoomDatabaseRepository(
         wellbeingDao.deleteAll()
     }
 
-    override fun getAllProducts(): Flow<List<Product>> = productDao.getAll().map { it.toProducts() }
+    override fun observeAllProducts(): Flow<List<Product>> = productDao.observeAll().map { it.toProducts() }
+
+    override suspend fun getAllProducts(): List<Product> = productDao.getAll().toProducts()
 
     override suspend fun updateProduct(product: Product) {
         val wasNotInUse = !productDao.getBy(product.id).inUse
@@ -67,7 +69,7 @@ internal class RoomDatabaseRepository(
 
     override suspend fun deleteProduct(product: Product) = productDao.delete(product.toProductEntity())
 
-    override fun getAllContainers(): Flow<List<Container>> = containerDao.getAll().map { it.toContainers() }
+    override fun observeAllContainers(): Flow<List<Container>> = containerDao.observeAll().map { it.toContainers() }
 
     override suspend fun deleteContainer(container: Container) = containerDao.delete(container.toContainerEntity())
 
@@ -81,6 +83,8 @@ internal class RoomDatabaseRepository(
     override suspend fun getAllIntakes(): List<Intake> = intakeDao.getAll().toIntakes()
 
     override suspend fun getLastIntakeForProduct(productId: Int): Intake = intakeDao.getLastIntakeForProduct(productId).toIntake()
+
+    override suspend fun getProductContainer(productId: Int): Container = containerDao.getByProductId(productId).toContainer()
 
     private suspend fun insertNewContainerForProduct(product: Product) {
         if (!containerDao.existsForProduct(product.id)) {

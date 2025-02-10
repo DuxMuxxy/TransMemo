@@ -20,7 +20,9 @@ interface DatabaseRepository {
 
     suspend fun deleteAllData()
 
-    fun getAllProducts(): Flow<List<Product>>
+    fun observeAllProducts(): Flow<List<Product>>
+
+    suspend fun getAllProducts(): List<Product>
 
     suspend fun updateProduct(product: Product)
 
@@ -28,7 +30,7 @@ interface DatabaseRepository {
 
     suspend fun deleteProduct(product: Product)
 
-    fun getAllContainers(): Flow<List<Container>>
+    fun observeAllContainers(): Flow<List<Container>>
 
     suspend fun deleteContainer(container: Container)
 
@@ -39,4 +41,6 @@ interface DatabaseRepository {
     suspend fun getAllIntakes(): List<Intake>
 
     suspend fun getLastIntakeForProduct(productId: Int): Intake
+
+    suspend fun getProductContainer(productId: Int): Container
 }

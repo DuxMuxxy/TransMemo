@@ -14,7 +14,10 @@ import kotlinx.coroutines.flow.Flow
 interface ProductDao {
     @Transaction
     @Query("SELECT * FROM products")
-    fun getAll(): Flow<List<ProductDBEntity>>
+    fun observeAll(): Flow<List<ProductDBEntity>>
+
+    @Query("SELECT * FROM products")
+    suspend fun getAll(): List<ProductDBEntity>
 
     @Query("SELECT * FROM products WHERE id = :id")
     suspend fun getBy(id: Int): ProductDBEntity

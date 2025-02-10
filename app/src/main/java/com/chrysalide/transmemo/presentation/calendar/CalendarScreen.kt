@@ -20,12 +20,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.chrysalide.transmemo.domain.extension.formatToSystemDate
 import com.chrysalide.transmemo.domain.model.IncomingEvent
 import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.IncomingEvents
 import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.Loading
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
+import com.chrysalide.transmemo.presentation.extension.daysUntilText
+import com.chrysalide.transmemo.presentation.extension.typeText
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
-import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -72,12 +74,13 @@ private fun CalendarView(calendarUiState: CalendarUiState, onEventClick: (Incomi
 private fun IncomingEventCard(event: IncomingEvent, onClick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        onClick = onClick,
+        onClick = onClick
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(event.title, style = MaterialTheme.typography.titleLarge)
-            Text(event.description)
-            Text(event.date.toString())
+            Text(event.product.name, style = MaterialTheme.typography.titleLarge)
+            Text(event.date.formatToSystemDate())
+            Text(event.daysUntilText())
+            Text(event.typeText())
         }
     }
 }
@@ -96,14 +99,7 @@ private fun CalendarScreenListPreviews() {
     TransMemoTheme {
         CalendarView(
             IncomingEvents(
-                incomingEvents = listOf(
-                    IncomingEvent("Testostérone", "Prise à venir", LocalDate(2025, 4, 1)),
-                    IncomingEvent("Testostérone", "Prise à venir", LocalDate(2025, 5, 1)),
-                    IncomingEvent("Testostérone", "Prise à venir", LocalDate(2025, 6, 1)),
-                    IncomingEvent("Testostérone", "Prise à venir", LocalDate(2025, 7, 1)),
-                    IncomingEvent("Testostérone", "Péremption de la boîte", LocalDate(2025, 8, 1)),
-                    IncomingEvent("Testostérone", "Boîte vide", LocalDate(2025, 8, 15)),
-                ),
+                incomingEvents = listOf(),
             ),
             onEventClick = {}
         )

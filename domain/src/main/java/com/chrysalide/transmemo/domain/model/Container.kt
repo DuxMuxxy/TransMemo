@@ -1,7 +1,10 @@
 package com.chrysalide.transmemo.domain.model
 
 import com.chrysalide.transmemo.domain.extension.getCurrentLocalDate
+import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.plus
+import kotlin.math.roundToInt
 
 data class Container(
     val id: Int = 0,
@@ -17,5 +20,11 @@ data class Container(
             openDate = getCurrentLocalDate(),
             state = ContainerState.OPEN
         )
+    }
+
+    fun emptyDate(): LocalDate {
+        val remainingCapacity = product.capacity - usedCapacity
+        val remainingIntakes = (remainingCapacity / product.dosePerIntake).roundToInt()
+        return openDate.plus(DatePeriod(days = remainingIntakes * product.intakeInterval))
     }
 }

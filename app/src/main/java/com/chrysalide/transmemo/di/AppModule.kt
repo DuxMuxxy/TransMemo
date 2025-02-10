@@ -3,6 +3,7 @@ package com.chrysalide.transmemo.di
 import androidx.biometric.BiometricManager
 import com.chrysalide.transmemo.data.AndroidBiometricRepository
 import com.chrysalide.transmemo.data.usecase.ComputeNextIntakeForProductUseCase
+import com.chrysalide.transmemo.data.usecase.GetNextCalendarEventsUseCase
 import com.chrysalide.transmemo.domain.boundary.BiometricRepository
 import com.chrysalide.transmemo.presentation.MainActivityViewModel
 import com.chrysalide.transmemo.presentation.calendar.CalendarViewModel
@@ -34,6 +35,7 @@ private val repositoryModule = module {
 
 private val useCaseModule = module {
     singleOf(::ComputeNextIntakeForProductUseCase)
+    singleOf(::GetNextCalendarEventsUseCase)
 }
 
 val appModule = viewModelModule + repositoryModule + useCaseModule
