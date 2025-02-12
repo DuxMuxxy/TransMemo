@@ -9,7 +9,8 @@ sealed class IncomingEvent(
     data class IntakeEvent(
         override val date: LocalDate,
         override val product: Product,
-        val isWarning: Boolean = false
+        val isWarning: Boolean = false,
+        val isToday: Boolean = false
     ) : IncomingEvent(product, date) {
         override fun compareTo(other: IncomingEvent): Int {
             if (this.date != other.date) return this.date.compareTo(other.date)

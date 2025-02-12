@@ -1,6 +1,7 @@
 package com.chrysalide.transmemo.data.usecase
 
 import com.chrysalide.transmemo.domain.boundary.DatabaseRepository
+import com.chrysalide.transmemo.domain.extension.getCurrentLocalDate
 import com.chrysalide.transmemo.domain.model.Intake
 import com.chrysalide.transmemo.domain.model.IntakeSide
 import com.chrysalide.transmemo.domain.model.Product
@@ -16,9 +17,9 @@ class ComputeNextIntakeForProductUseCase(
         return Intake(
             plannedDose = product.dosePerIntake,
             realDose = 0f,
-            plannedDate = lastIntake.plannedDate.plus(DatePeriod(days = product.intakeInterval)),
+            plannedDate = lastIntake?.plannedDate?.plus(DatePeriod(days = product.intakeInterval)) ?: getCurrentLocalDate(),
             realDate = LocalDate.fromEpochDays(0),
-            plannedSide = lastIntake.realSide.getNextSide(),
+            plannedSide = lastIntake?.realSide?.getNextSide() ?: IntakeSide.UNDEFINED,
             realSide = IntakeSide.UNDEFINED,
             product = product
         )

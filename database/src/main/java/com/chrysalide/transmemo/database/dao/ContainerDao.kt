@@ -18,8 +18,9 @@ interface ContainerDao {
     fun observeAll(): Flow<List<ContainerWithProductDBEntity>>
 
     @Query("SELECT EXISTS(SELECT * FROM containers WHERE productId = :productId)")
-    fun existsForProduct(productId: Int): Boolean
+    suspend fun existsForProduct(productId: Int): Boolean
 
+    @Transaction
     @Query("SELECT * FROM containers WHERE productId = :productId AND state == 'OPEN'")
     suspend fun getByProductId(productId: Int): ContainerWithProductDBEntity
 

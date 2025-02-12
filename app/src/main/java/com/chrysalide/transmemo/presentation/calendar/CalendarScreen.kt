@@ -11,23 +11,35 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.chrysalide.transmemo.R
 import com.chrysalide.transmemo.domain.extension.formatToSystemDate
+import com.chrysalide.transmemo.domain.extension.getCurrentLocalDate
 import com.chrysalide.transmemo.domain.model.IncomingEvent
+import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.IncomingEvents
 import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.Loading
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.extension.daysUntilText
 import com.chrysalide.transmemo.presentation.extension.typeText
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -59,7 +71,16 @@ private fun CalendarView(calendarUiState: CalendarUiState, onEventClick: (Incomi
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp),
                 ) {
                     itemsIndexed(items = calendarUiState.incomingEvents) { index, event ->
-                        IncomingEventCard(event, onClick = { onEventClick(event) })
+                        when(event) {
+                            is IncomingEvent.EmptyContainerEvent, is IncomingEvent.ExpirationEvent ->
+                                IncomingCriticalEventCard(event)
+                            is IncomingEvent.IntakeEvent ->
+                                if (event.isToday) {
+                                    TodayIntakeEventCard(event, onClick = { onEventClick(event) })
+                                } else {
+                                    IncomingIntakeEventCard(event)
+                                }
+                        }
                         if (index < calendarUiState.incomingEvents.lastIndex) {
                             Spacer(modifier = Modifier.height(16.dp))
                         }
@@ -71,10 +92,51 @@ private fun CalendarView(calendarUiState: CalendarUiState, onEventClick: (Incomi
 }
 
 @Composable
-private fun IncomingEventCard(event: IncomingEvent, onClick: () -> Unit) {
-    Card(
+private fun TodayIntakeEventCard(event: IncomingEvent.IntakeEvent, onClick: () -> Unit) {
+    OutlinedCard(
         modifier = Modifier.fillMaxWidth(),
-        onClick = onClick
+        colors = CardDefaults.outlinedCardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceTint
+        ),
+        onClick = { if (event.isToday) onClick() },
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(event.product.name, style = MaterialTheme.typography.titleLarge)
+            Text(stringResource(R.string.global_today))
+            Text(event.typeText())
+        }
+    }
+}
+
+@Composable
+private fun IncomingIntakeEventCard(event: IncomingEvent.IntakeEvent) {
+    val containerColor = when {
+        event.isWarning -> MaterialTheme.colorScheme.tertiaryContainer
+        else -> MaterialTheme.colorScheme.surface
+    }
+    OutlinedCard(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.outlinedCardColors(
+            containerColor = containerColor
+        )
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(event.product.name, style = MaterialTheme.typography.titleLarge)
+            Text(event.date.formatToSystemDate())
+            Text(event.daysUntilText())
+            Text(event.typeText())
+        }
+    }
+}
+
+@Composable
+private fun IncomingCriticalEventCard(event: IncomingEvent) {
+    OutlinedCard(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.outlinedCardColors(
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+            contentColor = MaterialTheme.colorScheme.onErrorContainer
+        )
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(event.product.name, style = MaterialTheme.typography.titleLarge)
@@ -96,10 +158,39 @@ private fun CalendarScreenLoadingPreviews() {
 @ThemePreviews
 @Composable
 private fun CalendarScreenListPreviews() {
+    val product = Product.default().copy(
+        name = "Testosterone"
+    )
+    val nowDate = getCurrentLocalDate()
     TransMemoTheme {
         CalendarView(
             IncomingEvents(
-                incomingEvents = listOf(),
+                incomingEvents = listOf(
+                    IncomingEvent.IntakeEvent(
+                        product = product,
+                        date = nowDate,
+                        isWarning = false,
+                        isToday = true
+                    ),
+                    IncomingEvent.IntakeEvent(
+                        product = product,
+                        date = nowDate.plus(DatePeriod(days = 10)),
+                        isWarning = false
+                    ),
+                    IncomingEvent.EmptyContainerEvent(
+                        product = product,
+                        date = nowDate.plus(DatePeriod(days = 15))
+                    ),
+                    IncomingEvent.IntakeEvent(
+                        product = product,
+                        date = nowDate.plus(DatePeriod(days = 17)),
+                        isWarning = true
+                    ),
+                    IncomingEvent.ExpirationEvent(
+                        product = product,
+                        date = nowDate.plus(DatePeriod(days = 100))
+                    )
+                ),
             ),
             onEventClick = {}
         )

@@ -1,6 +1,7 @@
 package com.chrysalide.transmemo.data.usecase
 
 import com.chrysalide.transmemo.domain.boundary.DatabaseRepository
+import com.chrysalide.transmemo.domain.extension.getCurrentLocalDate
 import com.chrysalide.transmemo.domain.model.Container
 import com.chrysalide.transmemo.domain.model.IncomingEvent
 import com.chrysalide.transmemo.domain.model.IncomingEvent.EmptyContainerEvent
@@ -36,12 +37,15 @@ class GetNextCalendarEventsUseCase(
         expirationDate: LocalDate?
     ): List<IntakeEvent> {
         val lastIntake = databaseRepository.getLastIntakeForProduct(product.id)
-        return (1..3).map { count ->
-            val date = lastIntake.plannedDate.plus(DatePeriod(days = product.intakeInterval * count))
+        val countFromDate = lastIntake?.plannedDate ?: getCurrentLocalDate()
+        val counting = lastIntake?.let { (1..3) } ?: (0..2)
+        return counting.map { count ->
+            val date = countFromDate.plus(DatePeriod(days = product.intakeInterval * count))
             IntakeEvent(
                 date = date,
                 product = product,
-                isWarning = (emptyDate?.let { date > it } ?: false) || (expirationDate?.let { date > it } ?: false)
+                isWarning = (emptyDate?.let { date > it } ?: false) || (expirationDate?.let { date > it } ?: false),
+                isToday = date == getCurrentLocalDate()
             )
         }
     }

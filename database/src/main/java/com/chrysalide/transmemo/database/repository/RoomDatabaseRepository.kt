@@ -82,7 +82,7 @@ internal class RoomDatabaseRepository(
 
     override suspend fun getAllIntakes(): List<Intake> = intakeDao.getAll().toIntakes()
 
-    override suspend fun getLastIntakeForProduct(productId: Int): Intake = intakeDao.getLastIntakeForProduct(productId).toIntake()
+    override suspend fun getLastIntakeForProduct(productId: Int): Intake? = intakeDao.getLastIntakeForProduct(productId)?.toIntake()
 
     override suspend fun getProductContainer(productId: Int): Container = containerDao.getByProductId(productId).toContainer()
 

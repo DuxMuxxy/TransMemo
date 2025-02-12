@@ -40,7 +40,7 @@ interface DatabaseRepository {
 
     suspend fun getAllIntakes(): List<Intake>
 
-    suspend fun getLastIntakeForProduct(productId: Int): Intake
+    suspend fun getLastIntakeForProduct(productId: Int): Intake?
 
     suspend fun getProductContainer(productId: Int): Container
 }

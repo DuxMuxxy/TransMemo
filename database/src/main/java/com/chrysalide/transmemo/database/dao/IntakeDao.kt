@@ -17,7 +17,7 @@ interface IntakeDao {
 
     @Transaction
     @Query("SELECT * FROM intakes WHERE productId = :productId ORDER BY realDate DESC LIMIT 1")
-    suspend fun getLastIntakeForProduct(productId: Int): IntakeWithProductDBEntity
+    suspend fun getLastIntakeForProduct(productId: Int): IntakeWithProductDBEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(intakes: List<IntakeDBEntity>)
