@@ -3,6 +3,8 @@ package com.chrysalide.transmemo.presentation.navigation
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.chrysalide.transmemo.R.string
+import com.chrysalide.transmemo.presentation.about.AboutBaseRoute
+import com.chrysalide.transmemo.presentation.about.AboutMenuRoute
 import com.chrysalide.transmemo.presentation.calendar.CalendarBaseRoute
 import com.chrysalide.transmemo.presentation.calendar.CalendarRoute
 import com.chrysalide.transmemo.presentation.design.TransMemoIcons
@@ -79,5 +81,13 @@ enum class TopLevelDestination(
         titleTextId = string.feature_settings_title,
         route = SettingsRoute::class,
         baseRoute = SettingsBaseRoute::class
+    ),
+    ABOUT(
+        selectedIcon = TransMemoIcons.About,
+        unselectedIcon = TransMemoIcons.AboutUnselected,
+        iconTextId = string.feature_about_title,
+        titleTextId = string.feature_about_title,
+        route = AboutMenuRoute::class,
+        baseRoute = AboutBaseRoute::class
     )
 }

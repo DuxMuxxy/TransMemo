@@ -2,8 +2,10 @@ package com.chrysalide.transmemo.presentation.design
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.rounded.DateRange
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Settings
 import dev.sergiobelda.compose.vectorize.images.Images
@@ -32,4 +34,6 @@ object TransMemoIcons {
     val StatisticsUnselected = Images.Icons.Outlined.Monitoring
     val Settings = Icons.Rounded.Settings
     val SettingsUnselected = Icons.Outlined.Settings
+    val About = Icons.Rounded.Info
+    val AboutUnselected = Icons.Outlined.Info
 }

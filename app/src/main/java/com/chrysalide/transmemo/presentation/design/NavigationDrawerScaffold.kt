@@ -31,12 +31,6 @@ fun NavigationDrawerScaffold(
     navigationItems: @Composable () -> Unit,
     drawerState: DrawerState,
     snackbarHostState: SnackbarHostState,
-    navigateToChrysalide: () -> Unit,
-    navigateToHelpUs: () -> Unit,
-    navigateToFacebook: () -> Unit,
-    navigateToContributors: () -> Unit,
-    navigateToHelp: () -> Unit,
-    navigateToAbout: () -> Unit,
     content: @Composable (innerPadding: PaddingValues) -> Unit
 ) {
     ModalNavigationDrawer(
@@ -51,40 +45,6 @@ fun NavigationDrawerScaffold(
                     Text(stringResource(string.app_name), modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleLarge)
                     HorizontalDivider()
                     navigationItems()
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-
-                    Text("Chrysalide", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleMedium)
-                    NavigationDrawerItem(
-                        label = { Text("Chrysalide") },
-                        selected = false,
-                        onClick = navigateToChrysalide
-                    )
-                    NavigationDrawerItem(
-                        label = { Text("Aidez-nous") },
-                        selected = false,
-                        onClick = navigateToHelpUs
-                    )
-                    NavigationDrawerItem(
-                        label = { Text("Groupe Facebook") },
-                        selected = false,
-                        onClick = navigateToFacebook
-                    )
-                    NavigationDrawerItem(
-                        label = { Text("Contributeurs") },
-                        selected = false,
-                        onClick = navigateToContributors
-                    )
-                    NavigationDrawerItem(
-                        label = { Text("Aide") },
-                        selected = false,
-                        onClick = navigateToHelp
-                    )
-                    NavigationDrawerItem(
-                        label = { Text("À propos") },
-                        selected = false,
-                        onClick = navigateToAbout
-                    )
-                    Spacer(Modifier.height(12.dp))
                 }
             }
         },

@@ -91,12 +91,6 @@ fun TransMemoApp(appState: TransMemoAppState, shouldAskAuthentication: Boolean) 
                 },
                 drawerState = drawerState,
                 snackbarHostState = snackbarHostState,
-                navigateToChrysalide = {},
-                navigateToHelpUs = {},
-                navigateToFacebook = {},
-                navigateToContributors = {},
-                navigateToHelp = {},
-                navigateToAbout = {},
             ) { padding ->
                 Column(
                     Modifier

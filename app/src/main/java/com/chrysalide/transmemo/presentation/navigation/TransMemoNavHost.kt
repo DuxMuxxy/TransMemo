@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.chrysalide.transmemo.presentation.TransMemoAppState
+import com.chrysalide.transmemo.presentation.about.aboutScreen
 import com.chrysalide.transmemo.presentation.calendar.CalendarBaseRoute
 import com.chrysalide.transmemo.presentation.calendar.calendarScreen
 import com.chrysalide.transmemo.presentation.intakes.intakesScreen
@@ -28,5 +29,6 @@ fun TransMemoNavHost(
         inventoryScreen(onShowSnackbar)
         productsScreen(onShowSnackbar)
         settingsScreen(onShowSnackbar)
+        aboutScreen()
     }
 }

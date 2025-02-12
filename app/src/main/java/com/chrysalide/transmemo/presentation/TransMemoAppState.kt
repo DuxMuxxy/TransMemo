@@ -11,10 +11,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.chrysalide.transmemo.presentation.about.navigateToAbout
 import com.chrysalide.transmemo.presentation.calendar.navigateToCalendar
 import com.chrysalide.transmemo.presentation.intakes.navigateToIntakes
 import com.chrysalide.transmemo.presentation.inventory.navigateToInventory
 import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination
+import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.ABOUT
 import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.CALENDAR
 import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.INTAKES
 import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.INVENTORY
@@ -80,6 +82,7 @@ class TransMemoAppState(
                 WELLBEING -> {} // navController.navigateToWellbeing(topLevelNavOptions)
                 STATISTICS -> {} // navController.navigateToStatistics(topLevelNavOptions)
                 SETTINGS -> navController.navigateToSettings(topLevelNavOptions)
+                ABOUT -> navController.navigateToAbout(topLevelNavOptions)
             }
         }
     }
