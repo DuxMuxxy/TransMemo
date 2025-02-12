@@ -19,7 +19,7 @@ class GetNextCalendarEventsUseCase(
     suspend operator fun invoke(): List<IncomingEvent> {
         val events = mutableListOf<IncomingEvent>()
 
-        databaseRepository.getAllProducts().forEach { product ->
+        databaseRepository.getInUseProducts().forEach { product ->
             val container = databaseRepository.getProductContainer(product.id)
             val expirationEvent = getExpirationEventFor(container)
             val emptyEvent = getEmptyContainerEventFor(container)

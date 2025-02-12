@@ -22,7 +22,7 @@ interface DatabaseRepository {
 
     fun observeAllProducts(): Flow<List<Product>>
 
-    suspend fun getAllProducts(): List<Product>
+    suspend fun getInUseProducts(): List<Product>
 
     suspend fun updateProduct(product: Product)
 

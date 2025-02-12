@@ -36,7 +36,7 @@ class GetNextCalendarEventsUseCaseTest {
             openDate = LocalDate(2025, 1, 1)
         )
 
-        coEvery { databaseRepository.getAllProducts() } returns listOf(product)
+        coEvery { databaseRepository.getInUseProducts() } returns listOf(product)
         coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
         coEvery { databaseRepository.getProductContainer(product.id) } returns container
 
@@ -90,7 +90,7 @@ class GetNextCalendarEventsUseCaseTest {
             openDate = LocalDate(2025, 1, 1)
         )
 
-        coEvery { databaseRepository.getAllProducts() } returns listOf(product1, product2)
+        coEvery { databaseRepository.getInUseProducts() } returns listOf(product1, product2)
         coEvery { databaseRepository.getLastIntakeForProduct(product1.id) } returns lastIntake1
         coEvery { databaseRepository.getLastIntakeForProduct(product2.id) } returns lastIntake2
         coEvery { databaseRepository.getProductContainer(product1.id) } returns container1
@@ -134,7 +134,7 @@ class GetNextCalendarEventsUseCaseTest {
             openDate = LocalDate(2025, 1, 1)
         )
 
-        coEvery { databaseRepository.getAllProducts() } returns listOf(product)
+        coEvery { databaseRepository.getInUseProducts() } returns listOf(product)
         coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
         coEvery { databaseRepository.getProductContainer(product.id) } returns container
 
@@ -171,7 +171,7 @@ class GetNextCalendarEventsUseCaseTest {
             openDate = LocalDate(2025, 1, 1)
         )
 
-        coEvery { databaseRepository.getAllProducts() } returns listOf(product)
+        coEvery { databaseRepository.getInUseProducts() } returns listOf(product)
         coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
         coEvery { databaseRepository.getProductContainer(product.id) } returns container
 
@@ -208,7 +208,7 @@ class GetNextCalendarEventsUseCaseTest {
             openDate = LocalDate(2025, 1, 1)
         )
 
-        coEvery { databaseRepository.getAllProducts() } returns listOf(product)
+        coEvery { databaseRepository.getInUseProducts() } returns listOf(product)
         coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
         coEvery { databaseRepository.getProductContainer(product.id) } returns container
 
@@ -244,7 +244,7 @@ class GetNextCalendarEventsUseCaseTest {
             openDate = LocalDate(2025, 1, 1)
         )
 
-        coEvery { databaseRepository.getAllProducts() } returns listOf(product)
+        coEvery { databaseRepository.getInUseProducts() } returns listOf(product)
         coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
         coEvery { databaseRepository.getProductContainer(product.id) } returns container
 

@@ -20,8 +20,13 @@ class ContainersViewModel(
         .observeAllContainers()
         .map {
             it.filter { container -> container.product.inUse && container.state == ContainerState.OPEN }
-        }.map(::Containers)
-        .stateIn(
+        }.map {
+            if (it.isNotEmpty()) {
+                Containers(it)
+            } else {
+                InventoryUiState.Empty
+            }
+        }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5.seconds.inWholeMilliseconds),
             initialValue = InventoryUiState.Loading
@@ -36,6 +41,8 @@ class ContainersViewModel(
 
 sealed interface InventoryUiState {
     data object Loading : InventoryUiState
+
+    data object Empty : InventoryUiState
 
     data class Containers(
         val containers: List<Container>

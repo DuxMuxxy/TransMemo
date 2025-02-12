@@ -20,8 +20,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Warning
@@ -78,12 +80,14 @@ import com.chrysalide.transmemo.presentation.extension.isValidIntegerValue
 import com.chrysalide.transmemo.presentation.extension.moleculeName
 import com.chrysalide.transmemo.presentation.extension.stripTrailingZeros
 import com.chrysalide.transmemo.presentation.extension.unitName
+import com.chrysalide.transmemo.presentation.products.ProductsUiState.Empty
 import com.chrysalide.transmemo.presentation.products.ProductsUiState.Loading
 import com.chrysalide.transmemo.presentation.products.ProductsUiState.Products
 import com.chrysalide.transmemo.presentation.products.add.AddProductDialog
 import com.chrysalide.transmemo.presentation.products.delete.AskDeleteProductDialog
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 import dev.sergiobelda.compose.vectorize.images.Images
+import dev.sergiobelda.compose.vectorize.images.icons.outlined.Medication
 import dev.sergiobelda.compose.vectorize.images.icons.rounded.Medication
 import org.koin.androidx.compose.koinViewModel
 
@@ -161,6 +165,29 @@ private fun ProductsView(
                     modifier = Modifier.fillMaxSize(),
                 ) {
                     CircularProgressIndicator()
+                }
+            }
+
+            is Empty -> {
+                Column(
+                    modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        Images.Icons.Rounded.Medication,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.surfaceDim,
+                        modifier = Modifier.size(120.dp)
+                    )
+                }
+                FloatingActionButton(
+                    onClick = addProduct,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(24.dp)
+                ) {
+                    Icon(Icons.Rounded.Add, contentDescription = stringResource(string.feature_products_add_button_content_description))
                 }
             }
 
@@ -555,14 +582,6 @@ fun DropDownValueRow(
 
 @ThemePreviews
 @Composable
-private fun ProductsScreenLoadingPreviews() {
-    TransMemoTheme {
-        ProductsView(Loading, {}, {}, {})
-    }
-}
-
-@ThemePreviews
-@Composable
 private fun ProductsScreenListPreviews() {
     TransMemoTheme {
         ProductsView(
@@ -587,5 +606,21 @@ private fun ProductsScreenListPreviews() {
             addProduct = {},
             deleteProduct = {}
         )
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun ProductsScreenLoadingPreviews() {
+    TransMemoTheme {
+        ProductsView(Loading, {}, {}, {})
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun ProductsScreenEmptyPreviews() {
+    TransMemoTheme {
+        ProductsView(Empty, {}, {}, {})
     }
 }

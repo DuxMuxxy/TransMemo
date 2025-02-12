@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
@@ -57,6 +59,7 @@ import com.chrysalide.transmemo.presentation.extension.productName
 import com.chrysalide.transmemo.presentation.extension.remainingCapacity
 import com.chrysalide.transmemo.presentation.extension.usedCapacity
 import com.chrysalide.transmemo.presentation.inventory.InventoryUiState.Containers
+import com.chrysalide.transmemo.presentation.inventory.InventoryUiState.Empty
 import com.chrysalide.transmemo.presentation.inventory.InventoryUiState.Loading
 import com.chrysalide.transmemo.presentation.inventory.recycle.AskRecycleContainerDialog
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
@@ -120,6 +123,23 @@ private fun InventoryView(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     CircularProgressIndicator()
+                }
+            }
+
+            is Empty -> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        Images.Icons.Outlined.Inventory,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.surfaceDim,
+                        modifier = Modifier.size(120.dp)
+                    )
                 }
             }
 
@@ -208,27 +228,30 @@ private fun ContainerCard(
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            Text(stringResource(string.feature_inventory_empty_date))
-                            HorizontalDivider(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .align(Alignment.CenterVertically)
-                                    .padding(horizontal = 24.dp)
-                            )
-                            Text(container.emptyDate().formatToSystemDate())
-                        }
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            Text(stringResource(string.feature_inventory_total_capacity))
-                            HorizontalDivider(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .align(Alignment.CenterVertically)
-                                    .padding(horizontal = 24.dp)
-                            )
-                            Text(container.capacity())
+                        if (container.product.capacity > container.product.dosePerIntake) {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Row(modifier = Modifier.fillMaxWidth()) {
+                                Text(stringResource(string.feature_inventory_empty_date))
+                                HorizontalDivider(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .align(Alignment.CenterVertically)
+                                        .padding(horizontal = 24.dp),
+                                )
+                                Text(container.emptyDate().formatToSystemDate())
+                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Row(modifier = Modifier.fillMaxWidth()) {
+                                Text(stringResource(string.feature_inventory_total_capacity))
+                                HorizontalDivider(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .align(Alignment.CenterVertically)
+                                        .padding(horizontal = 24.dp),
+                                )
+                                Text(container.capacity())
+                            }
                         }
                     }
                 }
@@ -241,65 +264,60 @@ private fun ContainerCard(
                 Icon(icon, contentDescription = null)
             }
             Spacer(modifier = Modifier.height(16.dp))
-            HorizontalDivider()
-            Box {
-                var progress by remember { mutableFloatStateOf(1F) }
-                val progressAnimation by animateFloatAsState(
-                    targetValue = progress,
-                    animationSpec = tween(durationMillis = 1_500, easing = FastOutSlowInEasing)
-                )
-                LaunchedEffect(Unit) {
-                    progress = (container.product.capacity - container.usedCapacity) / container.product.capacity
-                }
-                LinearProgressBar(
-                    progress = { progressAnimation },
-                    height = 120.dp
-                )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(120.dp)
-                        .padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            stringResource(string.feature_inventory_remaining_capacity),
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                        Text(
-                            container.remainingCapacity(),
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            style = MaterialTheme.typography.headlineMedium
-                        )
+
+            if (container.product.capacity > container.product.dosePerIntake) {
+                HorizontalDivider()
+                Box {
+                    var progress by remember { mutableFloatStateOf(1F) }
+                    val progressAnimation by animateFloatAsState(
+                        targetValue = progress,
+                        animationSpec = tween(durationMillis = 1_500, easing = FastOutSlowInEasing),
+                    )
+                    LaunchedEffect(Unit) {
+                        progress = (container.product.capacity - container.usedCapacity) / container.product.capacity
                     }
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        horizontalAlignment = Alignment.End
+                    LinearProgressBar(
+                        progress = { progressAnimation },
+                        height = 120.dp,
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(120.dp)
+                            .padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text(
-                            stringResource(string.feature_inventory_used_capacity),
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
-                        Text(
-                            container.usedCapacity(),
-                            color = MaterialTheme.colorScheme.onSecondaryContainer,
-                            style = MaterialTheme.typography.headlineMedium,
-                            textAlign = TextAlign.End
-                        )
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                stringResource(string.feature_inventory_remaining_capacity),
+                                color = MaterialTheme.colorScheme.onPrimary,
+                            )
+                            Text(
+                                container.remainingCapacity(),
+                                color = MaterialTheme.colorScheme.onPrimary,
+                                style = MaterialTheme.typography.headlineMedium,
+                            )
+                        }
+                        Column(
+                            modifier = Modifier.weight(1f),
+                            horizontalAlignment = Alignment.End,
+                        ) {
+                            Text(
+                                stringResource(string.feature_inventory_used_capacity),
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            )
+                            Text(
+                                container.usedCapacity(),
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                style = MaterialTheme.typography.headlineMedium,
+                                textAlign = TextAlign.End,
+                            )
+                        }
                     }
                 }
             }
         }
-    }
-}
-
-@ThemePreviews
-@Composable
-private fun InventoryScreenLoadingPreviews() {
-    TransMemoTheme {
-        InventoryView(Loading, {})
     }
 }
 
@@ -332,5 +350,85 @@ private fun InventoryScreenListPreviews() {
             ),
             recycleContainer = {}
         )
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun InventoryScreenNoCapacityPreviews() {
+    TransMemoTheme {
+        InventoryView(
+            Containers(
+                containers = listOf(
+                    Container(
+                        usedCapacity = 3f,
+                        openDate = LocalDate(2020, 4, 5),
+                        state = ContainerState.OPEN,
+                        product = Product(
+                            name = "Testosterone",
+                            molecule = Molecule.TESTOSTERONE,
+                            unit = MeasureUnit.MILLILITER,
+                            dosePerIntake = 0f,
+                            capacity = 0f,
+                            expirationDays = 365,
+                            intakeInterval = 21,
+                            alertDelay = 1,
+                            handleSide = true,
+                            inUse = true,
+                            notifications = 15
+                        )
+                    )
+                )
+            ),
+            recycleContainer = {}
+        )
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun InventoryScreenOneShotPreviews() {
+    TransMemoTheme {
+        InventoryView(
+            Containers(
+                containers = listOf(
+                    Container(
+                        usedCapacity = 3f,
+                        openDate = LocalDate(2020, 4, 5),
+                        state = ContainerState.OPEN,
+                        product = Product(
+                            name = "Testosterone",
+                            molecule = Molecule.TESTOSTERONE,
+                            unit = MeasureUnit.MILLILITER,
+                            dosePerIntake = 1f,
+                            capacity = 1f,
+                            expirationDays = 365,
+                            intakeInterval = 21,
+                            alertDelay = 1,
+                            handleSide = true,
+                            inUse = true,
+                            notifications = 15
+                        )
+                    )
+                )
+            ),
+            recycleContainer = {}
+        )
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun InventoryScreenLoadingPreviews() {
+    TransMemoTheme {
+        InventoryView(Loading, {})
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun InventoryScreenEmptyPreviews() {
+    TransMemoTheme {
+        InventoryView(Empty, {})
     }
 }

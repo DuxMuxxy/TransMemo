@@ -20,13 +20,21 @@ class CalendarViewModel(
     init {
         viewModelScope.launch {
             val events = getNextCalendarEventsUseCase()
-            _calendarUiState.update { IncomingEvents(events) }
+            _calendarUiState.update {
+                if (events.isNotEmpty()) {
+                    IncomingEvents(events)
+                } else {
+                    CalendarUiState.Empty
+                }
+            }
         }
     }
 }
 
 sealed interface CalendarUiState {
     data object Loading : CalendarUiState
+
+    data object Empty : CalendarUiState
 
     data class IncomingEvents(
         val incomingEvents: List<IncomingEvent>

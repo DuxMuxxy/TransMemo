@@ -51,7 +51,7 @@ internal class RoomDatabaseRepository(
 
     override fun observeAllProducts(): Flow<List<Product>> = productDao.observeAll().map { it.toProducts() }
 
-    override suspend fun getAllProducts(): List<Product> = productDao.getAll().toProducts()
+    override suspend fun getInUseProducts(): List<Product> = productDao.getInUseProducts().toProducts()
 
     override suspend fun updateProduct(product: Product) {
         val wasNotInUse = !productDao.getBy(product.id).inUse
@@ -63,8 +63,8 @@ internal class RoomDatabaseRepository(
     }
 
     override suspend fun insertProduct(product: Product) {
-        productDao.insert(product.toProductEntity())
-        insertNewContainerForProduct(product)
+        val insertedProductId = productDao.insert(product.toProductEntity())
+        insertNewContainerForProduct(product.copy(id = insertedProductId.toInt()))
     }
 
     override suspend fun deleteProduct(product: Product) = productDao.delete(product.toProductEntity())

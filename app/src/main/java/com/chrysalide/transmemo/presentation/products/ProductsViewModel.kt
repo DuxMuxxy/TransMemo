@@ -17,8 +17,9 @@ class ProductsViewModel(
 ) : ViewModel() {
     val productsUiState: StateFlow<ProductsUiState> = databaseRepository
         .observeAllProducts()
-        .map(::Products)
-        .stateIn(
+        .map {
+            if (it.isNotEmpty()) Products(it) else ProductsUiState.Empty
+        }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5.seconds.inWholeMilliseconds),
             initialValue = ProductsUiState.Loading
@@ -39,6 +40,8 @@ class ProductsViewModel(
 
 sealed interface ProductsUiState {
     data object Loading : ProductsUiState
+
+    data object Empty : ProductsUiState
 
     data class Products(
         val products: List<Product>

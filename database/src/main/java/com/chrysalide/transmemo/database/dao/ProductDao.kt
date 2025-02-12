@@ -16,8 +16,8 @@ interface ProductDao {
     @Query("SELECT * FROM products")
     fun observeAll(): Flow<List<ProductDBEntity>>
 
-    @Query("SELECT * FROM products")
-    suspend fun getAll(): List<ProductDBEntity>
+    @Query("SELECT * FROM products WHERE inUse = 1")
+    suspend fun getInUseProducts(): List<ProductDBEntity>
 
     @Query("SELECT * FROM products WHERE id = :id")
     suspend fun getBy(id: Int): ProductDBEntity
@@ -26,7 +26,7 @@ interface ProductDao {
     suspend fun insertAll(products: List<ProductDBEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(product: ProductDBEntity)
+    suspend fun insert(product: ProductDBEntity): Long
 
     @Delete
     suspend fun delete(product: ProductDBEntity)

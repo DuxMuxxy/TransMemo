@@ -1,5 +1,6 @@
 package com.chrysalide.transmemo.presentation.calendar
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,11 +9,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.Card
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -28,18 +34,15 @@ import com.chrysalide.transmemo.domain.extension.formatToSystemDate
 import com.chrysalide.transmemo.domain.extension.getCurrentLocalDate
 import com.chrysalide.transmemo.domain.model.IncomingEvent
 import com.chrysalide.transmemo.domain.model.Product
+import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.Empty
 import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.IncomingEvents
 import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.Loading
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.extension.daysUntilText
 import com.chrysalide.transmemo.presentation.extension.typeText
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DatePeriod
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
-import kotlinx.datetime.toLocalDateTime
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -65,13 +68,28 @@ private fun CalendarView(calendarUiState: CalendarUiState, onEventClick: (Incomi
                 }
             }
 
+            is Empty -> {
+                Column(
+                    modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        Icons.Outlined.DateRange,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.surfaceDim,
+                        modifier = Modifier.size(120.dp)
+                    )
+                }
+            }
+
             is IncomingEvents -> {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp),
                 ) {
                     itemsIndexed(items = calendarUiState.incomingEvents) { index, event ->
-                        when(event) {
+                        when (event) {
                             is IncomingEvent.EmptyContainerEvent, is IncomingEvent.ExpirationEvent ->
                                 IncomingCriticalEventCard(event)
                             is IncomingEvent.IntakeEvent ->

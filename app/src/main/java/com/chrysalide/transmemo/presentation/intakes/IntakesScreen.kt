@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.MoreVert
@@ -50,6 +52,10 @@ import com.chrysalide.transmemo.presentation.extension.shouldShowPlannedDate
 import com.chrysalide.transmemo.presentation.extension.shouldShowPlannedDose
 import com.chrysalide.transmemo.presentation.extension.shouldShowPlannedSide
 import com.chrysalide.transmemo.presentation.extension.shouldShowSideInfo
+import com.chrysalide.transmemo.presentation.intakes.IntakesUiState.Empty
+import com.chrysalide.transmemo.presentation.intakes.IntakesUiState.Intakes
+import com.chrysalide.transmemo.presentation.intakes.IntakesUiState.Loading
+import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 import dev.sergiobelda.compose.vectorize.images.Images
 import dev.sergiobelda.compose.vectorize.images.icons.outlined.Vaccines
 import kotlinx.datetime.LocalDate
@@ -68,7 +74,7 @@ fun IntakesScreen(
 private fun IntakesView(intakesUiState: IntakesUiState) {
     Box(modifier = Modifier.fillMaxSize()) {
         when (intakesUiState) {
-            IntakesUiState.Loading -> {
+            Loading -> {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.fillMaxSize()
@@ -76,7 +82,21 @@ private fun IntakesView(intakesUiState: IntakesUiState) {
                     CircularProgressIndicator()
                 }
             }
-            is IntakesUiState.Intakes -> {
+            Empty -> {
+                Column(
+                    modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        Images.Icons.Outlined.Vaccines,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.surfaceDim,
+                        modifier = Modifier.size(120.dp)
+                    )
+                }
+            }
+            is Intakes -> {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 88.dp)
@@ -272,7 +292,7 @@ private fun IntakeCard(intake: Intake) {
 
 @ThemePreviews
 @Composable
-private fun IntakesViewPreview() {
+private fun IntakesScreenPreview() {
     val product = Product(
         name = "Testosterone",
         molecule = Molecule.TESTOSTERONE,
@@ -286,37 +306,47 @@ private fun IntakesViewPreview() {
         inUse = true,
         notifications = 15
     )
-    IntakesView(
-        intakesUiState = IntakesUiState.Intakes(
-            nextIntake = Intake(
-                plannedDose = 1f,
-                realDose = 0f,
-                plannedDate = LocalDate(2020, 4, 6),
-                realDate = LocalDate(1970, 1, 1),
-                plannedSide = IntakeSide.RIGHT,
-                realSide = IntakeSide.RIGHT,
-                product = product
-            ),
-            intakes = listOf(
-                Intake(
+    TransMemoTheme {
+        IntakesView(
+            intakesUiState = Intakes(
+                nextIntake = Intake(
                     plannedDose = 1f,
-                    realDose = 1f,
-                    plannedDate = LocalDate(2020, 4, 5),
-                    realDate = LocalDate(2020, 4, 5),
-                    plannedSide = IntakeSide.LEFT,
-                    realSide = IntakeSide.LEFT,
-                    product = product
-                ),
-                Intake(
-                    plannedDose = 1f,
-                    realDose = 1f,
-                    plannedDate = LocalDate(2020, 4, 4),
-                    realDate = LocalDate(2020, 4, 4),
+                    realDose = 0f,
+                    plannedDate = LocalDate(2020, 4, 6),
+                    realDate = LocalDate(1970, 1, 1),
                     plannedSide = IntakeSide.RIGHT,
                     realSide = IntakeSide.RIGHT,
                     product = product
+                ),
+                intakes = listOf(
+                    Intake(
+                        plannedDose = 1f,
+                        realDose = 1f,
+                        plannedDate = LocalDate(2020, 4, 5),
+                        realDate = LocalDate(2020, 4, 5),
+                        plannedSide = IntakeSide.LEFT,
+                        realSide = IntakeSide.LEFT,
+                        product = product
+                    ),
+                    Intake(
+                        plannedDose = 1f,
+                        realDose = 1f,
+                        plannedDate = LocalDate(2020, 4, 4),
+                        realDate = LocalDate(2020, 4, 4),
+                        plannedSide = IntakeSide.RIGHT,
+                        realSide = IntakeSide.RIGHT,
+                        product = product
+                    )
                 )
             )
         )
-    )
+    }
+}
+
+@ThemePreviews
+@Composable
+private fun IntakesScreenEmptyPreview() {
+    TransMemoTheme {
+        IntakesView(intakesUiState = Empty)
+    }
 }

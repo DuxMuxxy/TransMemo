@@ -20,12 +20,16 @@ class IntakesViewModel(
     init {
         viewModelScope.launch {
             val previousIntakes = databaseRepository.getAllIntakes()
-            val product = previousIntakes.first().product
-            _intakesUiState.update {
-                IntakesUiState.Intakes(
-                    nextIntake = computeNextIntakeForProductUseCase(product),
-                    intakes = previousIntakes
-                )
+            if (previousIntakes.isNotEmpty()) {
+                val product = previousIntakes.first().product
+                _intakesUiState.update {
+                    IntakesUiState.Intakes(
+                        nextIntake = computeNextIntakeForProductUseCase(product),
+                        intakes = previousIntakes
+                    )
+                }
+            } else {
+                _intakesUiState.update { IntakesUiState.Empty }
             }
         }
     }
@@ -33,6 +37,8 @@ class IntakesViewModel(
 
 sealed interface IntakesUiState {
     data object Loading : IntakesUiState
+
+    data object Empty : IntakesUiState
 
     data class Intakes(
         val nextIntake: Intake,
