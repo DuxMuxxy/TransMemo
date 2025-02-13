@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
@@ -31,8 +31,9 @@ fun TMSubScreen(
     navigateUp: () -> Unit,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-        Spacer(Modifier.statusBarsPadding())
+    Column(
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).systemBarsPadding()
+    ) {
         IconButton(navigateUp, modifier = Modifier.padding(8.dp)) {
             Icon(TransMemoIcons.Back, stringResource(titleRes))
         }
@@ -47,7 +48,7 @@ fun TMSubScreen(
         Text(
             stringResource(titleRes),
             style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier.padding(horizontal = 24.dp),
+            modifier = Modifier.padding(horizontal = 24.dp).align(Alignment.CenterHorizontally),
         )
         Spacer(Modifier.height(16.dp))
         content()

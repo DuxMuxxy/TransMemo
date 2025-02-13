@@ -124,4 +124,13 @@
     <string name="feature_about_contributors_title">Contributeurs</string>
     <string name="feature_about_help_title">Aide</string>
     <string name="feature_settings_dynamic_colors_title">Utiliser les couleurs dynamiques</string>
+    <string name="feature_about_contributors_development_title">Développement</string>
+    <string name="feature_about_contributors_translation_title">Traductions</string>
+    <string name="feature_about_contributors_tests_title">Tests</string>
+    <string name="feature_about_contributors_translation_english">Anglais</string>
+    <string name="feature_about_contributors_translation_portuguese">Portugais (Brésil)</string>
+    <string name="feature_about_contributors_translation_spanish">Espagnol</string>
+    <string name="feature_about_contributors_translation_czech">Tchèque</string>
+    <string name="feature_about_contributors_translation_german_swedish">Allemand et Suédois</string>
+    <string name="feature_about_contributors_translation_russian">Russe</string>
 </resources>
