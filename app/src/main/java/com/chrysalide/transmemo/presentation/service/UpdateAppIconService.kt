@@ -21,10 +21,14 @@ private const val ALTERNATIVE_PACKAGE_NAME = "com.chrysalide.transmemo.presentat
 class UpdateAppIconService : Service() {
     private val userDataRepository: UserDataRepository by inject()
     private var alternativeAppIconSettingAtLaunch = false
+    private var currentAppIconSetting = false
 
     init {
         CoroutineScope(Job()).launch {
             alternativeAppIconSettingAtLaunch = userDataRepository.userData.first().useAlternativeAppIconAndName
+            userDataRepository.userData.collect {
+                currentAppIconSetting = it.useAlternativeAppIconAndName
+            }
         }
     }
 
@@ -38,12 +42,9 @@ class UpdateAppIconService : Service() {
     }
 
     private fun tryUpdateAppIcon() {
-        CoroutineScope(Job()).launch {
-            val currentUseAlternativeAppIconSetting = userDataRepository.userData.first().useAlternativeAppIconAndName
-            val shouldUpdate = currentUseAlternativeAppIconSetting != alternativeAppIconSettingAtLaunch
-            if (shouldUpdate) {
-                updateAppIcon(currentUseAlternativeAppIconSetting)
-            }
+        val shouldUpdate = currentAppIconSetting != alternativeAppIconSettingAtLaunch
+        if (shouldUpdate) {
+            updateAppIcon(currentAppIconSetting)
         }
     }
 
