@@ -40,6 +40,7 @@ import com.chrysalide.transmemo.domain.model.MeasureUnit
 import com.chrysalide.transmemo.domain.model.Molecule
 import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
+import com.chrysalide.transmemo.presentation.design.TransMemoIcons
 import com.chrysalide.transmemo.presentation.extension.doneDate
 import com.chrysalide.transmemo.presentation.extension.doneDose
 import com.chrysalide.transmemo.presentation.extension.doneSide
@@ -56,8 +57,6 @@ import com.chrysalide.transmemo.presentation.intakes.IntakesUiState.Empty
 import com.chrysalide.transmemo.presentation.intakes.IntakesUiState.Intakes
 import com.chrysalide.transmemo.presentation.intakes.IntakesUiState.Loading
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
-import dev.sergiobelda.compose.vectorize.images.Images
-import dev.sergiobelda.compose.vectorize.images.icons.outlined.Vaccines
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
 
@@ -89,7 +88,7 @@ private fun IntakesView(intakesUiState: IntakesUiState) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Icon(
-                        Images.Icons.Outlined.Vaccines,
+                        TransMemoIcons.IntakesUnselected,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.surfaceDim,
                         modifier = Modifier.size(120.dp)
@@ -105,7 +104,7 @@ private fun IntakesView(intakesUiState: IntakesUiState) {
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                             // Replace by an illustration ?
                             Icon(
-                                Images.Icons.Outlined.Vaccines,
+                                TransMemoIcons.Intakes,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primaryContainer,
                                 modifier = Modifier.size(120.dp)

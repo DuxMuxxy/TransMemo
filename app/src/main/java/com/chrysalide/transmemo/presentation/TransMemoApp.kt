@@ -108,12 +108,12 @@ fun TransMemoApp(appState: TransMemoAppState, shouldAskAuthentication: Boolean) 
                             onNavigationClick = {
                                 coroutineScope.launch { drawerState.open() }
                             },
-                            scrollBehavior = scrollBehavior,
+                            scrollBehavior = scrollBehavior
                         )
                     }
 
                     Box(
-                        modifier = Modifier.consumeWindowInsets(WindowInsets.safeDrawing.only(WindowInsetsSides.Top)),
+                        // modifier = Modifier.consumeWindowInsets(WindowInsets.safeDrawing.only(WindowInsetsSides.Top)),
                     ) {
                         TransMemoNavHost(
                             appState = appState,

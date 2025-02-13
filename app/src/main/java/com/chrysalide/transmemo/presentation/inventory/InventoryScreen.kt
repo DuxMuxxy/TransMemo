@@ -51,6 +51,7 @@ import com.chrysalide.transmemo.domain.model.Molecule
 import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.presentation.design.LinearProgressBar
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
+import com.chrysalide.transmemo.presentation.design.TransMemoIcons
 import com.chrysalide.transmemo.presentation.extension.capacity
 import com.chrysalide.transmemo.presentation.extension.expirationDate
 import com.chrysalide.transmemo.presentation.extension.moleculeName
@@ -135,7 +136,7 @@ private fun InventoryView(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Icon(
-                        Images.Icons.Outlined.Inventory,
+                        TransMemoIcons.InventoryUnselected,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.surfaceDim,
                         modifier = Modifier.size(120.dp)
@@ -152,7 +153,7 @@ private fun InventoryView(
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                             // Replace by an illustration ?
                             Icon(
-                                Images.Icons.Outlined.Inventory,
+                                TransMemoIcons.Inventory,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primaryContainer,
                                 modifier = Modifier.size(120.dp)

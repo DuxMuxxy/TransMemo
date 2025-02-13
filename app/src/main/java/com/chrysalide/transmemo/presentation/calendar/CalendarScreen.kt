@@ -14,8 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -38,6 +36,7 @@ import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.Empty
 import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.IncomingEvents
 import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.Loading
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
+import com.chrysalide.transmemo.presentation.design.TransMemoIcons
 import com.chrysalide.transmemo.presentation.extension.daysUntilText
 import com.chrysalide.transmemo.presentation.extension.typeText
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
@@ -75,7 +74,7 @@ private fun CalendarView(calendarUiState: CalendarUiState, onEventClick: (Incomi
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Icon(
-                        Icons.Outlined.DateRange,
+                        TransMemoIcons.Calendar,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.surfaceDim,
                         modifier = Modifier.size(120.dp)

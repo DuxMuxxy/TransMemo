@@ -1,8 +1,8 @@
 package com.chrysalide.transmemo.presentation.about
 
-import android.view.MenuItem
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,79 +13,78 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.chrysalide.transmemo.R
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
+import com.chrysalide.transmemo.presentation.design.TransMemoIcons
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
-import dev.sergiobelda.compose.vectorize.images.Images
-import dev.sergiobelda.compose.vectorize.images.icons.outlined.Group
-import dev.sergiobelda.compose.vectorize.images.icons.outlined.VolunteerActivism
-import kotlin.text.append
+import dev.sergiobelda.compose.vectorize.images.icons.filled.Facebook
+import dev.sergiobelda.compose.vectorize.images.icons.filled.Help
 
 @Composable
 fun AboutMenuScreen(
     navigateToChrysalide: () -> Unit,
-    navigateToHelpUs: () -> Unit,
-    navigateToFacebook: () -> Unit,
     navigateToContributors: () -> Unit,
     navigateToHelp: () -> Unit,
 ) {
+    val context = LocalContext.current
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(rememberScrollState())
     ) {
         MenuItem(
-            "Chrysalide",
-            icon = Images.Icons.Outlined.VolunteerActivism,
+            stringResource(R.string.feature_about_chrysalide_asso_title),
+            icon = TransMemoIcons.HelpUs, // TODO chrysalide icon svg ?
             onClick = navigateToChrysalide,
         )
         HorizontalDivider()
+        val helpUsLink = stringResource(R.string.feature_about_help_us_link)
         MenuItem(
-            "Aidez-nous",
-            icon = Images.Icons.Outlined.VolunteerActivism,
-            onClick = navigateToHelpUs,
+            stringResource(R.string.feature_about_help_us_title),
+            icon = TransMemoIcons.HelpUs,
+            onClick = {
+                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(helpUsLink)))
+            },
+        )
+        HorizontalDivider()
+        val facebookLink = stringResource(R.string.feature_about_facebook_link)
+        MenuItem(
+            stringResource(R.string.feature_about_facebook_title),
+            icon = TransMemoIcons.Facebook,
+            onClick = {
+                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(facebookLink)))
+            },
         )
         HorizontalDivider()
         MenuItem(
-            "Groupe Facebook",
-            icon = Images.Icons.Outlined.VolunteerActivism,
-            onClick = navigateToFacebook,
-        )
-        HorizontalDivider()
-        MenuItem(
-            "Contributeurs",
-            icon = Images.Icons.Outlined.Group,
+            stringResource(R.string.feature_about_contributors_title),
+            icon = TransMemoIcons.Contributors,
             onClick = navigateToContributors,
         )
         HorizontalDivider()
         MenuItem(
-            "Aide",
-            icon = Images.Icons.Outlined.VolunteerActivism,
+            stringResource(R.string.feature_about_help_title),
+            icon = TransMemoIcons.Help,
             onClick = navigateToHelp,
         )
         HorizontalDivider()
@@ -141,8 +140,6 @@ private fun AboutMenuScreenPreview() {
     TransMemoTheme {
         AboutMenuScreen(
             navigateToChrysalide = {},
-            navigateToHelpUs = {},
-            navigateToFacebook = {},
             navigateToContributors = {},
             navigateToHelp = {},
         )

@@ -68,6 +68,7 @@ import com.chrysalide.transmemo.domain.model.MeasureUnit
 import com.chrysalide.transmemo.domain.model.Molecule
 import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
+import com.chrysalide.transmemo.presentation.design.TransMemoIcons
 import com.chrysalide.transmemo.presentation.extension.alertDelay
 import com.chrysalide.transmemo.presentation.extension.containerCapacity
 import com.chrysalide.transmemo.presentation.extension.dosePerIntake
@@ -86,9 +87,6 @@ import com.chrysalide.transmemo.presentation.products.ProductsUiState.Products
 import com.chrysalide.transmemo.presentation.products.add.AddProductDialog
 import com.chrysalide.transmemo.presentation.products.delete.AskDeleteProductDialog
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
-import dev.sergiobelda.compose.vectorize.images.Images
-import dev.sergiobelda.compose.vectorize.images.icons.outlined.Medication
-import dev.sergiobelda.compose.vectorize.images.icons.rounded.Medication
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -175,7 +173,7 @@ private fun ProductsView(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Icon(
-                        Images.Icons.Rounded.Medication,
+                        TransMemoIcons.ProductsUnselected,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.surfaceDim,
                         modifier = Modifier.size(120.dp)
@@ -200,7 +198,7 @@ private fun ProductsView(
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                             // Replace by an illustration ?
                             Icon(
-                                Images.Icons.Rounded.Medication,
+                                TransMemoIcons.Products,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primaryContainer,
                                 modifier = Modifier.size(120.dp)

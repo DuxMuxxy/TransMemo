@@ -22,7 +22,7 @@ fun NavController.navigateToCalendar(navOptions: NavOptions) = navigate(route = 
  *  The Calendar screen of the app.
  *  This should be supplied from a separate module.
  */
-fun NavGraphBuilder.calendarScreen() {
+fun NavGraphBuilder.calendarGraph() {
     navigation<CalendarBaseRoute>(startDestination = CalendarRoute) {
         composable<CalendarRoute> {
             CalendarScreen(

@@ -119,4 +119,11 @@
     <string name="feature_about_title">About</string>
     <string name="feature_about_menu_text">Trans Memo is an application made by Chrysalide.\n\nPlease feel free to send us your comments and suggestions.\n\nThis application is free, but you can support Chrysalide by joining us or making a donation at </string>
     <string name="feature_about_menu_link" translatable="false">https://www.chrysalide-asso.fr/</string>
+    <string name="feature_about_help_us_link" translatable="false">https://www.helloasso.com/associations/chrysalide/formulaires/1</string>
+    <string name="feature_about_help_us_title">Help us</string>
+    <string name="feature_about_chrysalide_asso_title" translatable="false">Chrysalide</string>
+    <string name="feature_about_facebook_title">Facebook group</string>
+    <string name="feature_about_facebook_link" translatable="false">https://facebook.com/groups/TestoMemoUsers/</string>
+    <string name="feature_about_contributors_title">Contributors</string>
+    <string name="feature_about_help_title">Help</string>
 </resources>

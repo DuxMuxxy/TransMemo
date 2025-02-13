@@ -8,13 +8,10 @@ import com.chrysalide.transmemo.presentation.about.AboutMenuRoute
 import com.chrysalide.transmemo.presentation.calendar.CalendarBaseRoute
 import com.chrysalide.transmemo.presentation.calendar.CalendarRoute
 import com.chrysalide.transmemo.presentation.design.TransMemoIcons
-import com.chrysalide.transmemo.presentation.intakes.IntakesBaseRoute
 import com.chrysalide.transmemo.presentation.intakes.IntakesRoute
-import com.chrysalide.transmemo.presentation.inventory.InventoryBaseRoute
 import com.chrysalide.transmemo.presentation.inventory.InventoryRoute
 import com.chrysalide.transmemo.presentation.products.ProductsBaseRoute
 import com.chrysalide.transmemo.presentation.products.ProductsRoute
-import com.chrysalide.transmemo.presentation.settings.SettingsBaseRoute
 import com.chrysalide.transmemo.presentation.settings.SettingsRoute
 import kotlin.reflect.KClass
 
@@ -40,7 +37,7 @@ enum class TopLevelDestination(
         iconTextId = string.feature_intakes_title,
         titleTextId = string.feature_intakes_title,
         route = IntakesRoute::class,
-        baseRoute = IntakesBaseRoute::class
+        baseRoute = IntakesRoute::class
     ),
     INVENTORY(
         selectedIcon = TransMemoIcons.Inventory,
@@ -48,7 +45,7 @@ enum class TopLevelDestination(
         iconTextId = string.feature_inventory_title,
         titleTextId = string.feature_inventory_title,
         route = InventoryRoute::class,
-        baseRoute = InventoryBaseRoute::class
+        baseRoute = InventoryRoute::class
     ),
     PRODUCTS(
         selectedIcon = TransMemoIcons.Products,
@@ -80,7 +77,7 @@ enum class TopLevelDestination(
         iconTextId = string.feature_settings_title,
         titleTextId = string.feature_settings_title,
         route = SettingsRoute::class,
-        baseRoute = SettingsBaseRoute::class
+        baseRoute = SettingsRoute::class
     ),
     ABOUT(
         selectedIcon = TransMemoIcons.About,

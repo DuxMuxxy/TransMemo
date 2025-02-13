@@ -4,9 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.chrysalide.transmemo.presentation.TransMemoAppState
-import com.chrysalide.transmemo.presentation.about.aboutScreen
+import com.chrysalide.transmemo.presentation.about.aboutGraph
+import com.chrysalide.transmemo.presentation.about.navigateToAboutChrysalide
+import com.chrysalide.transmemo.presentation.about.navigateToAboutContributors
+import com.chrysalide.transmemo.presentation.about.navigateToAboutHelp
 import com.chrysalide.transmemo.presentation.calendar.CalendarBaseRoute
-import com.chrysalide.transmemo.presentation.calendar.calendarScreen
+import com.chrysalide.transmemo.presentation.calendar.calendarGraph
 import com.chrysalide.transmemo.presentation.intakes.intakesScreen
 import com.chrysalide.transmemo.presentation.inventory.inventoryScreen
 import com.chrysalide.transmemo.presentation.products.productsScreen
@@ -24,11 +27,16 @@ fun TransMemoNavHost(
         startDestination = CalendarBaseRoute,
         modifier = modifier
     ) {
-        calendarScreen()
+        calendarGraph()
         intakesScreen()
         inventoryScreen(onShowSnackbar)
         productsScreen(onShowSnackbar)
         settingsScreen(onShowSnackbar)
-        aboutScreen()
+        aboutGraph(
+            navigateToChrysalide = { navController.navigateToAboutChrysalide() },
+            navigateToContributors = { navController.navigateToAboutContributors() },
+            navigateToHelp = { navController.navigateToAboutHelp() },
+            navigateUp = { navController.navigateUp() }
+        )
     }
 }
