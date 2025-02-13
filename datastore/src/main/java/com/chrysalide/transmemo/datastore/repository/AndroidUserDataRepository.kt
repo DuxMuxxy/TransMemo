@@ -15,6 +15,10 @@ internal class AndroidUserDataRepository(
         preferencesDataSource.setDarkThemeConfig(darkThemeConfig)
     }
 
+    override suspend fun setDynamicColorPreference(useDynamicColor: Boolean) {
+        preferencesDataSource.setDynamicColorPreference(useDynamicColor)
+    }
+
     override suspend fun setLegacyDatabaseHasBeenImported() {
         preferencesDataSource.setLegacyDatabaseHasBeenImported()
     }

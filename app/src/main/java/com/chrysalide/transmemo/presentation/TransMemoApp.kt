@@ -1,6 +1,5 @@
 package com.chrysalide.transmemo.presentation
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -112,20 +111,16 @@ fun TransMemoApp(appState: TransMemoAppState, shouldAskAuthentication: Boolean) 
                         )
                     }
 
-                    Box(
-                        // modifier = Modifier.consumeWindowInsets(WindowInsets.safeDrawing.only(WindowInsetsSides.Top)),
-                    ) {
-                        TransMemoNavHost(
-                            appState = appState,
-                            onShowSnackbar = { message, action ->
-                                snackbarHostState.showSnackbar(
-                                    message = message,
-                                    actionLabel = action,
-                                    duration = Short,
-                                ) == ActionPerformed
-                            },
-                        )
-                    }
+                    TransMemoNavHost(
+                        appState = appState,
+                        onShowSnackbar = { message, action ->
+                            snackbarHostState.showSnackbar(
+                                message = message,
+                                actionLabel = action,
+                                duration = Short,
+                            ) == ActionPerformed
+                        },
+                    )
                 }
             }
         }

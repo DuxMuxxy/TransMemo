@@ -18,6 +18,7 @@ internal class PreferencesDataSource(
                 DarkThemeConfigProto.DARK_THEME_CONFIG_DARK -> DarkThemeConfig.DARK
                 else -> DarkThemeConfig.FOLLOW_SYSTEM
             },
+            useDynamicColor = it.useDynamicColor,
             legacyDatabaseHasBeenImported = it.legacyDatabaseHasBeenImported,
             askAuthentication = it.askAuthentication,
             useAlternativeAppIconAndName = it.useAlternativeAppIconAndName
@@ -33,6 +34,12 @@ internal class PreferencesDataSource(
                     DarkThemeConfig.DARK -> DarkThemeConfigProto.DARK_THEME_CONFIG_DARK
                 }
             }
+        }
+    }
+
+    suspend fun setDynamicColorPreference(useDynamicColor: Boolean) {
+        userPreferences.updateData {
+            it.copy { this.useDynamicColor = useDynamicColor }
         }
     }
 

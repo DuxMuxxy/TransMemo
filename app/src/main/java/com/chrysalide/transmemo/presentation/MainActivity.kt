@@ -65,7 +65,10 @@ class MainActivity : FragmentActivity() {
 
             val appState = rememberTransMemoAppState()
 
-            TransMemoTheme(darkTheme = darkTheme) {
+            TransMemoTheme(
+                darkTheme = darkTheme,
+                disableDynamicTheming = shouldDisableDynamicTheming(uiState),
+            ) {
                 TransMemoApp(appState, viewModel.shouldAskAuthenticationAtLaunch)
             }
         }
@@ -87,6 +90,14 @@ private fun shouldUseDarkTheme(uiState: MainActivityUiState): Boolean =
                 DarkThemeConfig.DARK -> true
             }
     }
+
+@Composable
+private fun shouldDisableDynamicTheming(
+    uiState: MainActivityUiState,
+): Boolean = when (uiState) {
+    Loading -> false
+    is Success -> !uiState.useDynamicColor
+}
 
 /**
  * The default light scrim, as defined by androidx and the platform:

@@ -30,6 +30,7 @@ class SettingsViewModel(
         .map { userData ->
             UserEditableSettings(
                 darkThemeConfig = userData.darkThemeConfig,
+                useDynamicColor = userData.useDynamicColor,
                 canDeviceAskAuthentication = biometricRepository.canDeviceAskAuthentication(),
                 askAuthentication = userData.askAuthentication,
                 useAlternativeAppIconAndName = userData.useAlternativeAppIconAndName
@@ -43,6 +44,12 @@ class SettingsViewModel(
     fun updateDarkThemeConfig(darkThemeConfig: DarkThemeConfig) {
         viewModelScope.launch {
             userDataRepository.setDarkThemeConfig(darkThemeConfig)
+        }
+    }
+
+    fun updateDynamicColorPreference(useDynamicColor: Boolean) {
+        viewModelScope.launch {
+            userDataRepository.setDynamicColorPreference(useDynamicColor)
         }
     }
 
@@ -78,6 +85,7 @@ sealed interface SettingsUiState {
 
     data class UserEditableSettings(
         val darkThemeConfig: DarkThemeConfig,
+        val useDynamicColor: Boolean,
         val canDeviceAskAuthentication: Boolean,
         val askAuthentication: Boolean,
         val useAlternativeAppIconAndName: Boolean

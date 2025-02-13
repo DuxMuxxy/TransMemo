@@ -37,7 +37,7 @@ class MainActivityViewModel(
 
     val uiState: StateFlow<MainActivityUiState> = userDataRepository.userData
         .map {
-            Success(it.darkThemeConfig)
+            Success(it.darkThemeConfig, it.useDynamicColor)
         }.stateIn(
             scope = viewModelScope,
             initialValue = Loading,
@@ -49,6 +49,7 @@ sealed interface MainActivityUiState {
     data object Loading : MainActivityUiState
 
     data class Success(
-        val darkThemeConfig: DarkThemeConfig
+        val darkThemeConfig: DarkThemeConfig,
+        val useDynamicColor: Boolean = false
     ) : MainActivityUiState
 }

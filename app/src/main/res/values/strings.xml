@@ -126,4 +126,6 @@
     <string name="feature_about_facebook_link" translatable="false">https://facebook.com/groups/TestoMemoUsers/</string>
     <string name="feature_about_contributors_title">Contributors</string>
     <string name="feature_about_help_title">Help</string>
+    <string name="feature_settings_dynamic_colors_preference" translatable="false">Material You</string>
+    <string name="feature_settings_dynamic_colors_title">Use dynamic colors</string>
 </resources>

@@ -7,7 +7,8 @@ option java_multiple_files = true;
 
 message UserPreferences {
   DarkThemeConfigProto dark_theme_config = 1;
-  bool legacyDatabaseHasBeenImported = 2;
-  bool askAuthentication = 3;
-  bool useAlternativeAppIconAndName = 4;
+  bool useDynamicColor = 2;
+  bool legacyDatabaseHasBeenImported = 3;
+  bool askAuthentication = 4;
+  bool useAlternativeAppIconAndName = 5;
 }

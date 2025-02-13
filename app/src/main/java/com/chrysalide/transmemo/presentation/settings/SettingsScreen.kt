@@ -54,6 +54,7 @@ import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.settings.SettingsUiState.Loading
 import com.chrysalide.transmemo.presentation.settings.SettingsUiState.UserEditableSettings
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
+import com.chrysalide.transmemo.presentation.theme.supportsDynamicTheming
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -83,6 +84,7 @@ fun SettingsScreen(
     SettingsView(
         settingsUiState = settingsUiState,
         onChangeDarkThemeConfig = viewModel::updateDarkThemeConfig,
+        onChangeDynamicColorPreference = viewModel::updateDynamicColorPreference,
         setAskAuthentication = viewModel::updateAskAuthentication,
         setUseAlternativeAppIconAndName = viewModel::updateUseAlternativeAppIconAndName,
         importDatabaseFile = viewModel::importDatabaseFile
@@ -93,6 +95,7 @@ fun SettingsScreen(
 private fun SettingsView(
     settingsUiState: SettingsUiState,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
+    onChangeDynamicColorPreference: (Boolean) -> Unit,
     setAskAuthentication: (Boolean) -> Unit,
     setUseAlternativeAppIconAndName: (Boolean) -> Unit,
     importDatabaseFile: (Uri) -> Unit
@@ -131,6 +134,7 @@ private fun SettingsView(
                 SettingsPanel(
                     settings = settingsUiState,
                     onChangeDarkThemeConfig = onChangeDarkThemeConfig,
+                    onChangeDynamicColorPreference = onChangeDynamicColorPreference,
                     onChangeAskAuthentication = { askAuthentication ->
                         if (askAuthentication) {
                             showBiometricPrompt = true
@@ -150,11 +154,17 @@ private fun SettingsView(
 private fun ColumnScope.SettingsPanel(
     settings: UserEditableSettings,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
+    onChangeDynamicColorPreference: (Boolean) -> Unit,
     onChangeAskAuthentication: (Boolean) -> Unit,
     onChangeUseAlternativeAppIconAndName: (Boolean) -> Unit,
     onImportClick: () -> Unit
 ) {
-    AppearancePanel(settings.darkThemeConfig, onChangeDarkThemeConfig)
+    AppearancePanel(
+        settings.darkThemeConfig,
+        settings.useDynamicColor,
+        onChangeDarkThemeConfig,
+        onChangeDynamicColorPreference
+    )
     Spacer(modifier = Modifier.height(16.dp))
     HorizontalDivider()
     Spacer(modifier = Modifier.height(16.dp))
@@ -174,12 +184,15 @@ private fun ColumnScope.SettingsPanel(
 @Composable
 private fun ColumnScope.AppearancePanel(
     darkThemeConfig: DarkThemeConfig,
-    onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit
+    useDynamicColors: Boolean,
+    onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
+    onChangeDynamicColorPreference: (Boolean) -> Unit
 ) {
+    val supportDynamicColor: Boolean = supportsDynamicTheming()
     SettingsSectionTitle(text = stringResource(string.feature_settings_appearance_title))
     Spacer(modifier = Modifier.height(16.dp))
     SettingsSectionSubtitle(text = stringResource(string.feature_settings_dark_mode_preference))
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(8.dp))
     SingleChoiceSegmentedButtonRow(
         modifier = Modifier.align(Alignment.CenterHorizontally)
     ) {
@@ -201,6 +214,16 @@ private fun ColumnScope.AppearancePanel(
             selected = darkThemeConfig == DARK,
             label = { Text(stringResource(string.feature_settings_dark_mode_config_dark)) }
         )
+    }
+
+    if (supportDynamicColor) {
+        Spacer(modifier = Modifier.height(32.dp))
+        SettingsSectionSubtitle(text = stringResource(string.feature_settings_dynamic_colors_preference))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            SettingsDescription(text = stringResource(string.feature_settings_dynamic_colors_title))
+            Spacer(modifier = Modifier.weight(1f).padding(end = 16.dp))
+            Switch(checked = useDynamicColors, onCheckedChange = onChangeDynamicColorPreference)
+        }
     }
 }
 
@@ -230,7 +253,7 @@ private fun ColumnScope.SecurityPanel(
             Switch(checked = askAuthentication, onCheckedChange = onChangeAskAuthentication)
         }
     }
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(32.dp))
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(
@@ -332,6 +355,7 @@ private fun SettingsScreenLoadingPreview() {
         SettingsView(
             settingsUiState = Loading,
             onChangeDarkThemeConfig = {},
+            onChangeDynamicColorPreference = {},
             setAskAuthentication = {},
             setUseAlternativeAppIconAndName = {},
             importDatabaseFile = {}
@@ -346,11 +370,13 @@ private fun SettingsScreenPreview() {
         SettingsView(
             settingsUiState = UserEditableSettings(
                 darkThemeConfig = FOLLOW_SYSTEM,
+                useDynamicColor = false,
                 canDeviceAskAuthentication = true,
                 askAuthentication = true,
                 useAlternativeAppIconAndName = false
             ),
             onChangeDarkThemeConfig = {},
+            onChangeDynamicColorPreference = {},
             setAskAuthentication = {},
             setUseAlternativeAppIconAndName = {},
             importDatabaseFile = {}
@@ -365,11 +391,13 @@ private fun SettingsScreenNoDeviceAuthenticatorPreview() {
         SettingsView(
             settingsUiState = UserEditableSettings(
                 darkThemeConfig = FOLLOW_SYSTEM,
+                useDynamicColor = false,
                 canDeviceAskAuthentication = false,
                 askAuthentication = false,
                 useAlternativeAppIconAndName = false
             ),
             onChangeDarkThemeConfig = {},
+            onChangeDynamicColorPreference = {},
             setAskAuthentication = {},
             setUseAlternativeAppIconAndName = {},
             importDatabaseFile = {}
