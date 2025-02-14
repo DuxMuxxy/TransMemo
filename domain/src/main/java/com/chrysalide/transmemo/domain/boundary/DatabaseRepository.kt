@@ -38,7 +38,7 @@ interface DatabaseRepository {
 
     suspend fun recycleContainer(container: Container)
 
-    suspend fun getAllIntakes(): List<Intake>
+    fun observeAllIntakes(): Flow<List<Intake>>
 
     suspend fun getLastIntakeForProduct(productId: Int): Intake?
 

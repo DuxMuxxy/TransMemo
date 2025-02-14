@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -112,8 +113,10 @@ private fun IntakesView(intakesUiState: IntakesUiState) {
                         }
                         Spacer(modifier = Modifier.height(32.dp))
                     }
+                    items(items = intakesUiState.nextIntakes) { intake ->
+                        NextIntakeCard(intake)
+                    }
                     item {
-                        NextIntakeCard(intakesUiState.nextIntake)
                         Box(
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center
@@ -308,14 +311,16 @@ private fun IntakesScreenPreview() {
     TransMemoTheme {
         IntakesView(
             intakesUiState = Intakes(
-                nextIntake = Intake(
-                    plannedDose = 1f,
-                    realDose = 0f,
-                    plannedDate = LocalDate(2020, 4, 6),
-                    realDate = LocalDate(1970, 1, 1),
-                    plannedSide = IntakeSide.RIGHT,
-                    realSide = IntakeSide.RIGHT,
-                    product = product
+                nextIntakes = listOf(
+                    Intake(
+                        plannedDose = 1f,
+                        realDose = 0f,
+                        plannedDate = LocalDate(2020, 4, 6),
+                        realDate = LocalDate(1970, 1, 1),
+                        plannedSide = IntakeSide.RIGHT,
+                        realSide = IntakeSide.RIGHT,
+                        product = product
+                    )
                 ),
                 intakes = listOf(
                     Intake(

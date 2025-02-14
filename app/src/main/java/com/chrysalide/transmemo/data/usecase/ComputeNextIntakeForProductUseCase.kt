@@ -12,17 +12,24 @@ import kotlinx.datetime.plus
 class ComputeNextIntakeForProductUseCase(
     private val databaseRepository: DatabaseRepository
 ) {
-    suspend operator fun invoke(product: Product): Intake {
-        val lastIntake = databaseRepository.getLastIntakeForProduct(product.id)
-        return Intake(
-            plannedDose = product.dosePerIntake,
-            realDose = 0f,
-            plannedDate = lastIntake?.plannedDate?.plus(DatePeriod(days = product.intakeInterval)) ?: getCurrentLocalDate(),
-            realDate = LocalDate.fromEpochDays(0),
-            plannedSide = lastIntake?.realSide?.getNextSide() ?: IntakeSide.UNDEFINED,
-            realSide = IntakeSide.UNDEFINED,
-            product = product
-        )
+    suspend operator fun invoke(products: List<Product>): List<Intake> {
+        val lastProductsIntakes = products.map { product ->
+            product to databaseRepository.getLastIntakeForProduct(product.id)
+        }
+        return lastProductsIntakes
+            .map {
+                Intake(
+                    plannedDose = it.first.dosePerIntake,
+                    realDose = 0f,
+                    plannedDate = it.second?.plannedDate?.plus(DatePeriod(days = it.first.intakeInterval)) ?: getCurrentLocalDate(),
+                    realDate = LocalDate.fromEpochDays(0),
+                    plannedSide = it.second?.realSide?.getNextSide() ?: IntakeSide.UNDEFINED,
+                    realSide = IntakeSide.UNDEFINED,
+                    product = it.first,
+                )
+            }.groupBy { it.plannedDate }
+            .minBy { it.key }
+            .value
     }
 
     private fun IntakeSide.getNextSide(): IntakeSide = when (this) {

@@ -80,7 +80,7 @@ internal class RoomDatabaseRepository(
         containerDao.insert(Container.new(container.product).toContainerEntity())
     }
 
-    override suspend fun getAllIntakes(): List<Intake> = intakeDao.getAll().toIntakes()
+    override fun observeAllIntakes(): Flow<List<Intake>> = intakeDao.observeAll().map { it.toIntakes() }
 
     override suspend fun getLastIntakeForProduct(productId: Int): Intake? = intakeDao.getLastIntakeForProduct(productId)?.toIntake()
 

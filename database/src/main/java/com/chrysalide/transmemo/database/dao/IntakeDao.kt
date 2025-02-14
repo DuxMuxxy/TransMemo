@@ -8,12 +8,13 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.chrysalide.transmemo.database.entity.IntakeDBEntity
 import com.chrysalide.transmemo.database.entity.relation.IntakeWithProductDBEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface IntakeDao {
     @Transaction
     @Query("SELECT * FROM intakes ORDER BY realDate DESC")
-    suspend fun getAll(): List<IntakeWithProductDBEntity>
+    fun observeAll(): Flow<List<IntakeWithProductDBEntity>>
 
     @Transaction
     @Query("SELECT * FROM intakes WHERE productId = :productId ORDER BY realDate DESC LIMIT 1")
