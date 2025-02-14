@@ -133,4 +133,5 @@
     <string name="feature_about_contributors_translation_czech">Tchèque</string>
     <string name="feature_about_contributors_translation_german_swedish">Allemand et Suédois</string>
     <string name="feature_about_contributors_translation_russian">Russe</string>
+    <string name="feature_calendar_do_intake_button">Faire la prise</string>
 </resources>

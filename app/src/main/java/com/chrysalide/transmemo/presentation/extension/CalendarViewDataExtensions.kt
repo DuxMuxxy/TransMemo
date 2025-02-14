@@ -7,11 +7,12 @@ import com.chrysalide.transmemo.R
 import com.chrysalide.transmemo.domain.extension.getCurrentLocalDate
 import com.chrysalide.transmemo.domain.model.IncomingEvent
 import com.chrysalide.transmemo.domain.model.IncomingEvent.IntakeEvent
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.daysUntil
 
 @Composable
-fun IncomingEvent.daysUntilText(): String {
-    val daysUntilText = getCurrentLocalDate().daysUntil(date)
+fun LocalDate.daysUntilText(): String {
+    val daysUntilText = getCurrentLocalDate().daysUntil(this)
     return pluralStringResource(R.plurals.global_days_until_text_template, daysUntilText, daysUntilText)
 }
 

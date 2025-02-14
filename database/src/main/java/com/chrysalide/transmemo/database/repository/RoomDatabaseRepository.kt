@@ -51,7 +51,7 @@ internal class RoomDatabaseRepository(
 
     override fun observeAllProducts(): Flow<List<Product>> = productDao.observeAll().map { it.toProducts() }
 
-    override suspend fun getInUseProducts(): List<Product> = productDao.getInUseProducts().toProducts()
+    override fun observeInUseProducts(): Flow<List<Product>> = productDao.observeInUseProducts().map { it.toProducts() }
 
     override suspend fun updateProduct(product: Product) {
         val wasNotInUse = !productDao.getBy(product.id).inUse

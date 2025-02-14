@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,10 +15,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +44,7 @@ import com.chrysalide.transmemo.presentation.extension.daysUntilText
 import com.chrysalide.transmemo.presentation.extension.typeText
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.plus
 import org.koin.androidx.compose.koinViewModel
 
@@ -69,7 +73,9 @@ private fun CalendarView(calendarUiState: CalendarUiState, onEventClick: (Incomi
 
             is Empty -> {
                 Column(
-                    modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -83,26 +89,51 @@ private fun CalendarView(calendarUiState: CalendarUiState, onEventClick: (Incomi
             }
 
             is IncomingEvents -> {
+                val eventsByDate = calendarUiState.incomingEvents.entries.toList()
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp)
                 ) {
-                    itemsIndexed(items = calendarUiState.incomingEvents) { index, event ->
-                        when (event) {
-                            is IncomingEvent.EmptyContainerEvent, is IncomingEvent.ExpirationEvent ->
-                                IncomingCriticalEventCard(event)
-                            is IncomingEvent.IntakeEvent ->
-                                if (event.isToday) {
-                                    TodayIntakeEventCard(event, onClick = { onEventClick(event) })
-                                } else {
-                                    IncomingIntakeEventCard(event)
-                                }
-                        }
-                        if (index < calendarUiState.incomingEvents.lastIndex) {
-                            Spacer(modifier = Modifier.height(16.dp))
+                    itemsIndexed(items = eventsByDate) { index, entry ->
+                        DateEvents(entry.key, entry.value, onEventClick)
+                        if (index < eventsByDate.lastIndex) {
+                            Spacer(modifier = Modifier.height(32.dp))
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun DateEvents(date: LocalDate, events: List<IncomingEvent>, onEventClick: (IncomingEvent.IntakeEvent) -> Unit) {
+    val isToday = date == getCurrentLocalDate()
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            if (isToday) {
+                Text(stringResource(R.string.global_today), style = MaterialTheme.typography.titleLarge)
+            } else {
+                Text("${date.formatToSystemDate()} - ${date.daysUntilText()}", style = MaterialTheme.typography.titleMedium)
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        events.forEachIndexed { index, event ->
+            when (event) {
+                is IncomingEvent.EmptyContainerEvent, is IncomingEvent.ExpirationEvent ->
+                    IncomingCriticalEventCard(event)
+                is IncomingEvent.IntakeEvent ->
+                    if (isToday) {
+                        TodayIntakeEventCard(event, onClick = { onEventClick(event) })
+                    } else {
+                        IncomingIntakeEventCard(event)
+                    }
+            }
+            if (index < events.lastIndex) {
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
@@ -115,12 +146,29 @@ private fun TodayIntakeEventCard(event: IncomingEvent.IntakeEvent, onClick: () -
         colors = CardDefaults.outlinedCardColors(
             containerColor = MaterialTheme.colorScheme.surfaceTint
         ),
-        onClick = { if (event.isToday) onClick() },
+        onClick = onClick
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(event.product.name, style = MaterialTheme.typography.titleLarge)
-            Text(stringResource(R.string.global_today))
-            Text(event.typeText())
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Column {
+                Text(event.product.name, style = MaterialTheme.typography.titleLarge)
+                Text(event.typeText())
+            }
+            Spacer(
+                Modifier
+                    .weight(1f)
+                    .padding(end = 16.dp)
+            )
+            OutlinedButton(
+                onClick,
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ) {
+                Text(stringResource(R.string.feature_calendar_do_intake_button))
+            }
         }
     }
 }
@@ -139,8 +187,6 @@ private fun IncomingIntakeEventCard(event: IncomingEvent.IntakeEvent) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(event.product.name, style = MaterialTheme.typography.titleLarge)
-            Text(event.date.formatToSystemDate())
-            Text(event.daysUntilText())
             Text(event.typeText())
         }
     }
@@ -157,8 +203,6 @@ private fun IncomingCriticalEventCard(event: IncomingEvent) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(event.product.name, style = MaterialTheme.typography.titleLarge)
-            Text(event.date.formatToSystemDate())
-            Text(event.daysUntilText())
             Text(event.typeText())
         }
     }
@@ -182,30 +226,45 @@ private fun CalendarScreenListPreviews() {
     TransMemoTheme {
         CalendarView(
             IncomingEvents(
-                incomingEvents = listOf(
-                    IncomingEvent.IntakeEvent(
-                        product = product,
-                        date = nowDate,
-                        isWarning = false,
-                        isToday = true
+                incomingEvents = mapOf(
+                    nowDate to listOf(
+                        IncomingEvent.IntakeEvent(
+                            product = product,
+                            date = nowDate,
+                            isWarning = false,
+                            isToday = true
+                        )
                     ),
-                    IncomingEvent.IntakeEvent(
-                        product = product,
-                        date = nowDate.plus(DatePeriod(days = 10)),
-                        isWarning = false
+                    nowDate.plus(DatePeriod(days = 10)) to listOf(
+                        IncomingEvent.IntakeEvent(
+                            product = product,
+                            date = nowDate.plus(DatePeriod(days = 10)),
+                            isWarning = false
+                        ),
+                        IncomingEvent.IntakeEvent(
+                            product = product,
+                            date = nowDate.plus(DatePeriod(days = 10)),
+                            isWarning = false
+                        )
                     ),
-                    IncomingEvent.EmptyContainerEvent(
-                        product = product,
-                        date = nowDate.plus(DatePeriod(days = 15))
+                    nowDate.plus(DatePeriod(days = 15)) to listOf(
+                        IncomingEvent.EmptyContainerEvent(
+                            product = product,
+                            date = nowDate.plus(DatePeriod(days = 15))
+                        )
                     ),
-                    IncomingEvent.IntakeEvent(
-                        product = product,
-                        date = nowDate.plus(DatePeriod(days = 17)),
-                        isWarning = true
+                    nowDate.plus(DatePeriod(days = 17)) to listOf(
+                        IncomingEvent.IntakeEvent(
+                            product = product,
+                            date = nowDate.plus(DatePeriod(days = 17)),
+                            isWarning = true
+                        )
                     ),
-                    IncomingEvent.ExpirationEvent(
-                        product = product,
-                        date = nowDate.plus(DatePeriod(days = 100))
+                    nowDate.plus(DatePeriod(days = 100)) to listOf(
+                        IncomingEvent.ExpirationEvent(
+                            product = product,
+                            date = nowDate.plus(DatePeriod(days = 100))
+                        )
                     )
                 ),
             ),

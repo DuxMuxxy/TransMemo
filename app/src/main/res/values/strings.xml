@@ -137,4 +137,5 @@
     <string name="feature_about_contributors_translation_czech">Czech</string>
     <string name="feature_about_contributors_translation_german_swedish">German and Swedish</string>
     <string name="feature_about_contributors_translation_russian">Russian</string>
+    <string name="feature_calendar_do_intake_button">Do the intake</string>
 </resources>

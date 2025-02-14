@@ -17,7 +17,7 @@ interface ProductDao {
     fun observeAll(): Flow<List<ProductDBEntity>>
 
     @Query("SELECT * FROM products WHERE inUse = 1")
-    suspend fun getInUseProducts(): List<ProductDBEntity>
+    fun observeInUseProducts(): Flow<List<ProductDBEntity>>
 
     @Query("SELECT * FROM products WHERE id = :id")
     suspend fun getBy(id: Int): ProductDBEntity

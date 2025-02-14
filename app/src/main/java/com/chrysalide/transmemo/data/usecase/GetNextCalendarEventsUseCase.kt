@@ -8,6 +8,9 @@ import com.chrysalide.transmemo.domain.model.IncomingEvent.EmptyContainerEvent
 import com.chrysalide.transmemo.domain.model.IncomingEvent.ExpirationEvent
 import com.chrysalide.transmemo.domain.model.IncomingEvent.IntakeEvent
 import com.chrysalide.transmemo.domain.model.Product
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.forEach
+import kotlinx.coroutines.flow.map
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.plus
@@ -16,20 +19,21 @@ import kotlinx.datetime.plus
 class GetNextCalendarEventsUseCase(
     private val databaseRepository: DatabaseRepository
 ) {
-    suspend operator fun invoke(): List<IncomingEvent> {
-        val events = mutableListOf<IncomingEvent>()
-
-        databaseRepository.getInUseProducts().forEach { product ->
-            val container = databaseRepository.getProductContainer(product.id)
-            val expirationEvent = getExpirationEventFor(container)
-            val emptyEvent = getEmptyContainerEventFor(container)
-            expirationEvent?.let(events::add)
-            emptyEvent?.let(events::add)
-            events.addAll(get3NextIntakeEventsFor(product, emptyEvent?.date, expirationEvent?.date))
-        }
-
-        return events.sorted()
-    }
+    operator fun invoke(): Flow<Map<LocalDate, List<IncomingEvent>>> =
+        databaseRepository
+            .observeInUseProducts()
+            .map {
+                val events = mutableListOf<IncomingEvent>()
+                it.forEach { product ->
+                    val container = databaseRepository.getProductContainer(product.id)
+                    val expirationEvent = getExpirationEventFor(container)
+                    val emptyEvent = getEmptyContainerEventFor(container)
+                    expirationEvent?.let(events::add)
+                    emptyEvent?.let(events::add)
+                    events.addAll(get3NextIntakeEventsFor(product, emptyEvent?.date, expirationEvent?.date))
+                }
+                return@map events.sorted()
+            }.map { it.groupBy { it.date } }
 
     private suspend fun get3NextIntakeEventsFor(
         product: Product,
@@ -44,8 +48,7 @@ class GetNextCalendarEventsUseCase(
             IntakeEvent(
                 date = date,
                 product = product,
-                isWarning = (emptyDate?.let { date > it } ?: false) || (expirationDate?.let { date > it } ?: false),
-                isToday = date == getCurrentLocalDate()
+                isWarning = (emptyDate?.let { date > it } ?: false) || (expirationDate?.let { date > it } ?: false)
             )
         }
     }
