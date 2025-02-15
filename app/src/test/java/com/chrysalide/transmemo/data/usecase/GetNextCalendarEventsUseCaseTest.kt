@@ -10,6 +10,8 @@ import com.chrysalide.transmemo.domain.model.IntakeSide
 import com.chrysalide.transmemo.domain.model.Product
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDate
 import org.junit.Assert.assertEquals
@@ -36,7 +38,7 @@ class GetNextCalendarEventsUseCaseTest {
             openDate = LocalDate(2025, 1, 1)
         )
 
-        coEvery { databaseRepository.getInUseProducts() } returns listOf(product)
+        coEvery { databaseRepository.observeInUseProducts() } returns flowOf(listOf(product))
         coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
         coEvery { databaseRepository.getProductContainer(product.id) } returns container
 
@@ -45,14 +47,16 @@ class GetNextCalendarEventsUseCaseTest {
 
         // Assert
         assertEquals(
-            listOf(
-                IntakeEvent(LocalDate(2025, 1, 2), product),
-                IntakeEvent(LocalDate(2025, 1, 3), product),
-                IntakeEvent(LocalDate(2025, 1, 4), product),
-                EmptyContainerEvent(LocalDate(2025, 4, 11), product),
-                ExpirationEvent(LocalDate(2025, 4, 11), product)
+            mapOf(
+                LocalDate(2025, 1, 2) to listOf(IntakeEvent(product)),
+                LocalDate(2025, 1, 3) to listOf(IntakeEvent(product)),
+                LocalDate(2025, 1, 4) to listOf(IntakeEvent(product)),
+                LocalDate(2025, 4, 11) to listOf(
+                    EmptyContainerEvent(product),
+                    ExpirationEvent(product)
+                )
             ),
-            result
+            result.first()
         )
     }
 
@@ -90,7 +94,7 @@ class GetNextCalendarEventsUseCaseTest {
             openDate = LocalDate(2025, 1, 1)
         )
 
-        coEvery { databaseRepository.getInUseProducts() } returns listOf(product1, product2)
+        coEvery { databaseRepository.observeInUseProducts() } returns flowOf(listOf(product1, product2))
         coEvery { databaseRepository.getLastIntakeForProduct(product1.id) } returns lastIntake1
         coEvery { databaseRepository.getLastIntakeForProduct(product2.id) } returns lastIntake2
         coEvery { databaseRepository.getProductContainer(product1.id) } returns container1
@@ -101,19 +105,60 @@ class GetNextCalendarEventsUseCaseTest {
 
         // Assert
         assertEquals(
-            listOf(
-                IntakeEvent(LocalDate(2025, 1, 2), product1),
-                IntakeEvent(LocalDate(2025, 1, 3), product1),
-                IntakeEvent(LocalDate(2025, 1, 4), product1),
-                IntakeEvent(LocalDate(2025, 1, 8), product2),
-                IntakeEvent(LocalDate(2025, 1, 15), product2),
-                IntakeEvent(LocalDate(2025, 1, 22), product2),
-                EmptyContainerEvent(LocalDate(2025, 4, 11), product1),
-                ExpirationEvent(LocalDate(2025, 7, 20), product1),
-                ExpirationEvent(LocalDate(2025, 9, 8), product2),
-                EmptyContainerEvent(LocalDate(2025, 12, 3), product2)
+            mapOf(
+                LocalDate(2025, 1, 2) to listOf(IntakeEvent(product1)),
+                LocalDate(2025, 1, 3) to listOf(IntakeEvent(product1)),
+                LocalDate(2025, 1, 4) to listOf(IntakeEvent(product1)),
+                LocalDate(2025, 1, 8) to listOf(IntakeEvent(product2)),
+                LocalDate(2025, 1, 15) to listOf(IntakeEvent(product2)),
+                LocalDate(2025, 1, 22) to listOf(IntakeEvent(product2)),
+                LocalDate(2025, 4, 11) to listOf(EmptyContainerEvent(product1)),
+                LocalDate(2025, 7, 20) to listOf(ExpirationEvent(product1)),
+                LocalDate(2025, 9, 8) to listOf(ExpirationEvent(product2)),
+                LocalDate(2025, 12, 3) to listOf(EmptyContainerEvent(product2))
             ),
-            result
+            result.first()
+        )
+    }
+
+    @Test
+    fun shouldGroupEventsByDate_WhenMultipleEventsOnSameDate() = runTest {
+        // Arrange
+        val product = Product.default().copy(
+            dosePerIntake = 1f,
+            intakeInterval = 1,
+            capacity = 2f,
+            expirationDays = 3
+        )
+
+        val lastIntake = defaultIntake().copy(
+            plannedDate = LocalDate(2025, 1, 1)
+        )
+        val container = Container.new(product).copy(
+            openDate = LocalDate(2025, 1, 1)
+        )
+
+        coEvery { databaseRepository.observeInUseProducts() } returns flowOf(listOf(product))
+        coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
+        coEvery { databaseRepository.getProductContainer(product.id) } returns container
+
+        // Act
+        val result = useCase()
+
+        // Assert
+        assertEquals(
+            mapOf(
+                LocalDate(2025, 1, 2) to listOf(IntakeEvent(product)),
+                LocalDate(2025, 1, 3) to listOf(
+                    IntakeEvent(product),
+                    EmptyContainerEvent(product)
+                ),
+                LocalDate(2025, 1, 4) to listOf(
+                    IntakeEvent(product, isWarning = true),
+                    ExpirationEvent(product)
+                )
+            ),
+            result.first()
         )
     }
 
@@ -134,7 +179,7 @@ class GetNextCalendarEventsUseCaseTest {
             openDate = LocalDate(2025, 1, 1)
         )
 
-        coEvery { databaseRepository.getInUseProducts() } returns listOf(product)
+        coEvery { databaseRepository.observeInUseProducts() } returns flowOf(listOf(product))
         coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
         coEvery { databaseRepository.getProductContainer(product.id) } returns container
 
@@ -143,14 +188,16 @@ class GetNextCalendarEventsUseCaseTest {
 
         // Assert
         assertEquals(
-            listOf(
-                IntakeEvent(LocalDate(2025, 1, 2), product),
-                IntakeEvent(LocalDate(2025, 1, 3), product),
-                EmptyContainerEvent(LocalDate(2025, 1, 3), product),
-                IntakeEvent(LocalDate(2025, 1, 4), product, isWarning = true),
-                ExpirationEvent(LocalDate(2025, 1, 11), product)
+            mapOf(
+                LocalDate(2025, 1, 2) to listOf(IntakeEvent(product)),
+                LocalDate(2025, 1, 3) to listOf(
+                    IntakeEvent(product),
+                    EmptyContainerEvent(product)
+                ),
+                LocalDate(2025, 1, 4) to listOf(IntakeEvent(product, isWarning = true)),
+                LocalDate(2025, 1, 11) to listOf(ExpirationEvent(product))
             ),
-            result
+            result.first()
         )
     }
 
@@ -171,7 +218,7 @@ class GetNextCalendarEventsUseCaseTest {
             openDate = LocalDate(2025, 1, 1)
         )
 
-        coEvery { databaseRepository.getInUseProducts() } returns listOf(product)
+        coEvery { databaseRepository.observeInUseProducts() } returns flowOf(listOf(product))
         coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
         coEvery { databaseRepository.getProductContainer(product.id) } returns container
 
@@ -180,14 +227,16 @@ class GetNextCalendarEventsUseCaseTest {
 
         // Assert
         assertEquals(
-            listOf(
-                IntakeEvent(LocalDate(2025, 1, 2), product),
-                IntakeEvent(LocalDate(2025, 1, 3), product),
-                ExpirationEvent(LocalDate(2025, 1, 3), product),
-                IntakeEvent(LocalDate(2025, 1, 4), product, isWarning = true),
-                EmptyContainerEvent(LocalDate(2025, 1, 11), product)
+            mapOf(
+                LocalDate(2025, 1, 2) to listOf(IntakeEvent(product)),
+                LocalDate(2025, 1, 3) to listOf(
+                    IntakeEvent(product),
+                    ExpirationEvent(product)
+                ),
+                LocalDate(2025, 1, 4) to listOf(IntakeEvent(product, isWarning = true)),
+                LocalDate(2025, 1, 11) to listOf(EmptyContainerEvent(product))
             ),
-            result
+            result.first()
         )
     }
 
@@ -208,7 +257,7 @@ class GetNextCalendarEventsUseCaseTest {
             openDate = LocalDate(2025, 1, 1)
         )
 
-        coEvery { databaseRepository.getInUseProducts() } returns listOf(product)
+        coEvery { databaseRepository.observeInUseProducts() } returns flowOf(listOf(product))
         coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
         coEvery { databaseRepository.getProductContainer(product.id) } returns container
 
@@ -217,13 +266,13 @@ class GetNextCalendarEventsUseCaseTest {
 
         // Assert
         assertEquals(
-            listOf(
-                IntakeEvent(LocalDate(2025, 1, 2), product),
-                IntakeEvent(LocalDate(2025, 1, 3), product),
-                IntakeEvent(LocalDate(2025, 1, 4), product),
-                EmptyContainerEvent(LocalDate(2025, 1, 11), product)
+            mapOf(
+                LocalDate(2025, 1, 2) to listOf(IntakeEvent(product)),
+                LocalDate(2025, 1, 3) to listOf(IntakeEvent(product)),
+                LocalDate(2025, 1, 4) to listOf(IntakeEvent(product)),
+                LocalDate(2025, 1, 11) to listOf(EmptyContainerEvent(product))
             ),
-            result
+            result.first()
         )
     }
 
@@ -244,7 +293,7 @@ class GetNextCalendarEventsUseCaseTest {
             openDate = LocalDate(2025, 1, 1)
         )
 
-        coEvery { databaseRepository.getInUseProducts() } returns listOf(product)
+        coEvery { databaseRepository.observeInUseProducts() } returns flowOf(listOf(product))
         coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
         coEvery { databaseRepository.getProductContainer(product.id) } returns container
 
@@ -253,12 +302,12 @@ class GetNextCalendarEventsUseCaseTest {
 
         // Assert
         assertEquals(
-            listOf(
-                IntakeEvent(LocalDate(2025, 1, 11), product),
-                IntakeEvent(LocalDate(2025, 1, 21), product),
-                IntakeEvent(LocalDate(2025, 1, 31), product)
+            mapOf(
+                LocalDate(2025, 1, 11) to listOf(IntakeEvent(product)),
+                LocalDate(2025, 1, 21) to listOf(IntakeEvent(product)),
+                LocalDate(2025, 1, 31) to listOf(IntakeEvent(product))
             ),
-            result
+            result.first()
         )
     }
 

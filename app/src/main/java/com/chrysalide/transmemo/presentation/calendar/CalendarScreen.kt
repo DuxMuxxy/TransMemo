@@ -230,7 +230,6 @@ private fun CalendarScreenListPreviews() {
                     nowDate to listOf(
                         IncomingEvent.IntakeEvent(
                             product = product,
-                            date = nowDate,
                             isWarning = false,
                             isToday = true
                         )
@@ -238,33 +237,24 @@ private fun CalendarScreenListPreviews() {
                     nowDate.plus(DatePeriod(days = 10)) to listOf(
                         IncomingEvent.IntakeEvent(
                             product = product,
-                            date = nowDate.plus(DatePeriod(days = 10)),
                             isWarning = false
                         ),
                         IncomingEvent.IntakeEvent(
                             product = product,
-                            date = nowDate.plus(DatePeriod(days = 10)),
                             isWarning = false
                         )
                     ),
                     nowDate.plus(DatePeriod(days = 15)) to listOf(
-                        IncomingEvent.EmptyContainerEvent(
-                            product = product,
-                            date = nowDate.plus(DatePeriod(days = 15))
-                        )
+                        IncomingEvent.EmptyContainerEvent(product)
                     ),
                     nowDate.plus(DatePeriod(days = 17)) to listOf(
                         IncomingEvent.IntakeEvent(
                             product = product,
-                            date = nowDate.plus(DatePeriod(days = 17)),
                             isWarning = true
                         )
                     ),
                     nowDate.plus(DatePeriod(days = 100)) to listOf(
-                        IncomingEvent.ExpirationEvent(
-                            product = product,
-                            date = nowDate.plus(DatePeriod(days = 100))
-                        )
+                        IncomingEvent.ExpirationEvent(product)
                     )
                 ),
             ),

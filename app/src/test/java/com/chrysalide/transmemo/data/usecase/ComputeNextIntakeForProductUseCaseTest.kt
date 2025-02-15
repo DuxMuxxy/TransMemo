@@ -33,11 +33,11 @@ class ComputeNextIntakeForProductUseCaseTest {
         coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
 
         // Act
-        val result = useCase(product)
+        val result = useCase(listOf(product))
 
         // Assert
-        assert(result.plannedDose == product.dosePerIntake)
-        assert(result.plannedDate == LocalDate(2025, 1, 22))
-        assert(result.plannedSide == IntakeSide.RIGHT)
+        assert(result.first().plannedDose == product.dosePerIntake)
+        assert(result.first().plannedDate == LocalDate(2025, 1, 22))
+        assert(result.first().plannedSide == IntakeSide.RIGHT)
     }
 }
