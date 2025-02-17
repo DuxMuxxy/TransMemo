@@ -42,5 +42,9 @@ interface DatabaseRepository {
 
     suspend fun getLastIntakeForProduct(productId: Int): Intake?
 
-    suspend fun getProductContainer(productId: Int): Container
+    suspend fun getProductContainer(productId: Int): Container?
+
+    fun observeProductContainer(productId: Int): Flow<Container?>
+
+    suspend fun insertIntake(intake: Intake)
 }

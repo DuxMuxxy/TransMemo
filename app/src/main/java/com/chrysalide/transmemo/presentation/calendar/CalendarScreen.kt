@@ -25,6 +25,9 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -38,6 +41,7 @@ import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.Empty
 import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.IncomingEvents
 import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.Loading
+import com.chrysalide.transmemo.presentation.calendar.dointake.DoIntakeModal
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.design.TransMemoIcons
 import com.chrysalide.transmemo.presentation.extension.daysUntilText
@@ -50,12 +54,21 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CalendarScreen(
-    viewModel: CalendarViewModel = koinViewModel(),
-    navigateToIncomingEvent: (IncomingEvent) -> Unit
+    viewModel: CalendarViewModel = koinViewModel()
 ) {
     val calendarUiState by viewModel.calendarUiState.collectAsStateWithLifecycle()
+    var doIntakeModalProduct by remember { mutableStateOf<Product?>(null) }
 
-    CalendarView(calendarUiState, onEventClick = navigateToIncomingEvent)
+    CalendarView(calendarUiState, onEventClick = { doIntakeModalProduct = it.product })
+
+    if (doIntakeModalProduct != null) {
+        DoIntakeModal(
+            product = doIntakeModalProduct!!,
+            onDismiss = {
+                doIntakeModalProduct = null
+            }
+        )
+    }
 }
 
 @Composable

@@ -22,7 +22,11 @@ interface ContainerDao {
 
     @Transaction
     @Query("SELECT * FROM containers WHERE productId = :productId AND state == 'OPEN'")
-    suspend fun getByProductId(productId: Int): ContainerWithProductDBEntity
+    suspend fun getByProductId(productId: Int): ContainerWithProductDBEntity?
+
+    @Transaction
+    @Query("SELECT * FROM containers WHERE productId = :productId AND state == 'OPEN'")
+    fun observeByProductId(productId: Int): Flow<ContainerWithProductDBEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(container: ContainerDBEntity)

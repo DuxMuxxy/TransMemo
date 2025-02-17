@@ -40,7 +40,7 @@ class GetNextCalendarEventsUseCaseTest {
 
         coEvery { databaseRepository.observeInUseProducts() } returns flowOf(listOf(product))
         coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
-        coEvery { databaseRepository.getProductContainer(product.id) } returns container
+        coEvery { databaseRepository.observeProductContainer(product.id) } returns flowOf(container)
 
         // Act
         val result = useCase()
@@ -97,8 +97,8 @@ class GetNextCalendarEventsUseCaseTest {
         coEvery { databaseRepository.observeInUseProducts() } returns flowOf(listOf(product1, product2))
         coEvery { databaseRepository.getLastIntakeForProduct(product1.id) } returns lastIntake1
         coEvery { databaseRepository.getLastIntakeForProduct(product2.id) } returns lastIntake2
-        coEvery { databaseRepository.getProductContainer(product1.id) } returns container1
-        coEvery { databaseRepository.getProductContainer(product2.id) } returns container2
+        coEvery { databaseRepository.observeProductContainer(product1.id) } returns flowOf(container1)
+        coEvery { databaseRepository.observeProductContainer(product2.id) } returns flowOf(container2)
 
         // Act
         val result = useCase()
@@ -140,7 +140,7 @@ class GetNextCalendarEventsUseCaseTest {
 
         coEvery { databaseRepository.observeInUseProducts() } returns flowOf(listOf(product))
         coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
-        coEvery { databaseRepository.getProductContainer(product.id) } returns container
+        coEvery { databaseRepository.observeProductContainer(product.id) } returns flowOf(container)
 
         // Act
         val result = useCase()
@@ -181,7 +181,7 @@ class GetNextCalendarEventsUseCaseTest {
 
         coEvery { databaseRepository.observeInUseProducts() } returns flowOf(listOf(product))
         coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
-        coEvery { databaseRepository.getProductContainer(product.id) } returns container
+        coEvery { databaseRepository.observeProductContainer(product.id) } returns flowOf(container)
 
         // Act
         val result = useCase()
@@ -220,7 +220,7 @@ class GetNextCalendarEventsUseCaseTest {
 
         coEvery { databaseRepository.observeInUseProducts() } returns flowOf(listOf(product))
         coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
-        coEvery { databaseRepository.getProductContainer(product.id) } returns container
+        coEvery { databaseRepository.observeProductContainer(product.id) } returns flowOf(container)
 
         // Act
         val result = useCase()
@@ -259,7 +259,7 @@ class GetNextCalendarEventsUseCaseTest {
 
         coEvery { databaseRepository.observeInUseProducts() } returns flowOf(listOf(product))
         coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
-        coEvery { databaseRepository.getProductContainer(product.id) } returns container
+        coEvery { databaseRepository.observeProductContainer(product.id) } returns flowOf(container)
 
         // Act
         val result = useCase()
@@ -295,7 +295,7 @@ class GetNextCalendarEventsUseCaseTest {
 
         coEvery { databaseRepository.observeInUseProducts() } returns flowOf(listOf(product))
         coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
-        coEvery { databaseRepository.getProductContainer(product.id) } returns container
+        coEvery { databaseRepository.observeProductContainer(product.id) } returns flowOf(container)
 
         // Act
         val result = useCase()

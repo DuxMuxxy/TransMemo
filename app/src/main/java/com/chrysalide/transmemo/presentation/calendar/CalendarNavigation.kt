@@ -11,9 +11,6 @@ import kotlinx.serialization.Serializable
 data object CalendarRoute // route to Calendar screen
 
 @Serializable
-data object IncomingEventRoute // route to Calendar screen
-
-@Serializable
 data object CalendarBaseRoute // route to base navigation graph
 
 fun NavController.navigateToCalendar(navOptions: NavOptions) = navigate(route = CalendarRoute, navOptions)
@@ -25,12 +22,7 @@ fun NavController.navigateToCalendar(navOptions: NavOptions) = navigate(route = 
 fun NavGraphBuilder.calendarGraph() {
     navigation<CalendarBaseRoute>(startDestination = CalendarRoute) {
         composable<CalendarRoute> {
-            CalendarScreen(
-                navigateToIncomingEvent = {}
-            )
-        }
-        composable<IncomingEventRoute> {
-            // IncomingEventScreen()
+            CalendarScreen()
         }
     }
 }

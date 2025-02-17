@@ -45,6 +45,7 @@ import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.W
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.WELLNESS_COLUMN_VALEUR
 import com.chrysalide.transmemo.database.helper.LegacyDatabaseHelper.Companion.WELLNESS_TABLE_NAME
 import com.chrysalide.transmemo.domain.boundary.DatabaseRepository
+import com.chrysalide.transmemo.domain.extension.toLocalDate
 import com.chrysalide.transmemo.domain.model.Container
 import com.chrysalide.transmemo.domain.model.ContainerState
 import com.chrysalide.transmemo.domain.model.Intake
@@ -56,10 +57,6 @@ import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.domain.model.Wellbeing
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import java.io.File
 import java.io.FileOutputStream
 
@@ -302,12 +299,6 @@ class ImportDatabaseHelper(
         5 -> MeasureUnit.PATCH
         6 -> MeasureUnit.PUMP
         else -> MeasureUnit.OTHER
-    }
-
-    private fun Long.toLocalDate(): LocalDate {
-        val instant = Instant.fromEpochMilliseconds(this)
-        val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
-        return localDateTime.date
     }
 
     private fun Int.toContainerState() = when (this) {

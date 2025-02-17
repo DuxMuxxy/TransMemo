@@ -21,7 +21,6 @@ import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.domain.model.Wellbeing
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlin.collections.map
 
 internal class RoomDatabaseRepository(
     private val containerDao: ContainerDao,
@@ -84,7 +83,12 @@ internal class RoomDatabaseRepository(
 
     override suspend fun getLastIntakeForProduct(productId: Int): Intake? = intakeDao.getLastIntakeForProduct(productId)?.toIntake()
 
-    override suspend fun getProductContainer(productId: Int): Container = containerDao.getByProductId(productId).toContainer()
+    override suspend fun getProductContainer(productId: Int): Container? = containerDao.getByProductId(productId)?.toContainer()
+
+    override fun observeProductContainer(productId: Int): Flow<Container?> =
+        containerDao.observeByProductId(productId).map { it?.toContainer() }
+
+    override suspend fun insertIntake(intake: Intake) = intakeDao.insert(intake.toIntakeEntity())
 
     private suspend fun insertNewContainerForProduct(product: Product) {
         if (!containerDao.existsForProduct(product.id)) {
