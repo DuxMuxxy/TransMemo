@@ -84,7 +84,7 @@ import com.chrysalide.transmemo.presentation.extension.unitName
 import com.chrysalide.transmemo.presentation.products.ProductsUiState.Empty
 import com.chrysalide.transmemo.presentation.products.ProductsUiState.Loading
 import com.chrysalide.transmemo.presentation.products.ProductsUiState.Products
-import com.chrysalide.transmemo.presentation.products.add.AddProductDialog
+import com.chrysalide.transmemo.presentation.products.add.AddProductModal
 import com.chrysalide.transmemo.presentation.products.delete.AskDeleteProductDialog
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 import org.koin.androidx.compose.koinViewModel
@@ -95,15 +95,15 @@ fun ProductsScreen(
     onShowSnackbar: suspend (String, String?) -> Boolean
 ) {
     val productsUiState by viewModel.productsUiState.collectAsStateWithLifecycle()
-    var showAddProductDialog by remember { mutableStateOf(false) }
+    var showAddProductModal by remember { mutableStateOf(false) }
     var showAddSuccessSnackbar by remember { mutableStateOf(false) }
     var showDeleteProductDialog by remember { mutableStateOf(false) }
     var showDeleteSuccessSnackbar by remember { mutableStateOf(false) }
     var productToDelete by remember { mutableStateOf<Product?>(null) }
 
-    if (showAddProductDialog) {
-        AddProductDialog(
-            onDismiss = { showAddProductDialog = false },
+    if (showAddProductModal) {
+        AddProductModal(
+            onDismiss = { showAddProductModal = false },
             onAddedProduct = { showAddSuccessSnackbar = true }
         )
     }
@@ -130,6 +130,7 @@ fun ProductsScreen(
                 onShowSnackbar(addProductSuccessText, null)
                 showAddSuccessSnackbar = false
             }
+
             showDeleteSuccessSnackbar -> {
                 onShowSnackbar(deleteProductSuccessText, null)
                 showDeleteSuccessSnackbar = false
@@ -140,7 +141,7 @@ fun ProductsScreen(
     ProductsView(
         productsUiState,
         saveProduct = viewModel::saveProduct,
-        addProduct = { showAddProductDialog = true },
+        addProduct = { showAddProductModal = true },
         deleteProduct = {
             productToDelete = it
             showDeleteProductDialog = true
@@ -168,7 +169,9 @@ private fun ProductsView(
 
             is Empty -> {
                 Column(
-                    modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -236,7 +239,7 @@ private fun ProductCard(
     val focusManager = LocalFocusManager.current
     var isExtented by remember { mutableStateOf(false) }
     var isEditing by remember { mutableStateOf(false) }
-    var editableProduct by remember(isEditing) { mutableStateOf(product) }
+    var editableProduct by remember(isEditing, product) { mutableStateOf(product) }
     var editedIntakePeriodicityValue by remember(isEditing) { mutableStateOf(product.intakeInterval.toString()) }
     var editedDosingPerIntakeValue by remember(isEditing) { mutableStateOf(product.dosePerIntake.stripTrailingZeros()) }
     var editedCapacityValue by remember(isEditing) { mutableStateOf(product.capacity.stripTrailingZeros()) }
@@ -314,7 +317,7 @@ private fun ProductCard(
                             Icon(Icons.Rounded.Delete, contentDescription = deleteButtonContentDescription)
                         }
                         val editButtonContentDescription = stringResource(string.feature_products_edit_button_content_description)
-                        IconButton(onClick = { isEditing = true },) {
+                        IconButton(onClick = { isEditing = true }) {
                             Icon(Icons.Rounded.Edit, contentDescription = editButtonContentDescription)
                         }
                     }
@@ -356,75 +359,86 @@ private fun ProductCard(
 
                     AnimatedVisibility(isExtented) {
                         Column {
-                            Spacer(modifier = Modifier.height(24.dp))
+                            if (isEditing || editableProduct.dosePerIntake > 0f) {
+                                Spacer(modifier = Modifier.height(24.dp))
+                                TextValueRow(
+                                    title = stringResource(string.feature_products_dosing_per_intake),
+                                    valueText = editableProduct.dosePerIntake(),
+                                    value = editedDosingPerIntakeValue,
+                                    unit = unitName,
+                                    isEditing = isBeingEdited,
+                                    onValueChange = { editedDosingPerIntakeValue = it },
+                                    focusManager = focusManager,
+                                    keyboardType = KeyboardType.Decimal,
+                                    imeAction = ImeAction.Next,
+                                    isError = !isDosingPerIntakeValid
+                                )
+                            }
 
-                            TextValueRow(
-                                title = stringResource(string.feature_products_dosing_per_intake),
-                                valueText = editableProduct.dosePerIntake(),
-                                value = editedDosingPerIntakeValue,
-                                unit = unitName,
-                                isEditing = isBeingEdited,
-                                onValueChange = { editedDosingPerIntakeValue = it },
-                                focusManager = focusManager,
-                                keyboardType = KeyboardType.Decimal,
-                                imeAction = ImeAction.Next,
-                                isError = !isDosingPerIntakeValid
-                            )
+                            if (isEditing || editableProduct.capacity > 0f) {
+                                Spacer(modifier = Modifier.height(24.dp))
+                                TextValueRow(
+                                    title = stringResource(string.feature_products_capacity),
+                                    valueText = editableProduct.containerCapacity(),
+                                    value = editedCapacityValue,
+                                    unit = unitName,
+                                    isEditing = isBeingEdited,
+                                    onValueChange = { editedCapacityValue = it },
+                                    focusManager = focusManager,
+                                    keyboardType = KeyboardType.Decimal,
+                                    imeAction = ImeAction.Next,
+                                    isError = !isCapacityValid
+                                )
+                            }
 
-                            Spacer(modifier = Modifier.height(24.dp))
+                            if (isEditing || editableProduct.expirationDays > 0) {
+                                Spacer(modifier = Modifier.height(24.dp))
+                                TextValueRow(
+                                    title = stringResource(string.feature_products_expiration_after_opening),
+                                    valueText = editableProduct.expirationDate(),
+                                    value = editedExpirationDaysValue,
+                                    unit = daysSuffix,
+                                    isEditing = isBeingEdited,
+                                    onValueChange = { editedExpirationDaysValue = it },
+                                    focusManager = focusManager,
+                                    keyboardType = KeyboardType.Number,
+                                    imeAction = ImeAction.Next,
+                                    isError = !isExpirationDaysValid
+                                )
+                            }
 
-                            TextValueRow(
-                                title = stringResource(string.feature_products_capacity),
-                                valueText = editableProduct.containerCapacity(),
-                                value = editedCapacityValue,
-                                unit = unitName,
-                                isEditing = isBeingEdited,
-                                onValueChange = { editedCapacityValue = it },
-                                focusManager = focusManager,
-                                keyboardType = KeyboardType.Decimal,
-                                imeAction = ImeAction.Next,
-                                isError = !isCapacityValid
-                            )
-
-                            Spacer(modifier = Modifier.height(24.dp))
-
-                            TextValueRow(
-                                title = stringResource(string.feature_products_expiration_after_opening),
-                                valueText = editableProduct.expirationDate(),
-                                value = editedExpirationDaysValue,
-                                unit = daysSuffix,
-                                isEditing = isBeingEdited,
-                                onValueChange = { editedExpirationDaysValue = it },
-                                focusManager = focusManager,
-                                keyboardType = KeyboardType.Number,
-                                imeAction = ImeAction.Next,
-                                isError = !isExpirationDaysValid
-                            )
-
-                            Spacer(modifier = Modifier.height(24.dp))
-
-                            TextValueRow(
-                                title = stringResource(string.feature_products_alert_delay),
-                                valueText = editableProduct.alertDelay(),
-                                value = editedAlertDelayValue,
-                                unit = daysSuffix,
-                                isEditing = isBeingEdited,
-                                onValueChange = { editedAlertDelayValue = it },
-                                focusManager = focusManager,
-                                keyboardType = KeyboardType.Number,
-                                imeAction = ImeAction.Done,
-                                isError = !isAlertDelayValid
-                            )
+                            if (isEditing || editableProduct.alertDelay > 0) {
+                                Spacer(modifier = Modifier.height(24.dp))
+                                TextValueRow(
+                                    title = stringResource(string.feature_products_alert_delay),
+                                    valueText = editableProduct.alertDelay(),
+                                    value = editedAlertDelayValue,
+                                    unit = daysSuffix,
+                                    isEditing = isBeingEdited,
+                                    onValueChange = { editedAlertDelayValue = it },
+                                    focusManager = focusManager,
+                                    keyboardType = KeyboardType.Number,
+                                    imeAction = ImeAction.Done,
+                                    isError = !isAlertDelayValid
+                                )
+                            }
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
+                    if (isEditing ||
+                        editableProduct.dosePerIntake > 0f ||
+                        editableProduct.capacity > 0f ||
+                        editableProduct.expirationDays > 0 ||
+                        editableProduct.alertDelay > 0
                     ) {
-                        val icon = if (isExtented) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown
-                        Icon(icon, contentDescription = null)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            val icon = if (isExtented) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown
+                            Icon(icon, contentDescription = null)
+                        }
                     }
 
                     AnimatedVisibility(isEditing) {

@@ -82,12 +82,16 @@ class GetNextCalendarEventsUseCase(
     }
 
     private fun getExpirationEventFor(container: Container): EventDateWrapper? {
+        // Skip if no expiration days
         if (container.product.expirationDays == 0) return null
         val expirationDate = container.openDate.plus(DatePeriod(days = container.product.expirationDays))
         return EventDateWrapper(expirationDate, ExpirationEvent(container.product))
     }
 
     private fun getEmptyContainerEventFor(container: Container): EventDateWrapper? {
+        // Skip if no capacity
+        if (container.product.capacity == 0f) return null
+        // Skip if container is one shot
         if (container.product.capacity == container.product.dosePerIntake) return null
         return EventDateWrapper(container.emptyDate(), EmptyContainerEvent(container.product))
     }

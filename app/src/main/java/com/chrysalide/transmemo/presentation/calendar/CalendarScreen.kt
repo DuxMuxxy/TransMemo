@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -36,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.chrysalide.transmemo.R
 import com.chrysalide.transmemo.domain.extension.formatToSystemDate
 import com.chrysalide.transmemo.domain.extension.getCurrentLocalDate
+import com.chrysalide.transmemo.domain.extension.toUTCTimestamp
 import com.chrysalide.transmemo.domain.model.IncomingEvent
 import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.Empty
@@ -107,7 +109,10 @@ private fun CalendarView(calendarUiState: CalendarUiState, onEventClick: (Incomi
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp)
                 ) {
-                    itemsIndexed(items = eventsByDate) { index, entry ->
+                    itemsIndexed(
+                        items = eventsByDate,
+                        key = { _, entry -> entry.key.toUTCTimestamp() }
+                    ) { index, entry ->
                         DateEvents(entry.key, entry.value, onEventClick)
                         if (index < eventsByDate.lastIndex) {
                             Spacer(modifier = Modifier.height(32.dp))
@@ -120,9 +125,9 @@ private fun CalendarView(calendarUiState: CalendarUiState, onEventClick: (Incomi
 }
 
 @Composable
-fun DateEvents(date: LocalDate, events: List<IncomingEvent>, onEventClick: (IncomingEvent.IntakeEvent) -> Unit) {
+fun LazyItemScope.DateEvents(date: LocalDate, events: List<IncomingEvent>, onEventClick: (IncomingEvent.IntakeEvent) -> Unit) {
     val isToday = date == getCurrentLocalDate()
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier.fillMaxWidth().animateItem()) {
         Row(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()

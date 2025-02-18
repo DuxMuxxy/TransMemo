@@ -64,7 +64,6 @@ import com.chrysalide.transmemo.presentation.extension.productName
 import com.chrysalide.transmemo.presentation.extension.stripTrailingZeros
 import com.chrysalide.transmemo.presentation.extension.unitName
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
@@ -81,7 +80,6 @@ fun DoIntakeModal(
     LaunchedEffect(Unit) { viewModel.getIntakeForProduct(product) }
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    val coroutineScope = rememberCoroutineScope()
 
     when (val state = uiState) {
         DoIntakeUiState.Idle -> {}
@@ -94,7 +92,6 @@ fun DoIntakeModal(
                 DoIntakeView(
                     intake = state.intake,
                     confirmIntake = viewModel::confirmIntake,
-                    coroutineScope = coroutineScope,
                     sheetState = sheetState,
                     onDismiss = onDismiss
                 )
@@ -108,10 +105,10 @@ fun DoIntakeModal(
 private fun DoIntakeView(
     intake: Intake,
     confirmIntake: (Intake) -> Unit,
-    coroutineScope: CoroutineScope = rememberCoroutineScope(),
     sheetState: SheetState = rememberModalBottomSheetState(),
     onDismiss: () -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
     var editableIntake by remember { mutableStateOf(intake) }
     var showDatePickerDialog by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
