@@ -18,11 +18,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -32,19 +36,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import com.chrysalide.transmemo.R
+import com.chrysalide.transmemo.presentation.design.ChrysalideLogoFull
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.design.TransMemoIcons
+import com.chrysalide.transmemo.presentation.extension.getAppVersionName
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
-import dev.sergiobelda.compose.vectorize.images.icons.filled.Facebook
-import dev.sergiobelda.compose.vectorize.images.icons.filled.Help
 
 @Composable
 fun AboutMenuScreen(
+    navigateToHelp: () -> Unit,
     navigateToChrysalide: () -> Unit,
     navigateToContributors: () -> Unit,
-    navigateToHelp: () -> Unit,
+    navigateToLicenses: () -> Unit
 ) {
     val context = LocalContext.current
+    val appVersion by remember { mutableStateOf(context.getAppVersionName()) }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -53,8 +59,14 @@ fun AboutMenuScreen(
             .verticalScroll(rememberScrollState())
     ) {
         MenuItem(
+            stringResource(R.string.feature_about_help_title),
+            icon = TransMemoIcons.Help,
+            onClick = navigateToHelp,
+        )
+        HorizontalDivider()
+        MenuItem(
             stringResource(R.string.feature_about_chrysalide_asso_title),
-            icon = TransMemoIcons.HelpUs, // TODO chrysalide icon svg ?
+            icon = painterResource(R.drawable.logo_chrysalide), // TODO chrysalide icon svg ?
             onClick = navigateToChrysalide,
         )
         HorizontalDivider()
@@ -83,15 +95,16 @@ fun AboutMenuScreen(
         )
         HorizontalDivider()
         MenuItem(
-            stringResource(R.string.feature_about_help_title),
-            icon = TransMemoIcons.Help,
-            onClick = navigateToHelp,
+            stringResource(R.string.feature_about_licenses_title),
+            icon = TransMemoIcons.Licenses,
+            onClick = navigateToLicenses,
         )
         HorizontalDivider()
 
         Spacer(Modifier.height(42.dp))
 
-        Text("LOGO") // TODO logo chrysalide
+        ChrysalideLogoFull(modifier = Modifier.fillMaxWidth(0.7f))
+
         Spacer(Modifier.height(16.dp))
         val infoText = stringResource(R.string.feature_about_menu_text)
         val link = stringResource(R.string.feature_about_menu_link)
@@ -111,6 +124,16 @@ fun AboutMenuScreen(
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 32.dp),
         )
+
+        appVersion?.let {
+            Spacer(Modifier.height(24.dp))
+            Text(
+                "Version $appVersion",
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 32.dp),
+            )
+        }
+
         Spacer(Modifier.height(64.dp))
     }
 }
@@ -134,14 +157,34 @@ private fun MenuItem(
     }
 }
 
+@Composable
+private fun MenuItem(
+    text: String,
+    icon: Painter,
+    onClick: () -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 32.dp, vertical = 24.dp),
+    ) {
+        Icon(icon, contentDescription = null)
+        Spacer(Modifier.width(32.dp))
+        Text(text)
+    }
+}
+
 @ThemePreviews
 @Composable
 private fun AboutMenuScreenPreview() {
     TransMemoTheme {
         AboutMenuScreen(
+            navigateToHelp = {},
             navigateToChrysalide = {},
             navigateToContributors = {},
-            navigateToHelp = {},
+            navigateToLicenses = {}
         )
     }
 }

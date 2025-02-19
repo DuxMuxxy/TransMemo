@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -27,7 +28,7 @@ import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 @Composable
 fun TMSubScreen(
     @StringRes titleRes: Int,
-    icon: ImageVector,
+    iconEither: Pair<ImageVector?, Painter?>,
     navigateUp: () -> Unit,
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -38,12 +39,22 @@ fun TMSubScreen(
             Icon(TransMemoIcons.Back, stringResource(titleRes))
         }
         Spacer(Modifier.height(16.dp))
-        Icon(
-            icon,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primaryContainer,
-            modifier = Modifier.size(120.dp).align(Alignment.CenterHorizontally),
-        )
+        iconEither.first?.let { icon ->
+            Icon(
+                icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primaryContainer,
+                modifier = Modifier.size(120.dp).align(Alignment.CenterHorizontally),
+            )
+        } ?: iconEither.second?.let { icon ->
+            Icon(
+                icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primaryContainer,
+                modifier = Modifier.size(120.dp).align(Alignment.CenterHorizontally),
+            )
+        }
+
         Spacer(Modifier.height(24.dp))
         Text(
             stringResource(titleRes),
@@ -59,6 +70,6 @@ fun TMSubScreen(
 @Composable
 private fun TMSubScreenPreview() {
     TransMemoTheme {
-        TMSubScreen(string.feature_about_contributors_title, TransMemoIcons.Contributors, {}, {})
+        TMSubScreen(string.feature_about_contributors_title, TransMemoIcons.Contributors to null, {}, {})
     }
 }

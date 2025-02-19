@@ -147,4 +147,5 @@
     <string name="feature_calendar_date_template" translatable="false">%s - %s</string>
     <string name="global_tomorrow">Tomorrow</string>
     <string name="global_yesterday">Yesterday</string>
+    <string name="feature_about_licenses_title">Licenses</string>
 </resources>

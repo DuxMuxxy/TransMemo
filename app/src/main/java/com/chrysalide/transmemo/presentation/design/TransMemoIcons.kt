@@ -11,6 +11,7 @@ import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Settings
 import dev.sergiobelda.compose.vectorize.images.Images
 import dev.sergiobelda.compose.vectorize.images.icons.filled.Facebook
+import dev.sergiobelda.compose.vectorize.images.icons.filled.FactCheck
 import dev.sergiobelda.compose.vectorize.images.icons.filled.HeartCheck
 import dev.sergiobelda.compose.vectorize.images.icons.filled.Help
 import dev.sergiobelda.compose.vectorize.images.icons.filled.Medication
@@ -42,9 +43,10 @@ object TransMemoIcons {
     val About = Icons.Rounded.Info
     val AboutUnselected = Icons.Outlined.Info
 
+    val Help = Images.Icons.Filled.Help
+    val HelpUs = Images.Icons.Filled.VolunteerActivism
     val Facebook = Images.Icons.Filled.Facebook
     val Contributors = Images.Icons.Outlined.Group
-    val HelpUs = Images.Icons.Filled.VolunteerActivism
-    val Help = Images.Icons.Filled.Help
+    val Licenses = Images.Icons.Filled.FactCheck
     val Back = Icons.AutoMirrored.Filled.ArrowBack
 }

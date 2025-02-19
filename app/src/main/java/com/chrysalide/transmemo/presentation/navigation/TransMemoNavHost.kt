@@ -8,6 +8,7 @@ import com.chrysalide.transmemo.presentation.about.aboutGraph
 import com.chrysalide.transmemo.presentation.about.navigateToAboutChrysalide
 import com.chrysalide.transmemo.presentation.about.navigateToAboutContributors
 import com.chrysalide.transmemo.presentation.about.navigateToAboutHelp
+import com.chrysalide.transmemo.presentation.about.navigateToAboutLicenses
 import com.chrysalide.transmemo.presentation.calendar.CalendarBaseRoute
 import com.chrysalide.transmemo.presentation.calendar.calendarGraph
 import com.chrysalide.transmemo.presentation.intakes.intakesScreen
@@ -33,9 +34,10 @@ fun TransMemoNavHost(
         productsScreen(onShowSnackbar)
         settingsScreen(onShowSnackbar)
         aboutGraph(
+            navigateToHelp = { navController.navigateToAboutHelp() },
             navigateToChrysalide = { navController.navigateToAboutChrysalide() },
             navigateToContributors = { navController.navigateToAboutContributors() },
-            navigateToHelp = { navController.navigateToAboutHelp() },
+            navigateToLicenses = { navController.navigateToAboutLicenses() },
             navigateUp = { navController.navigateUp() }
         )
     }

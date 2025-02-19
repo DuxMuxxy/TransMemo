@@ -20,6 +20,9 @@ data object AboutContributorsRoute // route to Contributors screen
 data object AboutHelpRoute // route to Help screen
 
 @Serializable
+data object AboutLicensesRoute // route to Licenses screen
+
+@Serializable
 data object AboutBaseRoute // route to base navigation graph
 
 fun NavController.navigateToAbout(navOptions: NavOptions) = navigate(route = AboutMenuRoute, navOptions)
@@ -30,23 +33,30 @@ fun NavController.navigateToAboutContributors() = navigate(route = AboutContribu
 
 fun NavController.navigateToAboutHelp() = navigate(route = AboutHelpRoute)
 
+fun NavController.navigateToAboutLicenses() = navigate(route = AboutLicensesRoute)
+
 /**
  *  The About graph of the app.
  *  This should be supplied from a separate module.
  */
 fun NavGraphBuilder.aboutGraph(
+    navigateToHelp: () -> Unit,
     navigateToChrysalide: () -> Unit,
     navigateToContributors: () -> Unit,
-    navigateToHelp: () -> Unit,
+    navigateToLicenses: () -> Unit,
     navigateUp: () -> Unit
 ) {
     navigation<AboutBaseRoute>(startDestination = AboutMenuRoute) {
         composable<AboutMenuRoute> {
             AboutMenuScreen(
+                navigateToHelp,
                 navigateToChrysalide,
                 navigateToContributors,
-                navigateToHelp
+                navigateToLicenses
             )
+        }
+        composable<AboutHelpRoute> {
+            AboutHelpScreen(navigateUp)
         }
         composable<AboutChrysalideRoute> {
             AboutChrysalideScreen(navigateUp)
@@ -54,8 +64,8 @@ fun NavGraphBuilder.aboutGraph(
         composable<AboutContributorsRoute> {
             AboutContributorsScreen(navigateUp)
         }
-        composable<AboutHelpRoute> {
-            AboutHelpScreen(navigateUp)
+        composable<AboutLicensesRoute> {
+            AboutLicensesScreen(navigateUp)
         }
     }
 }

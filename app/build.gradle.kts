@@ -18,8 +18,8 @@ android {
         applicationId = "com.chrysalide.transmemo"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 50
+        versionName = "5.0"
 
         androidResources.generateLocaleConfig = true
     }

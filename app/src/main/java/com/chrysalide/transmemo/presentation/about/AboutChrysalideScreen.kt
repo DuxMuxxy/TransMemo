@@ -1,17 +1,18 @@
 package com.chrysalide.transmemo.presentation.about
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.painterResource
+import com.chrysalide.transmemo.R
 import com.chrysalide.transmemo.R.string
 import com.chrysalide.transmemo.presentation.design.TMSubScreen
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
-import com.chrysalide.transmemo.presentation.design.TransMemoIcons
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 
 @Composable
 fun AboutChrysalideScreen(navigateUp: () -> Unit) {
     TMSubScreen(
         titleRes = string.feature_about_chrysalide_asso_title,
-        icon = TransMemoIcons.HelpUs, // TODO chrysalide icon svg ?
+        iconEither = null to painterResource(R.drawable.logo_chrysalide),
         navigateUp = navigateUp
     ) {
     }

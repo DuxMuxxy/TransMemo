@@ -11,7 +11,7 @@ import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 fun AboutHelpScreen(navigateUp: () -> Unit) {
     TMSubScreen(
         titleRes = string.feature_about_help_title,
-        icon = TransMemoIcons.Help,
+        iconEither = TransMemoIcons.Help to null,
         navigateUp = navigateUp
     ) {
     }

@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.chrysalide.transmemo.R.string
+import com.chrysalide.transmemo.presentation.design.ChrysalideLogoFull
 import com.chrysalide.transmemo.presentation.design.TMSubScreen
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.design.TransMemoIcons
@@ -25,7 +26,7 @@ import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 fun AboutContributorsScreen(navigateUp: () -> Unit) {
     TMSubScreen(
         titleRes = string.feature_about_contributors_title,
-        icon = TransMemoIcons.Contributors,
+        iconEither = TransMemoIcons.Contributors to null,
         navigateUp = navigateUp
     ) {
         Column(
@@ -34,9 +35,9 @@ fun AboutContributorsScreen(navigateUp: () -> Unit) {
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp)
         ) {
-            Spacer(Modifier.height(32.dp))
+            Spacer(Modifier.height(16.dp))
 
-            // TODO LOGO Chrysalide
+            ChrysalideLogoFull(modifier = Modifier.fillMaxWidth(0.5f))
 
             Spacer(Modifier.height(32.dp))
             Text(
