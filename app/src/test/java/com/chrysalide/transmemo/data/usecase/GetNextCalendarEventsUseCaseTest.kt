@@ -1,6 +1,7 @@
 package com.chrysalide.transmemo.data.usecase
 
 import com.chrysalide.transmemo.domain.boundary.DatabaseRepository
+import com.chrysalide.transmemo.domain.extension.getCurrentLocalDate
 import com.chrysalide.transmemo.domain.model.Container
 import com.chrysalide.transmemo.domain.model.IncomingEvent.EmptyContainerEvent
 import com.chrysalide.transmemo.domain.model.IncomingEvent.ExpirationEvent
@@ -9,20 +10,38 @@ import com.chrysalide.transmemo.domain.model.Intake
 import com.chrysalide.transmemo.domain.model.IntakeSide
 import com.chrysalide.transmemo.domain.model.Product
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.unmockkStatic
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDate
+import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
 
 class GetNextCalendarEventsUseCaseTest {
     private val databaseRepository = mockk<DatabaseRepository>()
     private val useCase = GetNextCalendarEventsUseCase(databaseRepository)
 
+    private val fixedDate = LocalDate(2025, 1, 1)
+
+    @Before
+    fun setUp() {
+        mockkStatic("com.chrysalide.transmemo.domain.extension.DateExtensionsKt")
+        every { getCurrentLocalDate() } returns fixedDate
+    }
+
+    @After
+    fun tearDown() {
+        unmockkStatic("com.chrysalide.transmemo.domain.extension.DateExtensionsKt")
+    }
+
     @Test
-    fun shouldComputeNextEvents() = runTest {
+    fun computeNextEvents() = runTest {
         // Arrange
         val product = Product.default().copy(
             dosePerIntake = 1f,
@@ -61,7 +80,7 @@ class GetNextCalendarEventsUseCaseTest {
     }
 
     @Test
-    fun shouldComputeNextEventsForMultipleProducts() = runTest {
+    fun computeNextEventsForMultipleProducts() = runTest {
         // Arrange
         val product1 = Product.default().copy(
             id = 1,
@@ -122,7 +141,7 @@ class GetNextCalendarEventsUseCaseTest {
     }
 
     @Test
-    fun shouldGroupEventsByDate_WhenMultipleEventsOnSameDate() = runTest {
+    fun groupEventsByDateWhenMultipleEventsOnSameDate() = runTest {
         // Arrange
         val product = Product.default().copy(
             dosePerIntake = 1f,
@@ -163,7 +182,45 @@ class GetNextCalendarEventsUseCaseTest {
     }
 
     @Test
-    fun shouldSetWarningToIntakesAfterEmptyEvent() = runTest {
+    fun setWarningToLateIntakes() = runTest {
+        // Arrange
+        val product = Product.default().copy(
+            dosePerIntake = 1f,
+            intakeInterval = 1,
+            capacity = 100f,
+            expirationDays = 10
+        )
+
+        val lastIntake = defaultIntake().copy(
+            plannedDate = LocalDate(2025, 1, 1)
+        )
+        val container = Container.new(product).copy(
+            openDate = LocalDate(2025, 1, 1)
+        )
+
+        every { getCurrentLocalDate() } returns LocalDate(2025, 1, 3)
+        coEvery { databaseRepository.observeInUseProducts() } returns flowOf(listOf(product))
+        coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
+        coEvery { databaseRepository.observeProductContainer(product.id) } returns flowOf(container)
+
+        // Act
+        val result = useCase()
+
+        // Assert
+        assertEquals(
+            mapOf(
+                LocalDate(2025, 1, 2) to listOf(IntakeEvent(product, isLate = true)),
+                LocalDate(2025, 1, 3) to listOf(IntakeEvent(product, isToday = true)),
+                LocalDate(2025, 1, 4) to listOf(IntakeEvent(product)),
+                LocalDate(2025, 1, 11) to listOf(ExpirationEvent(product)),
+                LocalDate(2025, 4, 11) to listOf(EmptyContainerEvent(product))
+            ),
+            result.first()
+        )
+    }
+
+    @Test
+    fun setWarningToIntakesAfterEmptyEvent() = runTest {
         // Arrange
         val product = Product.default().copy(
             dosePerIntake = 1f,
@@ -202,7 +259,7 @@ class GetNextCalendarEventsUseCaseTest {
     }
 
     @Test
-    fun shouldSetWarningToIntakesAfterExpirationEvent() = runTest {
+    fun setWarningToIntakesAfterExpirationEvent() = runTest {
         // Arrange
         val product = Product.default().copy(
             dosePerIntake = 1f,
@@ -241,7 +298,7 @@ class GetNextCalendarEventsUseCaseTest {
     }
 
     @Test
-    fun shouldNotAddExpirationEvent_WhenExpirationIsZero() = runTest {
+    fun doNotAddExpirationEvent_WhenExpirationIsZero() = runTest {
         // Arrange
         val product = Product.default().copy(
             dosePerIntake = 1f,
@@ -277,7 +334,7 @@ class GetNextCalendarEventsUseCaseTest {
     }
 
     @Test
-    fun shouldNotAddEmptyEvent_WhenContainerIsAOneShot() = runTest {
+    fun doNotAddEmptyEvent_WhenContainerIsAOneShot() = runTest {
         // Arrange
         val product = Product.default().copy(
             dosePerIntake = 1f,

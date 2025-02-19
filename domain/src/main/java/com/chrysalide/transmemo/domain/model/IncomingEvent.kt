@@ -6,7 +6,8 @@ sealed class IncomingEvent(
     data class IntakeEvent(
         override val product: Product,
         val isWarning: Boolean = false,
-        val isToday: Boolean = false
+        val isToday: Boolean = false,
+        val isLate: Boolean = false
     ) : IncomingEvent(product) {
         override fun compareTo(other: IncomingEvent): Int = when (other) {
             is IntakeEvent -> 0

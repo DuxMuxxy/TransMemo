@@ -34,7 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.chrysalide.transmemo.R
+import com.chrysalide.transmemo.R.string
 import com.chrysalide.transmemo.domain.extension.formatToSystemDate
 import com.chrysalide.transmemo.domain.extension.getCurrentLocalDate
 import com.chrysalide.transmemo.domain.extension.toUTCTimestamp
@@ -46,11 +46,13 @@ import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.Loading
 import com.chrysalide.transmemo.presentation.calendar.dointake.DoIntakeModal
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.design.TransMemoIcons
+import com.chrysalide.transmemo.presentation.extension.daysLateText
 import com.chrysalide.transmemo.presentation.extension.daysUntilText
 import com.chrysalide.transmemo.presentation.extension.typeText
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import org.koin.androidx.compose.koinViewModel
 
@@ -126,16 +128,45 @@ private fun CalendarView(calendarUiState: CalendarUiState, onEventClick: (Incomi
 
 @Composable
 fun LazyItemScope.DateEvents(date: LocalDate, events: List<IncomingEvent>, onEventClick: (IncomingEvent.IntakeEvent) -> Unit) {
+    val isLate = date < getCurrentLocalDate()
+    val isYesterday = date == getCurrentLocalDate().minus(DatePeriod(days = 1))
     val isToday = date == getCurrentLocalDate()
-    Column(modifier = Modifier.fillMaxWidth().animateItem()) {
+    val isTomorrow = date == getCurrentLocalDate().plus(DatePeriod(days = 1))
+    val isDoable = date <= getCurrentLocalDate()
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateItem()
+    ) {
         Row(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()
         ) {
-            if (isToday) {
-                Text(stringResource(R.string.global_today), style = MaterialTheme.typography.titleLarge)
-            } else {
-                Text("${date.formatToSystemDate()} - ${date.daysUntilText()}", style = MaterialTheme.typography.titleMedium)
+            when {
+                isYesterday -> {
+                    Text(
+                        stringResource(string.global_yesterday),
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.tertiary
+                    )
+                }
+
+                isLate -> {
+                    Text(
+                        stringResource(string.feature_calendar_date_template, date.formatToSystemDate(), date.daysLateText()),
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.tertiary
+                    )
+                }
+
+                isTomorrow -> Text(stringResource(string.global_tomorrow), style = MaterialTheme.typography.titleMedium)
+                isToday -> Text(stringResource(string.global_today), style = MaterialTheme.typography.titleLarge)
+                else -> {
+                    Text(
+                        stringResource(string.feature_calendar_date_template, date.formatToSystemDate(), date.daysUntilText()),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
@@ -143,9 +174,10 @@ fun LazyItemScope.DateEvents(date: LocalDate, events: List<IncomingEvent>, onEve
             when (event) {
                 is IncomingEvent.EmptyContainerEvent, is IncomingEvent.ExpirationEvent ->
                     IncomingCriticalEventCard(event)
+
                 is IncomingEvent.IntakeEvent ->
-                    if (isToday) {
-                        TodayIntakeEventCard(event, onClick = { onEventClick(event) })
+                    if (isDoable) {
+                        DoableIntakeEventCard(event, onClick = { onEventClick(event) })
                     } else {
                         IncomingIntakeEventCard(event)
                     }
@@ -158,12 +190,14 @@ fun LazyItemScope.DateEvents(date: LocalDate, events: List<IncomingEvent>, onEve
 }
 
 @Composable
-private fun TodayIntakeEventCard(event: IncomingEvent.IntakeEvent, onClick: () -> Unit) {
+private fun DoableIntakeEventCard(event: IncomingEvent.IntakeEvent, onClick: () -> Unit) {
+    val containerColor = when {
+        event.isLate -> MaterialTheme.colorScheme.tertiaryContainer
+        else -> MaterialTheme.colorScheme.surfaceTint
+    }
     OutlinedCard(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.outlinedCardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceTint
-        ),
+        colors = CardDefaults.outlinedCardColors(containerColor = containerColor),
         onClick = onClick
     ) {
         Row(
@@ -171,21 +205,23 @@ private fun TodayIntakeEventCard(event: IncomingEvent.IntakeEvent, onClick: () -
             modifier = Modifier.padding(16.dp)
         ) {
             Column {
-                Text(event.product.name, style = MaterialTheme.typography.titleLarge)
-                Text(event.typeText())
+                Text(event.typeText(), style = MaterialTheme.typography.titleLarge)
+                Text(event.product.name)
             }
             Spacer(
                 Modifier
                     .weight(1f)
                     .padding(end = 16.dp)
             )
+            val contentColor = when {
+                event.isLate -> MaterialTheme.colorScheme.onTertiaryContainer
+                else -> MaterialTheme.colorScheme.onPrimary
+            }
             OutlinedButton(
                 onClick,
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = contentColor)
             ) {
-                Text(stringResource(R.string.feature_calendar_do_intake_button))
+                Text(stringResource(string.feature_calendar_do_intake_button))
             }
         }
     }
@@ -204,8 +240,8 @@ private fun IncomingIntakeEventCard(event: IncomingEvent.IntakeEvent) {
         )
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(event.product.name, style = MaterialTheme.typography.titleLarge)
-            Text(event.typeText())
+            Text(event.typeText(), style = MaterialTheme.typography.titleLarge)
+            Text(event.product.name)
         }
     }
 }
@@ -220,8 +256,8 @@ private fun IncomingCriticalEventCard(event: IncomingEvent) {
         )
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(event.product.name, style = MaterialTheme.typography.titleLarge)
-            Text(event.typeText())
+            Text(event.typeText(), style = MaterialTheme.typography.titleLarge)
+            Text(event.product.name)
         }
     }
 }
@@ -245,22 +281,30 @@ private fun CalendarScreenListPreviews() {
         CalendarView(
             IncomingEvents(
                 incomingEvents = mapOf(
+                    nowDate.minus(DatePeriod(days = 4)) to listOf(
+                        IncomingEvent.IntakeEvent(
+                            product = product,
+                            isLate = true
+                        )
+                    ),
+                    nowDate.minus(DatePeriod(days = 1)) to listOf(
+                        IncomingEvent.IntakeEvent(
+                            product = product,
+                            isLate = true
+                        )
+                    ),
                     nowDate to listOf(
                         IncomingEvent.IntakeEvent(
                             product = product,
-                            isWarning = false,
                             isToday = true
                         )
                     ),
+                    nowDate.plus(DatePeriod(days = 1)) to listOf(
+                        IncomingEvent.IntakeEvent(product)
+                    ),
                     nowDate.plus(DatePeriod(days = 10)) to listOf(
-                        IncomingEvent.IntakeEvent(
-                            product = product,
-                            isWarning = false
-                        ),
-                        IncomingEvent.IntakeEvent(
-                            product = product,
-                            isWarning = false
-                        )
+                        IncomingEvent.IntakeEvent(product),
+                        IncomingEvent.IntakeEvent(product)
                     ),
                     nowDate.plus(DatePeriod(days = 15)) to listOf(
                         IncomingEvent.EmptyContainerEvent(product)

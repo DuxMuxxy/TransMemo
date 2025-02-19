@@ -63,6 +63,11 @@
         <item quantity="many">Dans %d jours</item>
         <item quantity="other">Dans %d jours</item>
     </plurals>
+    <plurals name="global_days_ago_text_template">
+        <item quantity="one">Il y a %d jour</item>
+        <item quantity="many">Il y a %d jours</item>
+        <item quantity="other">Il y a %d jours</item>
+    </plurals>
     <string name="feature_products_handle_side">Gestion du côté de la prise</string>
     <string name="feature_products_dosing_per_intake">Dose par prise</string>
     <string name="feature_products_capacity">Capacité de la boîte</string>
@@ -113,7 +118,9 @@
     <string name="intake_side_left">Côté gauche</string>
     <string name="intake_side_right">Côté droit</string>
     <string name="intake_side_undefined">Côté inconnu</string>
-    <string name="feature_calendar_type_intake">Prise à venir</string>
+    <string name="feature_calendar_type_incoming_intake">Prise à venir</string>
+    <string name="feature_calendar_type_today_intake">Prise à faire</string>
+    <string name="feature_calendar_type_late_intake">Prise en retard</string>
     <string name="feature_calendar_type_empty">Boîte vide</string>
     <string name="feature_calendar_type_expiration">Péremption de la boîte</string>
     <string name="global_today">Aujourd\'hui</string>
@@ -134,4 +141,6 @@
     <string name="feature_about_contributors_translation_german_swedish">Allemand et Suédois</string>
     <string name="feature_about_contributors_translation_russian">Russe</string>
     <string name="feature_calendar_do_intake_button">Faire la prise</string>
+    <string name="global_tomorrow">Demain</string>
+    <string name="global_yesterday">Hier</string>
 </resources>

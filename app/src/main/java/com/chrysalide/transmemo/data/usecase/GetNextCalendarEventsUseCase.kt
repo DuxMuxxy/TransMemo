@@ -69,11 +69,16 @@ class GetNextCalendarEventsUseCase(
         val counting = lastIntake?.let { (1..3) } ?: (0..2)
         return counting.map { count ->
             val date = countFromDate.plus(DatePeriod(days = product.intakeInterval * count))
+            val isToday = date == getCurrentLocalDate()
+            val isLate = date < getCurrentLocalDate()
+            val isAfterEmptyOrExpiredContainerDate = (emptyDate?.let { date > it } ?: false) || (expirationDate?.let { date > it } ?: false)
             EventDateWrapper(
                 date,
                 IntakeEvent(
-                    product = product,
-                    isWarning = (emptyDate?.let { date > it } ?: false) || (expirationDate?.let { date > it } ?: false)
+                    product,
+                    isWarning = isAfterEmptyOrExpiredContainerDate,
+                    isToday,
+                    isLate
                 )
             )
         }

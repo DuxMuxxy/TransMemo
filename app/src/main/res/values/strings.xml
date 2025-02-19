@@ -62,6 +62,10 @@
         <item quantity="one">In %d day</item>
         <item quantity="other">In %d days</item>
     </plurals>
+    <plurals name="global_days_ago_text_template">
+        <item quantity="one">%d day ago</item>
+        <item quantity="other">%d days ago</item>
+    </plurals>
     <string name="feature_products_handle_side">Shot side management</string>
     <string name="feature_products_dosing_per_intake">Dosing per intake</string>
     <string name="feature_products_capacity">Box capacity</string>
@@ -112,7 +116,9 @@
     <string name="intake_side_left">Left side</string>
     <string name="intake_side_right">Right side</string>
     <string name="intake_side_undefined">Unknown side</string>
-    <string name="feature_calendar_type_intake">Incoming intake</string>
+    <string name="feature_calendar_type_incoming_intake">Incoming intake</string>
+    <string name="feature_calendar_type_today_intake">Intake to do</string>
+    <string name="feature_calendar_type_late_intake">Late intake</string>
     <string name="feature_calendar_type_empty">Empty container</string>
     <string name="feature_calendar_type_expiration">Container expiration</string>
     <string name="global_today">Today</string>
@@ -138,4 +144,7 @@
     <string name="feature_about_contributors_translation_german_swedish">German and Swedish</string>
     <string name="feature_about_contributors_translation_russian">Russian</string>
     <string name="feature_calendar_do_intake_button">Do the intake</string>
+    <string name="feature_calendar_date_template" translatable="false">%s - %s</string>
+    <string name="global_tomorrow">Tomorrow</string>
+    <string name="global_yesterday">Yesterday</string>
 </resources>
