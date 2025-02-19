@@ -94,7 +94,7 @@ fun ProductsScreen(
     viewModel: ProductsViewModel = koinViewModel(),
     onShowSnackbar: suspend (String, String?) -> Boolean
 ) {
-    val productsUiState by viewModel.productsUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.productsUiState.collectAsStateWithLifecycle()
     var showAddProductModal by remember { mutableStateOf(false) }
     var showAddSuccessSnackbar by remember { mutableStateOf(false) }
     var showDeleteProductDialog by remember { mutableStateOf(false) }
@@ -139,7 +139,7 @@ fun ProductsScreen(
     }
 
     ProductsView(
-        productsUiState,
+        uiState,
         saveProduct = viewModel::saveProduct,
         addProduct = { showAddProductModal = true },
         deleteProduct = {

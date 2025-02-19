@@ -65,9 +65,9 @@ import org.koin.androidx.compose.koinViewModel
 fun IntakesScreen(
     viewModel: IntakesViewModel = koinViewModel()
 ) {
-    val intakesUiState by viewModel.intakesUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    IntakesView(intakesUiState)
+    IntakesView(uiState)
 }
 
 @Composable

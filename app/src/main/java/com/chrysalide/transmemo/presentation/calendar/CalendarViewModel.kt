@@ -16,7 +16,7 @@ import kotlin.time.Duration.Companion.seconds
 class CalendarViewModel(
     getNextCalendarEventsUseCase: GetNextCalendarEventsUseCase
 ) : ViewModel() {
-    val calendarUiState: StateFlow<CalendarUiState> = getNextCalendarEventsUseCase()
+    val uiState: StateFlow<CalendarUiState> = getNextCalendarEventsUseCase()
         .map { events ->
             if (events.isNotEmpty()) {
                 IncomingEvents(events)

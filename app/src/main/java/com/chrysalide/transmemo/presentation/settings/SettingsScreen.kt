@@ -62,7 +62,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = koinViewModel(),
     onShowSnackbar: suspend (String, String?) -> Boolean
 ) {
-    val settingsUiState by viewModel.settingsUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val importResultSnackbar = viewModel.importResultSnackbar
     val importResultSuccessText = stringResource(string.feature_settings_database_import_success)
     val importResultErrorText = stringResource(string.feature_settings_database_import_error)
@@ -82,7 +82,7 @@ fun SettingsScreen(
     }
 
     SettingsView(
-        settingsUiState = settingsUiState,
+        settingsUiState = uiState,
         onChangeDarkThemeConfig = viewModel::updateDarkThemeConfig,
         onChangeDynamicColorPreference = viewModel::updateDynamicColorPreference,
         setAskAuthentication = viewModel::updateAskAuthentication,

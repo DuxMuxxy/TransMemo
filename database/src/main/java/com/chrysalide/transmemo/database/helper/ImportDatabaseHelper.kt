@@ -291,13 +291,15 @@ class ImportDatabaseHelper(
     }
 
     private fun Int.toUnit() = when (this) {
-        0 -> MeasureUnit.VIAL
-        1 -> MeasureUnit.PILL
-        2 -> MeasureUnit.MILLIGRAM
+        0 -> MeasureUnit.OTHER
+        1 -> MeasureUnit.VIAL
+        2 -> MeasureUnit.PILL
+        8 -> MeasureUnit.MILLIGRAM
         3 -> MeasureUnit.MILLILITER
         4 -> MeasureUnit.OZ
         5 -> MeasureUnit.PATCH
         6 -> MeasureUnit.PUMP
+        7 -> MeasureUnit.SACHET
         else -> MeasureUnit.OTHER
     }
 

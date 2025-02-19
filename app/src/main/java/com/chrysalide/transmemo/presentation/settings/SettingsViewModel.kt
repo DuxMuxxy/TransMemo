@@ -26,7 +26,7 @@ class SettingsViewModel(
 ) : ViewModel() {
     var importResultSnackbar by mutableStateOf<ImportDatabaseFileResultSnackbar>(ImportDatabaseFileResultSnackbar.Idle)
 
-    val settingsUiState: StateFlow<SettingsUiState> = userDataRepository.userData
+    val uiState: StateFlow<SettingsUiState> = userDataRepository.userData
         .map { userData ->
             UserEditableSettings(
                 darkThemeConfig = userData.darkThemeConfig,

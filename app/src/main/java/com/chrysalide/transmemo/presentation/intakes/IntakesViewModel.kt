@@ -16,7 +16,7 @@ class IntakesViewModel(
     databaseRepository: DatabaseRepository,
     computeNextIntakeForProductsUseCase: ComputeNextIntakeForProductUseCase
 ) : ViewModel() {
-    val intakesUiState: StateFlow<IntakesUiState> = databaseRepository
+    val uiState: StateFlow<IntakesUiState> = databaseRepository
         .observeAllIntakes()
         .map { intakes ->
             if (intakes.isNotEmpty()) {

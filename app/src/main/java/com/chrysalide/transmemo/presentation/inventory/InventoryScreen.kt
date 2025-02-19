@@ -65,17 +65,16 @@ import com.chrysalide.transmemo.presentation.inventory.InventoryUiState.Loading
 import com.chrysalide.transmemo.presentation.inventory.recycle.AskRecycleContainerDialog
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 import dev.sergiobelda.compose.vectorize.images.Images
-import dev.sergiobelda.compose.vectorize.images.icons.outlined.Inventory
 import dev.sergiobelda.compose.vectorize.images.icons.outlined.Recycling
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun InventoryScreen(
-    viewModel: ContainersViewModel = koinViewModel(),
+    viewModel: InventoryViewModel = koinViewModel(),
     onShowSnackbar: suspend (String, String?) -> Boolean
 ) {
-    val containersUiState by viewModel.inventoryUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showRecycleContainerDialog by remember { mutableStateOf(false) }
     var showRecycleSuccessSnackbar by remember { mutableStateOf(false) }
     var containerToRecycle by remember { mutableStateOf<Container?>(null) }
@@ -103,7 +102,7 @@ fun InventoryScreen(
     }
 
     InventoryView(
-        containersUiState,
+        uiState,
         recycleContainer = {
             containerToRecycle = it
             showRecycleContainerDialog = true

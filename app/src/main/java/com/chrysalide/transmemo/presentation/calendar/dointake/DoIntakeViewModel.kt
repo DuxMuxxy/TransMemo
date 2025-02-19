@@ -14,13 +14,13 @@ class DoIntakeViewModel(
     private val createIntakeForProductUseCase: CreateIntakeForProductUseCase,
     private val doIntakeForProductUseCase: DoIntakeForProductUseCase
 ) : ViewModel() {
-    private val _doIntakeUiState = MutableStateFlow<DoIntakeUiState>(DoIntakeUiState.Idle)
-    val doIntakeUiState = _doIntakeUiState
+    private val _uiState = MutableStateFlow<DoIntakeUiState>(DoIntakeUiState.Idle)
+    val uiState = _uiState
 
     fun getIntakeForProduct(product: Product) {
         viewModelScope.launch {
             val intake = createIntakeForProductUseCase(product)
-            _doIntakeUiState.update { DoIntakeUiState.IntakeForProduct(intake) }
+            _uiState.update { DoIntakeUiState.IntakeForProduct(intake) }
         }
     }
 

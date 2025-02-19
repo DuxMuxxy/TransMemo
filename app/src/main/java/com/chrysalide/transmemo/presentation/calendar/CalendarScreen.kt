@@ -58,10 +58,10 @@ import org.koin.androidx.compose.koinViewModel
 fun CalendarScreen(
     viewModel: CalendarViewModel = koinViewModel()
 ) {
-    val calendarUiState by viewModel.calendarUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var doIntakeModalProduct by remember { mutableStateOf<Product?>(null) }
 
-    CalendarView(calendarUiState, onEventClick = { doIntakeModalProduct = it.product })
+    CalendarView(uiState, onEventClick = { doIntakeModalProduct = it.product })
 
     if (doIntakeModalProduct != null) {
         DoIntakeModal(

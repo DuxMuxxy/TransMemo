@@ -13,18 +13,18 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
-class ContainersViewModel(
+class InventoryViewModel(
     private val databaseRepository: DatabaseRepository
 ) : ViewModel() {
-    val inventoryUiState: StateFlow<InventoryUiState> = databaseRepository
+    val uiState: StateFlow<InventoryUiState> = databaseRepository
         .observeAllContainers()
         .map {
-            it.filter { container -> container.product.inUse && container.state == ContainerState.OPEN }
-        }.map {
-            if (it.isNotEmpty()) {
-                Containers(it)
-            } else {
-                InventoryUiState.Empty
+            it.filter { container -> container.product.inUse && container.state == ContainerState.OPEN }.let { filtered ->
+                if (filtered.isNotEmpty()) {
+                    Containers(filtered)
+                } else {
+                    InventoryUiState.Empty
+                }
             }
         }.stateIn(
             scope = viewModelScope,

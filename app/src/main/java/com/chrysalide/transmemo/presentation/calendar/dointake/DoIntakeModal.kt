@@ -75,7 +75,7 @@ fun DoIntakeModal(
     product: Product,
     onDismiss: () -> Unit
 ) {
-    val uiState by viewModel.doIntakeUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) { viewModel.getIntakeForProduct(product) }
 

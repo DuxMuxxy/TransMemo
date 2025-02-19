@@ -8,7 +8,6 @@ import com.chrysalide.transmemo.domain.model.IncomingEvent.EmptyContainerEvent
 import com.chrysalide.transmemo.domain.model.IncomingEvent.ExpirationEvent
 import com.chrysalide.transmemo.domain.model.IncomingEvent.IntakeEvent
 import com.chrysalide.transmemo.domain.model.Product
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapMerge
@@ -21,7 +20,6 @@ import kotlinx.datetime.plus
 class GetNextCalendarEventsUseCase(
     private val databaseRepository: DatabaseRepository
 ) {
-    @OptIn(ExperimentalCoroutinesApi::class)
     operator fun invoke(): Flow<Map<LocalDate, List<IncomingEvent>>> =
         databaseRepository
             .observeInUseProducts()

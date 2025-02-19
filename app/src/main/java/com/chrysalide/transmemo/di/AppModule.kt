@@ -11,7 +11,7 @@ import com.chrysalide.transmemo.presentation.MainActivityViewModel
 import com.chrysalide.transmemo.presentation.calendar.CalendarViewModel
 import com.chrysalide.transmemo.presentation.calendar.dointake.DoIntakeViewModel
 import com.chrysalide.transmemo.presentation.intakes.IntakesViewModel
-import com.chrysalide.transmemo.presentation.inventory.ContainersViewModel
+import com.chrysalide.transmemo.presentation.inventory.InventoryViewModel
 import com.chrysalide.transmemo.presentation.products.ProductsViewModel
 import com.chrysalide.transmemo.presentation.products.add.AddProductViewModel
 import com.chrysalide.transmemo.presentation.settings.SettingsViewModel
@@ -25,7 +25,7 @@ private val viewModelModule = module {
     viewModelOf(::MainActivityViewModel)
     viewModelOf(::CalendarViewModel)
     viewModelOf(::IntakesViewModel)
-    viewModelOf(::ContainersViewModel)
+    viewModelOf(::InventoryViewModel)
     viewModelOf(::ProductsViewModel)
     viewModelOf(::AddProductViewModel)
     viewModelOf(::SettingsViewModel)
