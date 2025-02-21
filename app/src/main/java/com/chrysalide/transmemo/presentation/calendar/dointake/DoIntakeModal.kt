@@ -51,8 +51,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.chrysalide.transmemo.R.string
 import com.chrysalide.transmemo.domain.extension.getCurrentLocalDate
+import com.chrysalide.transmemo.domain.extension.toEpochMillis
 import com.chrysalide.transmemo.domain.extension.toLocalDate
-import com.chrysalide.transmemo.domain.extension.toUTCTimestamp
+import com.chrysalide.transmemo.domain.model.DateIntakeEvent
 import com.chrysalide.transmemo.domain.model.Intake
 import com.chrysalide.transmemo.domain.model.IntakeSide
 import com.chrysalide.transmemo.domain.model.Product
@@ -72,12 +73,12 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun DoIntakeModal(
     viewModel: DoIntakeViewModel = koinViewModel(),
-    product: Product,
+    intakeEvent: DateIntakeEvent,
     onDismiss: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) { viewModel.getIntakeForProduct(product) }
+    LaunchedEffect(Unit) { viewModel.getIntakeForEvent(intakeEvent) }
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -109,7 +110,7 @@ private fun DoIntakeView(
     onDismiss: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
-    var editableIntake by remember { mutableStateOf(intake) }
+    var editableIntake by remember(intake) { mutableStateOf(intake) }
     var showDatePickerDialog by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
     var editedDoseValue by remember { mutableStateOf(editableIntake.realDose.stripTrailingZeros()) }
@@ -236,7 +237,7 @@ private fun DatePickerDialog(
     onDismiss: () -> Unit
 ) {
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = initialSelectedDate.toUTCTimestamp()
+        initialSelectedDateMillis = initialSelectedDate.toEpochMillis()
     )
 
     DatePickerDialog(

@@ -2,6 +2,8 @@ package com.chrysalide.transmemo.presentation.calendar.dointake
 
 import com.chrysalide.transmemo.data.usecase.CreateIntakeForProductUseCase
 import com.chrysalide.transmemo.data.usecase.DoIntakeForProductUseCase
+import com.chrysalide.transmemo.domain.model.DateIntakeEvent
+import com.chrysalide.transmemo.domain.model.IncomingEvent
 import com.chrysalide.transmemo.domain.model.Intake
 import com.chrysalide.transmemo.domain.model.IntakeSide
 import com.chrysalide.transmemo.domain.model.Product
@@ -38,13 +40,14 @@ class DoIntakeViewModelTest {
     @Test
     fun stateIsIntakeForProductWhenGetterInvoke() {
         // Arrange
-        coEvery { createIntakeForProductUseCase(product) } returns intake
+        val dateIntakeEvent = DateIntakeEvent(mockk(), IncomingEvent.IntakeEvent(product))
+        coEvery { createIntakeForProductUseCase(dateIntakeEvent) } returns intake
 
         // Act
-        viewModel.getIntakeForProduct(product)
+        viewModel.getIntakeForEvent(dateIntakeEvent)
 
         // Assert
-        coVerify { createIntakeForProductUseCase(product) }
+        coVerify { createIntakeForProductUseCase(dateIntakeEvent) }
         assertEquals(DoIntakeUiState.IntakeForProduct(intake), viewModel.uiState.value)
     }
 

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
         android:name=".presentation.TransMemoApplication"
@@ -43,6 +44,10 @@
         <service
             android:name=".presentation.service.UpdateAppIconService"
             android:stopWithTask="false" />
+
+        <receiver
+            android:name=".presentation.service.AlertReceiver"
+            android:exported="true" />
     </application>
 
 </manifest>

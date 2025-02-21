@@ -37,7 +37,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.chrysalide.transmemo.R.string
 import com.chrysalide.transmemo.domain.extension.formatToSystemDate
 import com.chrysalide.transmemo.domain.extension.getCurrentLocalDate
-import com.chrysalide.transmemo.domain.extension.toUTCTimestamp
+import com.chrysalide.transmemo.domain.extension.toEpochMillis
+import com.chrysalide.transmemo.domain.model.DateIntakeEvent
 import com.chrysalide.transmemo.domain.model.IncomingEvent
 import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.Empty
@@ -61,13 +62,16 @@ fun CalendarScreen(
     viewModel: CalendarViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var doIntakeModalProduct by remember { mutableStateOf<Product?>(null) }
+    var doIntakeModalProduct by remember { mutableStateOf<DateIntakeEvent?>(null) }
 
-    CalendarView(uiState, onEventClick = { doIntakeModalProduct = it.product })
+    CalendarView(
+        uiState,
+        doIntake = { doIntakeModalProduct = it }
+    )
 
     if (doIntakeModalProduct != null) {
         DoIntakeModal(
-            product = doIntakeModalProduct!!,
+            intakeEvent = doIntakeModalProduct!!,
             onDismiss = {
                 doIntakeModalProduct = null
             }
@@ -76,7 +80,7 @@ fun CalendarScreen(
 }
 
 @Composable
-private fun CalendarView(calendarUiState: CalendarUiState, onEventClick: (IncomingEvent) -> Unit) {
+private fun CalendarView(calendarUiState: CalendarUiState, doIntake: (DateIntakeEvent) -> Unit) {
     Column(modifier = Modifier.fillMaxSize()) {
         when (calendarUiState) {
             is Loading -> {
@@ -113,9 +117,9 @@ private fun CalendarView(calendarUiState: CalendarUiState, onEventClick: (Incomi
                 ) {
                     itemsIndexed(
                         items = eventsByDate,
-                        key = { _, entry -> entry.key.toUTCTimestamp() }
+                        key = { _, entry -> entry.key.toEpochMillis() }
                     ) { index, entry ->
-                        DateEvents(entry.key, entry.value, onEventClick)
+                        DateEvents(entry.key, entry.value, doIntake)
                         if (index < eventsByDate.lastIndex) {
                             Spacer(modifier = Modifier.height(32.dp))
                         }
@@ -127,7 +131,11 @@ private fun CalendarView(calendarUiState: CalendarUiState, onEventClick: (Incomi
 }
 
 @Composable
-fun LazyItemScope.DateEvents(date: LocalDate, events: List<IncomingEvent>, onEventClick: (IncomingEvent.IntakeEvent) -> Unit) {
+fun LazyItemScope.DateEvents(
+    date: LocalDate,
+    events: List<IncomingEvent>,
+    doIntake: (DateIntakeEvent) -> Unit
+) {
     val isLate = date < getCurrentLocalDate()
     val isYesterday = date == getCurrentLocalDate().minus(DatePeriod(days = 1))
     val isToday = date == getCurrentLocalDate()
@@ -177,7 +185,12 @@ fun LazyItemScope.DateEvents(date: LocalDate, events: List<IncomingEvent>, onEve
 
                 is IncomingEvent.IntakeEvent ->
                     if (isDoable) {
-                        DoableIntakeEventCard(event, onClick = { onEventClick(event) })
+                        DoableIntakeEventCard(
+                            event,
+                            doIntake = {
+                                doIntake(DateIntakeEvent(date, event))
+                            }
+                        )
                     } else {
                         IncomingIntakeEventCard(event)
                     }
@@ -190,7 +203,7 @@ fun LazyItemScope.DateEvents(date: LocalDate, events: List<IncomingEvent>, onEve
 }
 
 @Composable
-private fun DoableIntakeEventCard(event: IncomingEvent.IntakeEvent, onClick: () -> Unit) {
+private fun DoableIntakeEventCard(event: IncomingEvent.IntakeEvent, doIntake: () -> Unit) {
     val containerColor = when {
         event.isLate -> MaterialTheme.colorScheme.tertiaryContainer
         else -> MaterialTheme.colorScheme.surfaceTint
@@ -198,7 +211,7 @@ private fun DoableIntakeEventCard(event: IncomingEvent.IntakeEvent, onClick: () 
     OutlinedCard(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.outlinedCardColors(containerColor = containerColor),
-        onClick = onClick
+        onClick = doIntake
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -218,7 +231,7 @@ private fun DoableIntakeEventCard(event: IncomingEvent.IntakeEvent, onClick: () 
                 else -> MaterialTheme.colorScheme.onPrimary
             }
             OutlinedButton(
-                onClick,
+                doIntake,
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = contentColor)
             ) {
                 Text(stringResource(string.feature_calendar_do_intake_button))
@@ -266,7 +279,7 @@ private fun IncomingCriticalEventCard(event: IncomingEvent) {
 @Composable
 private fun CalendarScreenLoadingPreviews() {
     TransMemoTheme {
-        CalendarView(Loading, onEventClick = {})
+        CalendarView(Loading, doIntake = {})
     }
 }
 
@@ -320,7 +333,7 @@ private fun CalendarScreenListPreviews() {
                     )
                 ),
             ),
-            onEventClick = {}
+            doIntake = {}
         )
     }
 }

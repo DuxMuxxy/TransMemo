@@ -8,7 +8,7 @@ import org.junit.Test
 
 class AddProductViewModelTest {
     private val databaseRepository: DatabaseRepository = mockk(relaxed = true)
-    private val viewModel = AddProductViewModel(databaseRepository)
+    private val viewModel = AddProductViewModel(databaseRepository, mockk(relaxed = true))
 
     @Test
     fun insertProductWhenAddProductInvoke() {

@@ -3,6 +3,7 @@ package com.chrysalide.transmemo.domain.extension
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atTime
 import kotlinx.datetime.toInstant
@@ -29,8 +30,13 @@ fun Long.toLocalDate(): LocalDate {
     return localDateTime.date
 }
 
-fun LocalDate.toUTCTimestamp(): Long {
+fun LocalDate.toEpochMillis(): Long {
     val localDateTime = this.atTime(0, 0, 0)
     val instant = localDateTime.toInstant(TimeZone.UTC)
+    return instant.toEpochMilliseconds()
+}
+
+fun LocalDateTime.toEpochMillis(): Long {
+    val instant = toInstant(TimeZone.UTC)
     return instant.toEpochMilliseconds()
 }

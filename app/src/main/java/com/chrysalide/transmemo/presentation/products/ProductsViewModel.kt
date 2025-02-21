@@ -2,6 +2,7 @@ package com.chrysalide.transmemo.presentation.products
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.chrysalide.transmemo.data.usecase.ScheduleAlertsForProductUseCase
 import com.chrysalide.transmemo.domain.boundary.DatabaseRepository
 import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.presentation.products.ProductsUiState.Products
@@ -13,7 +14,8 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 class ProductsViewModel(
-    private val databaseRepository: DatabaseRepository
+    private val databaseRepository: DatabaseRepository,
+    private val scheduleAlertsForProductUseCase: ScheduleAlertsForProductUseCase
 ) : ViewModel() {
     val productsUiState: StateFlow<ProductsUiState> = databaseRepository
         .observeAllProducts()
@@ -28,6 +30,7 @@ class ProductsViewModel(
     fun saveProduct(product: Product) {
         viewModelScope.launch {
             databaseRepository.updateProduct(product)
+            scheduleAlertsForProductUseCase(product)
         }
     }
 

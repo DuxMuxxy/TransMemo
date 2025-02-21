@@ -1,5 +1,7 @@
 package com.chrysalide.transmemo.domain.model
 
+import kotlinx.datetime.LocalDate
+
 sealed class IncomingEvent(
     open val product: Product
 ) : Comparable<IncomingEvent> {
@@ -43,3 +45,8 @@ sealed class IncomingEvent(
         is ExpirationEvent -> this.compareTo(other)
     }
 }
+
+data class DateIntakeEvent(
+    val date: LocalDate,
+    val event: IncomingEvent.IntakeEvent
+)

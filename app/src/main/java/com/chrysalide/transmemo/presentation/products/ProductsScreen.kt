@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
@@ -271,7 +270,7 @@ private fun ProductCard(
                             keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) })
                         )
                         Spacer(modifier = Modifier.height(24.dp))
-                        var isMoleculeDropDownExtended = remember { mutableStateOf(false) }
+                        val isMoleculeDropDownExtended = remember { mutableStateOf(false) }
                         DropDownValueRow(
                             title = stringResource(string.feature_product_molecule),
                             value = editableProduct.moleculeName(),
@@ -288,7 +287,7 @@ private fun ProductCard(
                             }
                         }
                         Spacer(modifier = Modifier.height(24.dp))
-                        var isUnitDropDownExtended = remember { mutableStateOf(false) }
+                        val isUnitDropDownExtended = remember { mutableStateOf(false) }
                         DropDownValueRow(
                             title = stringResource(string.feature_product_unit),
                             value = editableProduct.unitName(),
@@ -317,7 +316,12 @@ private fun ProductCard(
                             Icon(Icons.Rounded.Delete, contentDescription = deleteButtonContentDescription)
                         }
                         val editButtonContentDescription = stringResource(string.feature_products_edit_button_content_description)
-                        IconButton(onClick = { isEditing = true }) {
+                        IconButton(
+                            onClick = {
+                                isEditing = true
+                                isExtented = true
+                            }
+                        ) {
                             Icon(Icons.Rounded.Edit, contentDescription = editButtonContentDescription)
                         }
                     }
@@ -422,23 +426,24 @@ private fun ProductCard(
                                     isError = !isAlertDelayValid
                                 )
                             }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+                            SwitchRow(
+                                text = stringResource(string.feature_products_notifications),
+                                checked = editableProduct.notifications > 0,
+                                enabled = isEditing,
+                                onCheckedChange = { editableProduct = editableProduct.copy(notifications = if (it) 1 else 0) }
+                            )
                         }
                     }
 
-                    if (isEditing ||
-                        editableProduct.dosePerIntake > 0f ||
-                        editableProduct.capacity > 0f ||
-                        editableProduct.expirationDays > 0 ||
-                        editableProduct.alertDelay > 0
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
                     ) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            val icon = if (isExtented) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown
-                            Icon(icon, contentDescription = null)
-                        }
+                        val icon = if (isExtented) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown
+                        Icon(icon, contentDescription = null)
                     }
 
                     AnimatedVisibility(isEditing) {
@@ -563,12 +568,7 @@ fun DropDownValueRow(
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(title)
-        HorizontalDivider(
-            modifier = Modifier
-                .weight(1f)
-                .widthIn(min = 16.dp)
-                .padding(horizontal = 16.dp)
-        )
+        Spacer(modifier = Modifier.weight(1f))
         Row(
             modifier = Modifier
                 .background(

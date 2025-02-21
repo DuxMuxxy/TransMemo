@@ -247,6 +247,13 @@ private fun AddProductView(
                     imeAction = ImeAction.Done,
                     isError = !isAlertDelayValid
                 )
+
+                Spacer(modifier = Modifier.height(16.dp))
+                SwitchRow(
+                    text = stringResource(string.feature_products_notifications),
+                    checked = product.notifications > 0,
+                    onCheckedChange = { product = product.copy(notifications = if (it) 1 else 0) }
+                )
             }
         }
 

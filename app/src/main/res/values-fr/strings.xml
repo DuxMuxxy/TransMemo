@@ -147,4 +147,9 @@
     <string name="feature_about_licenses_title">Licences</string>
     <string name="feature_about_licenses_libraries">Librairies :</string>
     <string name="global_ignore">Ignorer</string>
+    <string name="feature_notification_intake_title">C\'est l\'heure de la prise</string>
+    <string name="feature_notification_intake_message">Vérifiez que vous avez tout ce qu\'il vous faut !</string>
+    <string name="feature_notifications_intakes_channel_name">Rappels de prise</string>
+    <string name="feature_notifications_intakes_channel_description">Notifications de rappels de prise</string>
+    <string name="feature_products_notifications">Notifications</string>
 </resources>
