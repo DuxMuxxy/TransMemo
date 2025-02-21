@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,11 +40,13 @@ import com.chrysalide.transmemo.domain.extension.formatToSystemDate
 import com.chrysalide.transmemo.domain.extension.getCurrentLocalDate
 import com.chrysalide.transmemo.domain.extension.toUTCTimestamp
 import com.chrysalide.transmemo.domain.model.IncomingEvent
+import com.chrysalide.transmemo.domain.model.IntakeToIgnore
 import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.Empty
 import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.IncomingEvents
 import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.Loading
 import com.chrysalide.transmemo.presentation.calendar.dointake.DoIntakeModal
+import com.chrysalide.transmemo.presentation.calendar.ignore.AskIgnoreIntakeDialog
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.design.TransMemoIcons
 import com.chrysalide.transmemo.presentation.extension.daysLateText
@@ -62,8 +65,13 @@ fun CalendarScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var doIntakeModalProduct by remember { mutableStateOf<Product?>(null) }
+    var dialogIntakeToIgnore by remember { mutableStateOf<IntakeToIgnore?>(null) }
 
-    CalendarView(uiState, onEventClick = { doIntakeModalProduct = it.product })
+    CalendarView(
+        uiState,
+        doIntake = { doIntakeModalProduct = it.product },
+        ignoreIntake = { dialogIntakeToIgnore = it }
+    )
 
     if (doIntakeModalProduct != null) {
         DoIntakeModal(
@@ -73,10 +81,24 @@ fun CalendarScreen(
             }
         )
     }
+
+    if (dialogIntakeToIgnore != null) {
+        AskIgnoreIntakeDialog(
+            onDismiss = { dialogIntakeToIgnore = null },
+            onConfirm = {
+                viewModel.ignoreIntake(dialogIntakeToIgnore!!)
+                dialogIntakeToIgnore = null
+            }
+        )
+    }
 }
 
 @Composable
-private fun CalendarView(calendarUiState: CalendarUiState, onEventClick: (IncomingEvent) -> Unit) {
+private fun CalendarView(
+    calendarUiState: CalendarUiState,
+    doIntake: (IncomingEvent) -> Unit,
+    ignoreIntake: (IntakeToIgnore) -> Unit
+) {
     Column(modifier = Modifier.fillMaxSize()) {
         when (calendarUiState) {
             is Loading -> {
@@ -115,7 +137,7 @@ private fun CalendarView(calendarUiState: CalendarUiState, onEventClick: (Incomi
                         items = eventsByDate,
                         key = { _, entry -> entry.key.toUTCTimestamp() }
                     ) { index, entry ->
-                        DateEvents(entry.key, entry.value, onEventClick)
+                        DateEvents(entry.key, entry.value, doIntake, ignoreIntake)
                         if (index < eventsByDate.lastIndex) {
                             Spacer(modifier = Modifier.height(32.dp))
                         }
@@ -127,7 +149,12 @@ private fun CalendarView(calendarUiState: CalendarUiState, onEventClick: (Incomi
 }
 
 @Composable
-fun LazyItemScope.DateEvents(date: LocalDate, events: List<IncomingEvent>, onEventClick: (IncomingEvent.IntakeEvent) -> Unit) {
+fun LazyItemScope.DateEvents(
+    date: LocalDate,
+    events: List<IncomingEvent>,
+    doIntake: (IncomingEvent.IntakeEvent) -> Unit,
+    ignoreIntake: (IntakeToIgnore) -> Unit
+) {
     val isLate = date < getCurrentLocalDate()
     val isYesterday = date == getCurrentLocalDate().minus(DatePeriod(days = 1))
     val isToday = date == getCurrentLocalDate()
@@ -177,7 +204,11 @@ fun LazyItemScope.DateEvents(date: LocalDate, events: List<IncomingEvent>, onEve
 
                 is IncomingEvent.IntakeEvent ->
                     if (isDoable) {
-                        DoableIntakeEventCard(event, onClick = { onEventClick(event) })
+                        DoableIntakeEventCard(
+                            event,
+                            doIntake = { doIntake(event) },
+                            ignoreIntake = { ignoreIntake(IntakeToIgnore(date, event.product)) }
+                        )
                     } else {
                         IncomingIntakeEventCard(event)
                     }
@@ -190,7 +221,11 @@ fun LazyItemScope.DateEvents(date: LocalDate, events: List<IncomingEvent>, onEve
 }
 
 @Composable
-private fun DoableIntakeEventCard(event: IncomingEvent.IntakeEvent, onClick: () -> Unit) {
+private fun DoableIntakeEventCard(
+    event: IncomingEvent.IntakeEvent,
+    doIntake: () -> Unit,
+    ignoreIntake: () -> Unit
+) {
     val containerColor = when {
         event.isLate -> MaterialTheme.colorScheme.tertiaryContainer
         else -> MaterialTheme.colorScheme.surfaceTint
@@ -198,30 +233,29 @@ private fun DoableIntakeEventCard(event: IncomingEvent.IntakeEvent, onClick: () 
     OutlinedCard(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.outlinedCardColors(containerColor = containerColor),
-        onClick = onClick
+        onClick = doIntake
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(16.dp)
-        ) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Column {
                 Text(event.typeText(), style = MaterialTheme.typography.titleLarge)
                 Text(event.product.name)
             }
-            Spacer(
-                Modifier
-                    .weight(1f)
-                    .padding(end = 16.dp)
-            )
-            val contentColor = when {
-                event.isLate -> MaterialTheme.colorScheme.onTertiaryContainer
-                else -> MaterialTheme.colorScheme.onPrimary
-            }
-            OutlinedButton(
-                onClick,
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = contentColor)
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text(stringResource(string.feature_calendar_do_intake_button))
+                val contentColor = when {
+                    event.isLate -> MaterialTheme.colorScheme.onTertiaryContainer
+                    else -> MaterialTheme.colorScheme.onPrimary
+                }
+                TextButton(
+                    onClick = ignoreIntake,
+                    colors = ButtonDefaults.textButtonColors(contentColor = contentColor)
+                ) { Text(stringResource(string.global_ignore)) }
+                OutlinedButton(
+                    onClick = doIntake,
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = contentColor)
+                ) { Text(stringResource(string.feature_calendar_do_intake_button)) }
             }
         }
     }
@@ -266,7 +300,7 @@ private fun IncomingCriticalEventCard(event: IncomingEvent) {
 @Composable
 private fun CalendarScreenLoadingPreviews() {
     TransMemoTheme {
-        CalendarView(Loading, onEventClick = {})
+        CalendarView(Loading, doIntake = {}, ignoreIntake = {})
     }
 }
 
@@ -320,7 +354,8 @@ private fun CalendarScreenListPreviews() {
                     )
                 ),
             ),
-            onEventClick = {}
+            doIntake = {},
+            ignoreIntake = {}
         )
     }
 }

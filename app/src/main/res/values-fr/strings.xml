@@ -147,4 +147,5 @@
     <string name="feature_about_licenses_title">Licences</string>
     <string name="feature_about_licenses_libraries">Librairies :</string>
     <string name="global_ignore">Ignorer</string>
+    <string name="feature_calendar_ignore_dialog_title">Ignorer cette prise ?</string>
 </resources>

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "8cfbcb8d5d3fc79916c78c6a07d49b45",
+    "identityHash": "945a181b3fcd9bcbe33db21d003516c5",
     "entities": [
       {
         "tableName": "containers",
@@ -190,7 +190,7 @@
       },
       {
         "tableName": "intakes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `productId` INTEGER NOT NULL, `plannedDose` REAL NOT NULL, `realDose` REAL NOT NULL, `plannedDate` TEXT NOT NULL, `realDate` TEXT NOT NULL, `plannedSide` TEXT NOT NULL, `realSide` TEXT NOT NULL, FOREIGN KEY(`productId`) REFERENCES `products`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `productId` INTEGER NOT NULL, `plannedDose` REAL NOT NULL, `realDose` REAL NOT NULL, `plannedDate` TEXT NOT NULL, `realDate` TEXT NOT NULL, `plannedSide` TEXT NOT NULL, `realSide` TEXT NOT NULL, `isIgnored` INTEGER NOT NULL, FOREIGN KEY(`productId`) REFERENCES `products`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -238,6 +238,12 @@
             "fieldPath": "realSide",
             "columnName": "realSide",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isIgnored",
+            "columnName": "isIgnored",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -314,7 +320,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8cfbcb8d5d3fc79916c78c6a07d49b45')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '945a181b3fcd9bcbe33db21d003516c5')"
     ]
   }
 }

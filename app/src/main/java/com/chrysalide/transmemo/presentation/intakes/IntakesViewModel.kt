@@ -20,7 +20,7 @@ class IntakesViewModel(
         .observeAllIntakes()
         .map { intakes ->
             if (intakes.isNotEmpty()) {
-                val products = intakes.map { it.product }.distinct()
+                val products = intakes.filterNot { it.isIgnored }.map { it.product }.distinct()
                 IntakesUiState.Intakes(
                     nextIntakes = computeNextIntakeForProductsUseCase(products),
                     intakes = intakes

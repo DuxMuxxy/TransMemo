@@ -153,4 +153,5 @@
     <string name="feature_about_licenses_gnu_title" translatable="false">GNU General Public License version 3 or later</string>
     <string name="feature_about_licenses_gnu" translatable="false">This program is Free Software: You can use, study share and improve it at your will. Specifically you can redistribute and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</string>
     <string name="global_ignore">Ignore</string>
+    <string name="feature_calendar_ignore_dialog_title">Ignore this intake ?</string>
 </resources>

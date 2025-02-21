@@ -160,7 +160,8 @@ internal class RoomDatabaseRepository(
         plannedDate = intake.plannedDate,
         realDate = intake.realDate,
         plannedSide = intake.plannedSide,
-        realSide = intake.realSide
+        realSide = intake.realSide,
+        isIgnored = intake.isIgnored
     )
 
     private fun List<Intake>.toIntakeEntities() = map { it.toIntakeEntity() }
@@ -173,7 +174,8 @@ internal class RoomDatabaseRepository(
         plannedDate = plannedDate,
         realDate = realDate,
         plannedSide = plannedSide,
-        realSide = realSide
+        realSide = realSide,
+        isIgnored = isIgnored
     )
 
     private fun List<WellbeingDBEntity>.toWellbeings() = map { it.toWellbeing() }

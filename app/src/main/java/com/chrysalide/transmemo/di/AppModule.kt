@@ -6,6 +6,7 @@ import com.chrysalide.transmemo.data.usecase.ComputeNextIntakeForProductUseCase
 import com.chrysalide.transmemo.data.usecase.CreateIntakeForProductUseCase
 import com.chrysalide.transmemo.data.usecase.DoIntakeForProductUseCase
 import com.chrysalide.transmemo.data.usecase.GetNextCalendarEventsUseCase
+import com.chrysalide.transmemo.data.usecase.IgnoreIntakeForProductUseCase
 import com.chrysalide.transmemo.domain.boundary.BiometricRepository
 import com.chrysalide.transmemo.presentation.MainActivityViewModel
 import com.chrysalide.transmemo.presentation.calendar.CalendarViewModel
@@ -42,6 +43,7 @@ private val useCaseModule = module {
     singleOf(::GetNextCalendarEventsUseCase)
     singleOf(::CreateIntakeForProductUseCase)
     singleOf(::DoIntakeForProductUseCase)
+    singleOf(::IgnoreIntakeForProductUseCase)
 }
 
 val appModule = viewModelModule + repositoryModule + useCaseModule
