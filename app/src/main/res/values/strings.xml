@@ -127,9 +127,10 @@
     <string name="feature_about_menu_link" translatable="false">https://www.chrysalide-asso.fr/</string>
     <string name="feature_about_help_us_link" translatable="false">https://www.helloasso.com/associations/chrysalide/formulaires/1</string>
     <string name="feature_about_help_us_title">Help us</string>
-    <string name="feature_about_chrysalide_asso_title" translatable="false">Chrysalide</string>
+    <string name="feature_about_chrysalide_asso_title">The Chrysalide association</string>
     <string name="feature_about_facebook_title">Facebook group</string>
     <string name="feature_about_facebook_link" translatable="false">https://facebook.com/groups/TestoMemoUsers/</string>
+    <string name="feature_about_github_link" translatable="false">https://github.com/DuxMuxxy/TransMemo</string>
     <string name="feature_about_contributors_title">Contributors</string>
     <string name="feature_about_help_title">Help</string>
     <string name="feature_settings_dynamic_colors_preference" translatable="false">Material You</string>
@@ -148,4 +149,8 @@
     <string name="global_tomorrow">Tomorrow</string>
     <string name="global_yesterday">Yesterday</string>
     <string name="feature_about_licenses_title">Licenses</string>
+    <string name="feature_about_licenses_libraries">Libraries:</string>
+    <string name="feature_about_licenses_gnu_title" translatable="false">GNU General Public License version 3 or later</string>
+    <string name="feature_about_licenses_gnu" translatable="false">This program is Free Software: You can use, study share and improve it at your will. Specifically you can redistribute and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</string>
+    <string name="global_ignore">Ignore</string>
 </resources>

@@ -23,12 +23,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.chrysalide.transmemo.R.string
+import com.chrysalide.transmemo.domain.util.Either
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 
 @Composable
 fun TMSubScreen(
     @StringRes titleRes: Int,
-    iconEither: Pair<ImageVector?, Painter?>,
+    iconEither: Either<ImageVector, Painter>,
     navigateUp: () -> Unit,
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -39,21 +40,24 @@ fun TMSubScreen(
             Icon(TransMemoIcons.Back, stringResource(titleRes))
         }
         Spacer(Modifier.height(16.dp))
-        iconEither.first?.let { icon ->
-            Icon(
-                icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primaryContainer,
-                modifier = Modifier.size(120.dp).align(Alignment.CenterHorizontally),
-            )
-        } ?: iconEither.second?.let { icon ->
-            Icon(
-                icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primaryContainer,
-                modifier = Modifier.size(120.dp).align(Alignment.CenterHorizontally),
-            )
-        }
+        iconEither.fold(
+            { icon ->
+                Icon(
+                    icon,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primaryContainer,
+                    modifier = Modifier.size(120.dp).align(Alignment.CenterHorizontally),
+                )
+            },
+            { icon ->
+                Icon(
+                    icon,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primaryContainer,
+                    modifier = Modifier.size(120.dp).align(Alignment.CenterHorizontally),
+                )
+            }
+        )
 
         Spacer(Modifier.height(24.dp))
         Text(
@@ -70,6 +74,11 @@ fun TMSubScreen(
 @Composable
 private fun TMSubScreenPreview() {
     TransMemoTheme {
-        TMSubScreen(string.feature_about_contributors_title, TransMemoIcons.Contributors to null, {}, {})
+        TMSubScreen(
+            titleRes = string.feature_about_contributors_title,
+            iconEither = Either.Left(TransMemoIcons.Contributors),
+            navigateUp = {},
+            content = {}
+        )
     }
 }

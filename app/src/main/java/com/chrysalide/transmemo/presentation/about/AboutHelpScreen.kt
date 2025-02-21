@@ -2,6 +2,7 @@ package com.chrysalide.transmemo.presentation.about
 
 import androidx.compose.runtime.Composable
 import com.chrysalide.transmemo.R.string
+import com.chrysalide.transmemo.domain.util.Either
 import com.chrysalide.transmemo.presentation.design.TMSubScreen
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.design.TransMemoIcons
@@ -11,7 +12,7 @@ import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 fun AboutHelpScreen(navigateUp: () -> Unit) {
     TMSubScreen(
         titleRes = string.feature_about_help_title,
-        iconEither = TransMemoIcons.Help to null,
+        iconEither = Either.Left(TransMemoIcons.Help),
         navigateUp = navigateUp
     ) {
     }

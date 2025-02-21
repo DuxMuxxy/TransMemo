@@ -127,6 +127,7 @@
     <string name="feature_about_title">À propos</string>
     <string name="feature_about_menu_text">Trans Memo est une application réalisée par Chrysalide.\n\nN\'hésitez pas à nous faire part de vos remarques et suggestions.\n\nCette application est gratuite, mais vous pouvez soutenir Chrysalide en adhérant ou en effectuant un don sur </string>
     <string name="feature_about_help_us_title">Aidez-nous</string>
+    <string name="feature_about_chrysalide_asso_title">L\'association Chrysalide</string>
     <string name="feature_about_facebook_title">Groupe Facebook</string>
     <string name="feature_about_contributors_title">Contributeurs</string>
     <string name="feature_about_help_title">Aide</string>
@@ -144,4 +145,6 @@
     <string name="global_tomorrow">Demain</string>
     <string name="global_yesterday">Hier</string>
     <string name="feature_about_licenses_title">Licences</string>
+    <string name="feature_about_licenses_libraries">Librairies :</string>
+    <string name="global_ignore">Ignorer</string>
 </resources>

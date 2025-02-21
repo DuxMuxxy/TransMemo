@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.chrysalide.transmemo.R.string
+import com.chrysalide.transmemo.domain.util.Either
 import com.chrysalide.transmemo.presentation.design.ChrysalideLogoFull
 import com.chrysalide.transmemo.presentation.design.TMSubScreen
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
@@ -26,7 +27,7 @@ import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 fun AboutContributorsScreen(navigateUp: () -> Unit) {
     TMSubScreen(
         titleRes = string.feature_about_contributors_title,
-        iconEither = TransMemoIcons.Contributors to null,
+        iconEither = Either.Left(TransMemoIcons.Contributors),
         navigateUp = navigateUp
     ) {
         Column(
