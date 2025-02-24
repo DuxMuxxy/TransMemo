@@ -2,6 +2,7 @@ package com.chrysalide.transmemo.presentation.calendar.dointake
 
 import com.chrysalide.transmemo.data.usecase.CreateIntakeForProductUseCase
 import com.chrysalide.transmemo.data.usecase.DoIntakeForProductUseCase
+import com.chrysalide.transmemo.data.usecase.ScheduleAlertsForProductUseCase
 import com.chrysalide.transmemo.domain.model.DateIntakeEvent
 import com.chrysalide.transmemo.domain.model.IncomingEvent
 import com.chrysalide.transmemo.domain.model.Intake
@@ -22,8 +23,14 @@ import kotlin.test.assertIs
 class DoIntakeViewModelTest {
     private val createIntakeForProductUseCase: CreateIntakeForProductUseCase = mockk()
     private val doIntakeForProductUseCase: DoIntakeForProductUseCase = mockk()
+    private val scheduleAlertsForProductUseCase: ScheduleAlertsForProductUseCase = mockk(relaxed = true)
     private val intakeAlertNotifier: IntakeAlertNotifier = mockk(relaxed = true)
-    private val viewModel = DoIntakeViewModel(createIntakeForProductUseCase, doIntakeForProductUseCase, intakeAlertNotifier)
+    private val viewModel = DoIntakeViewModel(
+        createIntakeForProductUseCase,
+        doIntakeForProductUseCase,
+        scheduleAlertsForProductUseCase,
+        intakeAlertNotifier
+    )
 
     private val product = Product.default()
     private val intake = Intake(

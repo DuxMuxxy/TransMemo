@@ -164,4 +164,5 @@
     <string name="feature_settings_custom_notification_title">Discreet notifications</string>
     <string name="feature_settings_custom_notification_description">Replace notifications by a custom message</string>
     <string name="feature_settings_custom_notification_dialog_title">Edit discreet notification message</string>
+    <string name="feature_settings_notifications_title">Notifications</string>
 </resources>

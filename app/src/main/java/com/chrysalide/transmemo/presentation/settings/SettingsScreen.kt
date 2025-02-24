@@ -1,6 +1,9 @@
 package com.chrysalide.transmemo.presentation.settings
 
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -23,6 +26,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SegmentedButton
@@ -41,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -54,6 +59,7 @@ import com.chrysalide.transmemo.domain.model.DarkThemeConfig.FOLLOW_SYSTEM
 import com.chrysalide.transmemo.domain.model.DarkThemeConfig.LIGHT
 import com.chrysalide.transmemo.presentation.design.BiometricPromptContainer
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
+import com.chrysalide.transmemo.presentation.design.TransMemoIcons
 import com.chrysalide.transmemo.presentation.settings.SettingsUiState.Loading
 import com.chrysalide.transmemo.presentation.settings.SettingsUiState.UserEditableSettings
 import com.chrysalide.transmemo.presentation.settings.notification.CustomNotificationMessageDialog
@@ -206,6 +212,10 @@ private fun ColumnScope.SettingsPanel(
     HorizontalDivider()
     Spacer(modifier = Modifier.height(16.dp))
     DatabasePanel(onImportClick)
+    Spacer(modifier = Modifier.height(16.dp))
+    HorizontalDivider()
+    Spacer(modifier = Modifier.height(16.dp))
+    NotificationsPanel()
 }
 
 @Composable
@@ -323,7 +333,7 @@ private fun ColumnScope.SecurityPanel(
                 Spacer(modifier = Modifier.height(4.dp))
                 SettingsDescription(text = stringResource(string.feature_settings_custom_notification_description))
             }
-            VerticalDivider(modifier = Modifier.height(48.dp))
+            VerticalDivider(modifier = Modifier.height(34.dp))
             Spacer(Modifier.width(24.dp))
             Switch(
                 checked = useCustomNotificationMessage,
@@ -379,6 +389,31 @@ private fun ColumnScope.DatabasePanel(
 }
 
 @Composable
+private fun ColumnScope.NotificationsPanel() {
+    val context = LocalContext.current
+    SettingsSectionTitle(text = stringResource(string.feature_settings_notifications_title))
+    Spacer(modifier = Modifier.height(16.dp))
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.clickable { openNotificationSettings(context) }.padding(vertical = 16.dp)
+    ) {
+        Icon(
+            TransMemoIcons.Notifications,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.secondary
+        )
+        Spacer(Modifier.width(24.dp))
+        SettingsSectionSubtitle(text = stringResource(string.feature_settings_notifications_title))
+        Spacer(Modifier.weight(1f))
+        Icon(
+            TransMemoIcons.OpenInNew,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.secondary
+        )
+    }
+}
+
+@Composable
 private fun SettingsSectionTitle(text: String) {
     Text(
         text = text,
@@ -400,6 +435,13 @@ private fun SettingsDescription(text: String) {
         text = text,
         style = MaterialTheme.typography.bodyMedium
     )
+}
+
+private fun openNotificationSettings(context: Context) {
+    val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+        putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+    }
+    context.startActivity(intent)
 }
 
 @ThemePreviews

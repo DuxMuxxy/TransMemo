@@ -158,4 +158,5 @@
     <string name="feature_settings_custom_notification_title">Notifications discrètes</string>
     <string name="feature_settings_custom_notification_description">Remplacer les notifications par un message customisé</string>
     <string name="feature_settings_custom_notification_dialog_title">Modifier la notification discrète</string>
+    <string name="feature_settings_notifications_title">Notifications</string>
 </resources>

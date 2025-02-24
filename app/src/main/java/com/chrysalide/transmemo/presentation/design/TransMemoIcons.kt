@@ -2,6 +2,7 @@ package com.chrysalide.transmemo.presentation.design
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Settings
@@ -16,6 +17,7 @@ import dev.sergiobelda.compose.vectorize.images.icons.filled.Github
 import dev.sergiobelda.compose.vectorize.images.icons.filled.HeartCheck
 import dev.sergiobelda.compose.vectorize.images.icons.filled.Help
 import dev.sergiobelda.compose.vectorize.images.icons.filled.Medication
+import dev.sergiobelda.compose.vectorize.images.icons.filled.OpenInNew
 import dev.sergiobelda.compose.vectorize.images.icons.filled.Vaccines
 import dev.sergiobelda.compose.vectorize.images.icons.filled.VolunteerActivism
 import dev.sergiobelda.compose.vectorize.images.icons.outlined.Group
@@ -51,4 +53,6 @@ object TransMemoIcons {
     val Contributors = Images.Icons.Outlined.Group
     val Licenses = Images.Icons.Filled.FactCheck
     val Back = Icons.AutoMirrored.Filled.ArrowBack
+    val Notifications = Icons.Filled.Notifications
+    val OpenInNew = Images.Icons.Filled.OpenInNew
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chrysalide.transmemo.data.usecase.CreateIntakeForProductUseCase
 import com.chrysalide.transmemo.data.usecase.DoIntakeForProductUseCase
+import com.chrysalide.transmemo.data.usecase.ScheduleAlertsForProductUseCase
 import com.chrysalide.transmemo.domain.model.DateIntakeEvent
 import com.chrysalide.transmemo.domain.model.Intake
 import com.chrysalide.transmemo.domain.model.NotificationType
@@ -15,7 +16,8 @@ import kotlinx.coroutines.launch
 class DoIntakeViewModel(
     private val createIntakeForProductUseCase: CreateIntakeForProductUseCase,
     private val doIntakeForProductUseCase: DoIntakeForProductUseCase,
-    private val intakeAlertNotifier: IntakeAlertNotifier
+    private val scheduleAlertsForProductUseCase: ScheduleAlertsForProductUseCase,
+    private val intakeAlertNotifier: IntakeAlertNotifier,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<DoIntakeUiState>(DoIntakeUiState.Idle)
     val uiState = _uiState
@@ -30,6 +32,7 @@ class DoIntakeViewModel(
     fun confirmIntake(intake: Intake) {
         viewModelScope.launch {
             doIntakeForProductUseCase(intake)
+            scheduleAlertsForProductUseCase(intake.product)
             intakeAlertNotifier.cancelNotification(NotificationType.INTAKE.notificationId(intake.product.id))
         }
     }

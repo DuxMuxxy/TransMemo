@@ -9,3 +9,4 @@
 - splash activity to better handle alt icon (no background service?)
 - resize app icon foreground (too much zoomed)
 - try other tertiary color in theme (this yellow is ugly)
+- import and convert legacy products notifications settings
