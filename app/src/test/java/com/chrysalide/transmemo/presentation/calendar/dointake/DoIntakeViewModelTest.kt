@@ -6,6 +6,7 @@ import com.chrysalide.transmemo.domain.model.DateIntakeEvent
 import com.chrysalide.transmemo.domain.model.IncomingEvent
 import com.chrysalide.transmemo.domain.model.Intake
 import com.chrysalide.transmemo.domain.model.IntakeSide
+import com.chrysalide.transmemo.domain.model.NotificationType
 import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.presentation.notification.intake.IntakeAlertNotifier
 import io.mockk.Runs
@@ -13,6 +14,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -63,5 +65,6 @@ class DoIntakeViewModelTest {
 
         // Assert
         coVerify { doIntakeForProductUseCase(intake) }
+        verify { intakeAlertNotifier.cancelNotification(NotificationType.INTAKE.notificationId(intake.product.id)) }
     }
 }

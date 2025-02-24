@@ -5,5 +5,7 @@ data class UserData(
     val useDynamicColor: Boolean = false,
     val legacyDatabaseHasBeenImported: Boolean = false,
     val askAuthentication: Boolean = false,
-    val useAlternativeAppIconAndName: Boolean = false
+    val useAlternativeAppIconAndName: Boolean = false,
+    val useCustomNotificationMessage: Boolean = false,
+    val customNotificationMessage: String
 )

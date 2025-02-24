@@ -161,4 +161,7 @@
     <string name="feature_notifications_expiration_channel_name">Expiration alerts</string>
     <string name="feature_notification_expiration_title">Container soon expired</string>
     <string name="feature_notification_expiration_message">Check that you have a replacement container!</string>
+    <string name="feature_settings_custom_notification_title">Discreet notifications</string>
+    <string name="feature_settings_custom_notification_description">Replace notifications by a custom message</string>
+    <string name="feature_settings_custom_notification_dialog_title">Edit discreet notification message</string>
 </resources>

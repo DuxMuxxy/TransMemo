@@ -11,4 +11,6 @@ message UserPreferences {
   bool legacyDatabaseHasBeenImported = 3;
   bool askAuthentication = 4;
   bool useAlternativeAppIconAndName = 5;
+  bool useCustomNotificationMessage = 6;
+  string customNotificationMessage = 7;
 }

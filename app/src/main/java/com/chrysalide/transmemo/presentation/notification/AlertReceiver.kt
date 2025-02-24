@@ -9,6 +9,7 @@ import com.chrysalide.transmemo.domain.model.NotificationType
 import com.chrysalide.transmemo.presentation.notification.Notifier.Companion.NOTIFICATION_ID_INTENT_EXTRA
 import com.chrysalide.transmemo.presentation.notification.Notifier.Companion.NOTIFICATION_TITLE_INTENT_EXTRA
 import com.chrysalide.transmemo.presentation.notification.Notifier.Companion.NOTIFICATION_TYPE_INTENT_EXTRA
+import com.chrysalide.transmemo.presentation.notification.expiration.ExpirationAlertNotifier
 import com.chrysalide.transmemo.presentation.notification.intake.IntakeAlertNotifier
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -17,6 +18,8 @@ class AlertReceiver :
     BroadcastReceiver(),
     KoinComponent {
     private val intakeAlertNotifier: IntakeAlertNotifier by inject()
+    private val expirationAlertNotifier: ExpirationAlertNotifier by inject()
+    // private val emptyAlertNotifier: EmptyAlertNotifier by inject()
 
     override fun onReceive(context: Context, intent: Intent) {
         val notificationId = intent.getIntExtra(NOTIFICATION_ID_INTENT_EXTRA, 1)
@@ -26,8 +29,8 @@ class AlertReceiver :
 
         when (notificationType) {
             NotificationType.INTAKE -> intakeAlertNotifier.showNotification(notificationId, notificationTitle)
-            NotificationType.EMPTY -> intakeAlertNotifier.showNotification(notificationId, notificationTitle)
-            NotificationType.EXPIRATION -> intakeAlertNotifier.showNotification(notificationId, notificationTitle)
+            // NotificationType.EMPTY -> emptyAlertNotifier.showNotification(notificationId, notificationTitle)
+            NotificationType.EXPIRATION -> expirationAlertNotifier.showNotification(notificationId, notificationTitle)
             else -> {}
         }
     }

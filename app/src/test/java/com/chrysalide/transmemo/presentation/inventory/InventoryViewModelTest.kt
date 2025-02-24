@@ -3,7 +3,9 @@ package com.chrysalide.transmemo.presentation.inventory
 import com.chrysalide.transmemo.domain.boundary.DatabaseRepository
 import com.chrysalide.transmemo.domain.model.Container
 import com.chrysalide.transmemo.domain.model.ContainerState
+import com.chrysalide.transmemo.domain.model.NotificationType
 import com.chrysalide.transmemo.domain.model.Product
+import com.chrysalide.transmemo.presentation.notification.expiration.ExpirationAlertNotifier
 import com.chrysalide.transmemo.util.FakeRepository
 import com.chrysalide.transmemo.util.MainDispatcherRule
 import io.mockk.Runs
@@ -11,6 +13,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -30,11 +33,12 @@ class InventoryViewModelTest {
         coEvery { observeAllContainers() } returns fakeRepository.flow
         coEvery { recycleContainer(any()) } just Runs
     }
+    private val expirationAlertNotifier: ExpirationAlertNotifier = mockk(relaxed = true)
     private lateinit var viewModel: InventoryViewModel
 
     @Before
     fun setup() {
-        viewModel = InventoryViewModel(databaseRepository)
+        viewModel = InventoryViewModel(databaseRepository, expirationAlertNotifier)
     }
 
     @Test
@@ -103,12 +107,13 @@ class InventoryViewModelTest {
     @Test
     fun callRecycleContainerWhenInvoke() {
         // Arrange
-        val container = mockk<Container>()
+        val container = Container.new(Product.default())
 
         // Act
         viewModel.recycleContainer(container)
 
         // Assert
         coVerify { databaseRepository.recycleContainer(container) }
+        verify { expirationAlertNotifier.cancelNotification(NotificationType.EXPIRATION.notificationId(container.product.id)) }
     }
 }
