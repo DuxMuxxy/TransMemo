@@ -20,6 +20,6 @@ class TransMemoApplication :
             modules(appModule + databaseModule + dataStoreModule)
         }
 
-        startService(Intent(this, UpdateAppIconService::class.java))
+        //startService(Intent(this, UpdateAppIconService::class.java))
     }
 }
