@@ -4,6 +4,7 @@ plugins {
     `java-library`
     kotlin("jvm")
     alias(libs.plugins.kotlinter)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 java {

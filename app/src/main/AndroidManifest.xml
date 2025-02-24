@@ -46,7 +46,7 @@
             android:stopWithTask="false" />
 
         <receiver
-            android:name=".presentation.service.AlertReceiver"
+            android:name=".presentation.notification.AlertReceiver"
             android:exported="true" />
     </application>
 

@@ -7,6 +7,7 @@ import com.chrysalide.transmemo.domain.model.IncomingEvent
 import com.chrysalide.transmemo.domain.model.Intake
 import com.chrysalide.transmemo.domain.model.IntakeSide
 import com.chrysalide.transmemo.domain.model.Product
+import com.chrysalide.transmemo.presentation.notification.intake.IntakeAlertNotifier
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -19,7 +20,8 @@ import kotlin.test.assertIs
 class DoIntakeViewModelTest {
     private val createIntakeForProductUseCase: CreateIntakeForProductUseCase = mockk()
     private val doIntakeForProductUseCase: DoIntakeForProductUseCase = mockk()
-    private val viewModel = DoIntakeViewModel(createIntakeForProductUseCase, doIntakeForProductUseCase)
+    private val intakeAlertNotifier: IntakeAlertNotifier = mockk(relaxed = true)
+    private val viewModel = DoIntakeViewModel(createIntakeForProductUseCase, doIntakeForProductUseCase, intakeAlertNotifier)
 
     private val product = Product.default()
     private val intake = Intake(

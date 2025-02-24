@@ -27,4 +27,6 @@ data class Container(
         val remainingIntakes = (remainingCapacity / product.dosePerIntake).roundToInt()
         return openDate.plus(DatePeriod(days = remainingIntakes * product.intakeInterval))
     }
+
+    fun expirationDate(): LocalDate = openDate.plus(DatePeriod(days = product.expirationDays))
 }

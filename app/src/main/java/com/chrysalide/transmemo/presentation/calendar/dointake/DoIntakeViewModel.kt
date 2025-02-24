@@ -6,7 +6,8 @@ import com.chrysalide.transmemo.data.usecase.CreateIntakeForProductUseCase
 import com.chrysalide.transmemo.data.usecase.DoIntakeForProductUseCase
 import com.chrysalide.transmemo.domain.model.DateIntakeEvent
 import com.chrysalide.transmemo.domain.model.Intake
-import com.chrysalide.transmemo.presentation.notification.IntakeAlertNotifier
+import com.chrysalide.transmemo.domain.model.NotificationType
+import com.chrysalide.transmemo.presentation.notification.intake.IntakeAlertNotifier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -29,7 +30,7 @@ class DoIntakeViewModel(
     fun confirmIntake(intake: Intake) {
         viewModelScope.launch {
             doIntakeForProductUseCase(intake)
-            intakeAlertNotifier.cancelNotification(intake.product.id)
+            intakeAlertNotifier.cancelNotification(NotificationType.INTAKE.notificationId(intake.product.id))
         }
     }
 }

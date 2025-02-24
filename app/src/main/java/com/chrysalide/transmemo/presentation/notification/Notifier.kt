@@ -24,7 +24,9 @@ abstract class Notifier(
 
     open fun createNotificationChannel(importance: Int = NotificationManager.IMPORTANCE_DEFAULT): NotificationChannel =
         NotificationChannel(notificationChannelId, notificationChannelName, importance).apply {
-            description = notificationChannelDescription
+            if (notificationChannelDescription.isNotBlank()) {
+                description = notificationChannelDescription
+            }
         }
 
     abstract fun buildNotification(): Notification
@@ -38,5 +40,6 @@ abstract class Notifier(
     companion object {
         const val NOTIFICATION_ID_INTENT_EXTRA = "NOTIFICATION_ID"
         const val NOTIFICATION_TITLE_INTENT_EXTRA = "NOTIFICATION_TITLE"
+        const val NOTIFICATION_TYPE_INTENT_EXTRA = "NOTIFICATION_TYPE"
     }
 }

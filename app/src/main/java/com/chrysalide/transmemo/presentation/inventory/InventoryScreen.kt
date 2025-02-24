@@ -53,7 +53,7 @@ import com.chrysalide.transmemo.presentation.design.LinearProgressBar
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.design.TransMemoIcons
 import com.chrysalide.transmemo.presentation.extension.capacity
-import com.chrysalide.transmemo.presentation.extension.expirationDate
+import com.chrysalide.transmemo.presentation.extension.expirationDateString
 import com.chrysalide.transmemo.presentation.extension.moleculeName
 import com.chrysalide.transmemo.presentation.extension.openDate
 import com.chrysalide.transmemo.presentation.extension.productName
@@ -224,7 +224,7 @@ private fun ContainerCard(
                                         .align(Alignment.CenterVertically)
                                         .padding(horizontal = 24.dp),
                                 )
-                                Text(container.expirationDate())
+                                Text(container.expirationDateString())
                             }
                         }
 

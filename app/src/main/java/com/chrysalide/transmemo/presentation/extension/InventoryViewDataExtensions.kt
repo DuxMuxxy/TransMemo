@@ -3,7 +3,6 @@ package com.chrysalide.transmemo.presentation.extension
 import androidx.compose.runtime.Composable
 import com.chrysalide.transmemo.domain.extension.formatToSystemDate
 import com.chrysalide.transmemo.domain.model.Container
-import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.plus
 
 fun Container.productName() = product.name
@@ -25,4 +24,4 @@ fun Container.remainingCapacity() = "${(product.capacity - usedCapacity).stripTr
 
 fun Container.openDate() = openDate.formatToSystemDate()
 
-fun Container.expirationDate() = openDate.plus(DatePeriod(days = product.expirationDays)).formatToSystemDate()
+fun Container.expirationDateString() = expirationDate().formatToSystemDate()

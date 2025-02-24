@@ -65,6 +65,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.chrysalide.transmemo.R.string
 import com.chrysalide.transmemo.domain.model.MeasureUnit
 import com.chrysalide.transmemo.domain.model.Molecule
+import com.chrysalide.transmemo.domain.model.NotificationType
 import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.design.TransMemoIcons
@@ -432,7 +433,11 @@ private fun ProductCard(
                                 text = stringResource(string.feature_products_notifications),
                                 checked = editableProduct.notifications > 0,
                                 enabled = isEditing,
-                                onCheckedChange = { editableProduct = editableProduct.copy(notifications = if (it) 1 else 0) }
+                                onCheckedChange = {
+                                    editableProduct = editableProduct.copy(
+                                        notifications = if (it) NotificationType.ALL else 0
+                                    )
+                                }
                             )
                         }
                     }

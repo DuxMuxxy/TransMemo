@@ -153,9 +153,12 @@
     <string name="feature_about_licenses_gnu_title" translatable="false">GNU General Public License version 3 or later</string>
     <string name="feature_about_licenses_gnu" translatable="false">This program is Free Software: You can use, study share and improve it at your will. Specifically you can redistribute and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.</string>
     <string name="global_ignore">Ignore</string>
-    <string name="feature_notification_intake_title">C\'est l\'heure de la prise</string>
-    <string name="feature_notification_intake_message">Vérifiez que vous avez tout ce qu\'il vous faut !</string>
-    <string name="feature_notifications_intakes_channel_name">Rappels de prise</string>
-    <string name="feature_notifications_intakes_channel_description">Notifications de rappels de prise</string>
+    <string name="feature_notification_intake_title">It\'s intake time</string>
+    <string name="feature_notification_intake_message">Check that you have everything you need!</string>
+    <string name="feature_notifications_intakes_channel_name">Intake reminders</string>
+    <string name="feature_notifications_intakes_channel_description">Intake reminders notifications</string>
     <string name="feature_products_notifications">Notifications</string>
+    <string name="feature_notifications_expiration_channel_name">Expiration alerts</string>
+    <string name="feature_notification_expiration_title">Container soon expired</string>
+    <string name="feature_notification_expiration_message">Check that you have a replacement container!</string>
 </resources>

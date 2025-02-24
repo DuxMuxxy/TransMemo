@@ -37,6 +37,7 @@ class ProductsViewModel(
     fun deleteProduct(product: Product) {
         viewModelScope.launch {
             databaseRepository.deleteProduct(product)
+            scheduleAlertsForProductUseCase(product.copy(notifications = 0))
         }
     }
 }

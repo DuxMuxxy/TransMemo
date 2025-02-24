@@ -1,4 +1,4 @@
-package com.chrysalide.transmemo.presentation.notification
+package com.chrysalide.transmemo.presentation.notification.expiration
 
 import android.app.Notification
 import android.app.NotificationManager
@@ -8,14 +8,15 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.chrysalide.transmemo.R
 import com.chrysalide.transmemo.presentation.MainActivity
+import com.chrysalide.transmemo.presentation.notification.Notifier
 
-class IntakeAlertNotifier(
+class ExpirationAlertNotifier(
     notificationManager: NotificationManager,
     private val context: Context
 ) : Notifier(notificationManager) {
-    override val notificationChannelId: String = "alert_channel"
-    override val notificationChannelName: String = context.getString(R.string.feature_notifications_intakes_channel_name)
-    override val notificationChannelDescription: String = context.getString(R.string.feature_notifications_intakes_channel_description)
+    override val notificationChannelId: String = "expiration_alert_channel"
+    override val notificationChannelName: String = context.getString(R.string.feature_notifications_expiration_channel_name)
+    override val notificationChannelDescription: String = ""
     private val mainIntent = Intent(context, MainActivity::class.java).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     }
@@ -41,9 +42,9 @@ class IntakeAlertNotifier(
             .setContentText(getNotificationMessage())
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
-            .setAutoCancel(false)
+            .setAutoCancel(true)
 
-    override fun getNotificationTitle(): String = context.getString(R.string.feature_notification_intake_title)
+    override fun getNotificationTitle(): String = context.getString(R.string.feature_notification_expiration_title)
 
-    override fun getNotificationMessage(): String = context.getString(R.string.feature_notification_intake_message)
+    override fun getNotificationMessage(): String = context.getString(R.string.feature_notification_expiration_message)
 }

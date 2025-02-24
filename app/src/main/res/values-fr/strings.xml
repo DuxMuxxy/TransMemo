@@ -152,4 +152,7 @@
     <string name="feature_notifications_intakes_channel_name">Rappels de prise</string>
     <string name="feature_notifications_intakes_channel_description">Notifications de rappels de prise</string>
     <string name="feature_products_notifications">Notifications</string>
+    <string name="feature_notifications_expiration_channel_name">Alertes de péremption</string>
+    <string name="feature_notification_expiration_title">Boîte bientôt périmée</string>
+    <string name="feature_notification_expiration_message">Vérifiez que vous avez une boîte de remplacement !</string>
 </resources>

@@ -14,6 +14,14 @@ data class Product(
     val inUse: Boolean,
     val notifications: Int
 ) {
+    fun hasNotificationType(notificationType: NotificationType): Boolean = hasFlag(notifications, notificationType.value)
+
+    val hasIntakeNotification = hasFlag(notifications, NotificationType.INTAKE.value)
+    val hasEmptyNotification = hasFlag(notifications, NotificationType.EMPTY.value)
+    val hasExpirationNotification = hasFlag(notifications, NotificationType.EXPIRATION.value)
+
+    private fun hasFlag(flags: Int, flagToCheck: Int): Boolean = (flags and flagToCheck) != 0
+
     companion object {
         fun default() = Product(
             name = "",
@@ -26,7 +34,7 @@ data class Product(
             alertDelay = 3,
             handleSide = false,
             inUse = false,
-            notifications = 0
+            notifications = NotificationType.ALL
         )
     }
 }
