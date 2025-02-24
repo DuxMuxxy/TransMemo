@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.chrysalide.transmemo.domain.boundary.DatabaseRepository
 import com.chrysalide.transmemo.domain.model.Container
 import com.chrysalide.transmemo.domain.model.ContainerState
+import com.chrysalide.transmemo.domain.model.NotificationType
 import com.chrysalide.transmemo.presentation.inventory.InventoryUiState.Containers
+import com.chrysalide.transmemo.presentation.notification.expiration.ExpirationAlertNotifier
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -14,7 +16,8 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 class InventoryViewModel(
-    private val databaseRepository: DatabaseRepository
+    private val databaseRepository: DatabaseRepository,
+    private val expirationAlertNotifier: ExpirationAlertNotifier
 ) : ViewModel() {
     val uiState: StateFlow<InventoryUiState> = databaseRepository
         .observeAllContainers()
@@ -35,6 +38,7 @@ class InventoryViewModel(
     fun recycleContainer(container: Container) {
         viewModelScope.launch {
             databaseRepository.recycleContainer(container)
+            expirationAlertNotifier.cancelNotification(NotificationType.EXPIRATION.notificationId(container.product.id))
         }
     }
 }

@@ -155,4 +155,7 @@
     <string name="feature_notifications_expiration_channel_name">Alertes de péremption</string>
     <string name="feature_notification_expiration_title">Boîte bientôt périmée</string>
     <string name="feature_notification_expiration_message">Vérifiez que vous avez une boîte de remplacement !</string>
+    <string name="feature_settings_custom_notification_title">Notifications discrètes</string>
+    <string name="feature_settings_custom_notification_description">Remplacer les notifications par un message customisé</string>
+    <string name="feature_settings_custom_notification_dialog_title">Modifier la notification discrète</string>
 </resources>

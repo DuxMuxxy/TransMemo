@@ -33,7 +33,9 @@ class SettingsViewModel(
                 useDynamicColor = userData.useDynamicColor,
                 canDeviceAskAuthentication = biometricRepository.canDeviceAskAuthentication(),
                 askAuthentication = userData.askAuthentication,
-                useAlternativeAppIconAndName = userData.useAlternativeAppIconAndName
+                useAlternativeAppIconAndName = userData.useAlternativeAppIconAndName,
+                useCustomNotificationMessage = userData.useCustomNotificationMessage,
+                customNotificationMessage = userData.customNotificationMessage
             )
         }.stateIn(
             scope = viewModelScope,
@@ -65,6 +67,18 @@ class SettingsViewModel(
         }
     }
 
+    fun updateUseCustomNotificationMessage(useCustomNotificationMessage: Boolean) {
+        viewModelScope.launch {
+            userDataRepository.setUseCustomNotificationMessage(useCustomNotificationMessage)
+        }
+    }
+
+    fun updateCustomNotificationMessage(customNotificationMessage: String) {
+        viewModelScope.launch {
+            userDataRepository.setCustomNotificationMessage(customNotificationMessage)
+        }
+    }
+
     fun importDatabaseFile(fileUri: Uri) {
         viewModelScope.launch {
             importOldDatabaseUseCase(
@@ -88,7 +102,9 @@ sealed interface SettingsUiState {
         val useDynamicColor: Boolean,
         val canDeviceAskAuthentication: Boolean,
         val askAuthentication: Boolean,
-        val useAlternativeAppIconAndName: Boolean
+        val useAlternativeAppIconAndName: Boolean,
+        val useCustomNotificationMessage: Boolean,
+        val customNotificationMessage: String
     ) : SettingsUiState
 }
 

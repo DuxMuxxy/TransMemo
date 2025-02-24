@@ -1,6 +1,7 @@
 package com.chrysalide.transmemo.presentation.inventory.recycle
 
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -19,7 +20,7 @@ fun AskRecycleContainerDialog(
         title = { Text(stringResource(R.string.feature_inventory_recycle_dialog_title)) },
         text = { Text(stringResource(R.string.feature_inventory_recycle_dialog_text)) },
         confirmButton = {
-            TextButton(onClick = onConfirm) {
+            Button(onClick = onConfirm) {
                 Text(text = stringResource(R.string.global_confirm))
             }
         },

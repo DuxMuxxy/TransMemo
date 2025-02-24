@@ -30,4 +30,12 @@ internal class AndroidUserDataRepository(
     override suspend fun setUseAlternativeAppIconAndName(useAlternativeAppIconAndName: Boolean) {
         preferencesDataSource.setUseAlternativeAppIconAndName(useAlternativeAppIconAndName)
     }
+
+    override suspend fun setUseCustomNotificationMessage(useCustomNotificationMessage: Boolean) {
+        preferencesDataSource.setUseCustomNotificationMessage(useCustomNotificationMessage)
+    }
+
+    override suspend fun setCustomNotificationMessage(customNotificationMessage: String) {
+        preferencesDataSource.setCustomNotificationMessage(customNotificationMessage)
+    }
 }

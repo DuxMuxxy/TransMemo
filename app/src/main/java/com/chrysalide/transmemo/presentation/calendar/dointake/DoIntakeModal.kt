@@ -243,7 +243,7 @@ private fun DatePickerDialog(
     DatePickerDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(onClick = {
+            Button(onClick = {
                 datePickerState.selectedDateMillis?.let { onDateSelected(it.toLocalDate()) }
                 onDismiss()
             }) { Text(stringResource(string.global_confirm)) }

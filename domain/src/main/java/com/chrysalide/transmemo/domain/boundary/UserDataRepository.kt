@@ -16,4 +16,8 @@ interface UserDataRepository {
     suspend fun setAskAuthentication(askAuthentication: Boolean)
 
     suspend fun setUseAlternativeAppIconAndName(useAlternativeAppIconAndName: Boolean)
+
+    suspend fun setUseCustomNotificationMessage(useCustomNotificationMessage: Boolean)
+
+    suspend fun setCustomNotificationMessage(customNotificationMessage: String)
 }

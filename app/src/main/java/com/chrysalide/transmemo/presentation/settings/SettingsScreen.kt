@@ -6,6 +6,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -28,6 +30,7 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -53,6 +56,7 @@ import com.chrysalide.transmemo.presentation.design.BiometricPromptContainer
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.settings.SettingsUiState.Loading
 import com.chrysalide.transmemo.presentation.settings.SettingsUiState.UserEditableSettings
+import com.chrysalide.transmemo.presentation.settings.notification.CustomNotificationMessageDialog
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 import com.chrysalide.transmemo.presentation.theme.supportsDynamicTheming
 import org.koin.androidx.compose.koinViewModel
@@ -82,22 +86,26 @@ fun SettingsScreen(
     }
 
     SettingsView(
-        settingsUiState = uiState,
+        uiState = uiState,
         onChangeDarkThemeConfig = viewModel::updateDarkThemeConfig,
         onChangeDynamicColorPreference = viewModel::updateDynamicColorPreference,
         setAskAuthentication = viewModel::updateAskAuthentication,
         setUseAlternativeAppIconAndName = viewModel::updateUseAlternativeAppIconAndName,
+        setUseCustomNotificationMessage = viewModel::updateUseCustomNotificationMessage,
+        setCustomNotificationMessage = viewModel::updateCustomNotificationMessage,
         importDatabaseFile = viewModel::importDatabaseFile
     )
 }
 
 @Composable
 private fun SettingsView(
-    settingsUiState: SettingsUiState,
+    uiState: SettingsUiState,
     onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
     onChangeDynamicColorPreference: (Boolean) -> Unit,
     setAskAuthentication: (Boolean) -> Unit,
     setUseAlternativeAppIconAndName: (Boolean) -> Unit,
+    setUseCustomNotificationMessage: (Boolean) -> Unit,
+    setCustomNotificationMessage: (String) -> Unit,
     importDatabaseFile: (Uri) -> Unit
 ) {
     val importFileLauncher = rememberLauncherForActivityResult(
@@ -114,13 +122,25 @@ private fun SettingsView(
         showBiometricPrompt = false
     }
 
+    var showCustomNotificationMessageDialog by remember { mutableStateOf(false) }
+    if (showCustomNotificationMessageDialog && uiState is UserEditableSettings) {
+        CustomNotificationMessageDialog(
+            customMessage = uiState.customNotificationMessage,
+            onDismiss = { showCustomNotificationMessageDialog = false },
+            onConfirm = {
+                setCustomNotificationMessage(it)
+                showCustomNotificationMessageDialog = false
+            }
+        )
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 24.dp, vertical = 32.dp)
     ) {
-        when (settingsUiState) {
+        when (uiState) {
             Loading -> {
                 Box(
                     contentAlignment = Alignment.Center,
@@ -132,7 +152,7 @@ private fun SettingsView(
 
             is UserEditableSettings -> {
                 SettingsPanel(
-                    settings = settingsUiState,
+                    settings = uiState,
                     onChangeDarkThemeConfig = onChangeDarkThemeConfig,
                     onChangeDynamicColorPreference = onChangeDynamicColorPreference,
                     onChangeAskAuthentication = { askAuthentication ->
@@ -143,7 +163,9 @@ private fun SettingsView(
                         }
                     },
                     onChangeUseAlternativeAppIconAndName = setUseAlternativeAppIconAndName,
-                    onImportClick = { importFileLauncher.launch(arrayOf("*/*")) },
+                    onChangeUseCustomNotificationMessage = setUseCustomNotificationMessage,
+                    editCustomNotificationMessage = { showCustomNotificationMessageDialog = true },
+                    onImportClick = { importFileLauncher.launch(arrayOf("*/*")) }
                 )
             }
         }
@@ -157,6 +179,8 @@ private fun ColumnScope.SettingsPanel(
     onChangeDynamicColorPreference: (Boolean) -> Unit,
     onChangeAskAuthentication: (Boolean) -> Unit,
     onChangeUseAlternativeAppIconAndName: (Boolean) -> Unit,
+    onChangeUseCustomNotificationMessage: (Boolean) -> Unit,
+    editCustomNotificationMessage: () -> Unit,
     onImportClick: () -> Unit
 ) {
     AppearancePanel(
@@ -172,8 +196,11 @@ private fun ColumnScope.SettingsPanel(
         settings.canDeviceAskAuthentication,
         settings.askAuthentication,
         settings.useAlternativeAppIconAndName,
+        settings.useCustomNotificationMessage,
         onChangeAskAuthentication,
         onChangeUseAlternativeAppIconAndName,
+        onChangeUseCustomNotificationMessage,
+        editCustomNotificationMessage
     )
     Spacer(modifier = Modifier.height(16.dp))
     HorizontalDivider()
@@ -221,7 +248,11 @@ private fun ColumnScope.AppearancePanel(
         SettingsSectionSubtitle(text = stringResource(string.feature_settings_dynamic_colors_preference))
         Row(verticalAlignment = Alignment.CenterVertically) {
             SettingsDescription(text = stringResource(string.feature_settings_dynamic_colors_title))
-            Spacer(modifier = Modifier.weight(1f).padding(end = 16.dp))
+            Spacer(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 16.dp)
+            )
             Switch(checked = useDynamicColors, onCheckedChange = onChangeDynamicColorPreference)
         }
     }
@@ -232,8 +263,11 @@ private fun ColumnScope.SecurityPanel(
     canDeviceAskAuthentication: Boolean,
     askAuthentication: Boolean,
     useAlternativeAppIconAndName: Boolean,
+    useCustomNotificationMessage: Boolean,
     onChangeAskAuthentication: (Boolean) -> Unit,
-    onChangeUseAlternativeAppIconAndName: (Boolean) -> Unit
+    onChangeUseAlternativeAppIconAndName: (Boolean) -> Unit,
+    onChangeUseCustomNotificationMessage: (Boolean) -> Unit,
+    editCustomNotificationMessage: () -> Unit
 ) {
     var showAlternativeIconPreview by remember { mutableStateOf(false) }
 
@@ -275,6 +309,26 @@ private fun ColumnScope.SecurityPanel(
         }
         AnimatedVisibility(showAlternativeIconPreview) {
             AlternativeIconPreview()
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(
+                Modifier
+                    .weight(1f)
+                    .clickable { editCustomNotificationMessage() }
+                    .padding(end = 16.dp)
+            ) {
+                SettingsSectionSubtitle(text = stringResource(string.feature_settings_custom_notification_title))
+                Spacer(modifier = Modifier.height(4.dp))
+                SettingsDescription(text = stringResource(string.feature_settings_custom_notification_description))
+            }
+            VerticalDivider(modifier = Modifier.height(48.dp))
+            Spacer(Modifier.width(24.dp))
+            Switch(
+                checked = useCustomNotificationMessage,
+                onCheckedChange = onChangeUseCustomNotificationMessage
+            )
         }
     }
 }
@@ -353,11 +407,13 @@ private fun SettingsDescription(text: String) {
 private fun SettingsScreenLoadingPreview() {
     TransMemoTheme {
         SettingsView(
-            settingsUiState = Loading,
+            uiState = Loading,
             onChangeDarkThemeConfig = {},
             onChangeDynamicColorPreference = {},
             setAskAuthentication = {},
             setUseAlternativeAppIconAndName = {},
+            setUseCustomNotificationMessage = {},
+            setCustomNotificationMessage = {},
             importDatabaseFile = {}
         )
     }
@@ -368,17 +424,21 @@ private fun SettingsScreenLoadingPreview() {
 private fun SettingsScreenPreview() {
     TransMemoTheme {
         SettingsView(
-            settingsUiState = UserEditableSettings(
+            uiState = UserEditableSettings(
                 darkThemeConfig = FOLLOW_SYSTEM,
                 useDynamicColor = false,
                 canDeviceAskAuthentication = true,
                 askAuthentication = true,
-                useAlternativeAppIconAndName = false
+                useAlternativeAppIconAndName = false,
+                useCustomNotificationMessage = false,
+                customNotificationMessage = ""
             ),
             onChangeDarkThemeConfig = {},
             onChangeDynamicColorPreference = {},
             setAskAuthentication = {},
             setUseAlternativeAppIconAndName = {},
+            setUseCustomNotificationMessage = {},
+            setCustomNotificationMessage = {},
             importDatabaseFile = {}
         )
     }
@@ -389,17 +449,21 @@ private fun SettingsScreenPreview() {
 private fun SettingsScreenNoDeviceAuthenticatorPreview() {
     TransMemoTheme {
         SettingsView(
-            settingsUiState = UserEditableSettings(
+            uiState = UserEditableSettings(
                 darkThemeConfig = FOLLOW_SYSTEM,
                 useDynamicColor = false,
                 canDeviceAskAuthentication = false,
                 askAuthentication = false,
-                useAlternativeAppIconAndName = false
+                useAlternativeAppIconAndName = false,
+                useCustomNotificationMessage = false,
+                customNotificationMessage = ""
             ),
             onChangeDarkThemeConfig = {},
             onChangeDynamicColorPreference = {},
             setAskAuthentication = {},
             setUseAlternativeAppIconAndName = {},
+            setUseCustomNotificationMessage = {},
+            setCustomNotificationMessage = {},
             importDatabaseFile = {}
         )
     }
