@@ -332,7 +332,7 @@ private fun InventoryScreenListPreviews() {
                         usedCapacity = 3f,
                         openDate = LocalDate(2020, 4, 5),
                         state = ContainerState.OPEN,
-                        product = Product(
+                        product = Product.default().copy(
                             name = "Testosterone",
                             molecule = Molecule.TESTOSTERONE,
                             unit = MeasureUnit.MILLILITER,
@@ -364,7 +364,7 @@ private fun InventoryScreenNoCapacityPreviews() {
                         usedCapacity = 3f,
                         openDate = LocalDate(2020, 4, 5),
                         state = ContainerState.OPEN,
-                        product = Product(
+                        product = Product.default().copy(
                             name = "Testosterone",
                             molecule = Molecule.TESTOSTERONE,
                             unit = MeasureUnit.MILLILITER,
@@ -396,7 +396,7 @@ private fun InventoryScreenOneShotPreviews() {
                         usedCapacity = 3f,
                         openDate = LocalDate(2020, 4, 5),
                         state = ContainerState.OPEN,
-                        product = Product(
+                        product = Product.default().copy(
                             name = "Testosterone",
                             molecule = Molecule.TESTOSTERONE,
                             unit = MeasureUnit.MILLILITER,

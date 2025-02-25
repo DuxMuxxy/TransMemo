@@ -9,6 +9,7 @@ import com.chrysalide.transmemo.presentation.notification.AlertReceiver
 import com.chrysalide.transmemo.presentation.notification.AlertScheduler
 import com.chrysalide.transmemo.presentation.notification.Notifier.Companion.NOTIFICATION_ID_INTENT_EXTRA
 import com.chrysalide.transmemo.presentation.notification.Notifier.Companion.NOTIFICATION_TITLE_INTENT_EXTRA
+import com.chrysalide.transmemo.presentation.notification.Notifier.Companion.NOTIFICATION_TYPE_INTENT_EXTRA
 
 class IntakeAlertScheduler(
     private val context: Context,
@@ -18,29 +19,21 @@ class IntakeAlertScheduler(
         val intent = Intent(context, AlertReceiver::class.java).apply {
             putExtra(NOTIFICATION_ID_INTENT_EXTRA, reminderItem.notificationId)
             putExtra(NOTIFICATION_TITLE_INTENT_EXTRA, reminderItem.title)
+            putExtra(NOTIFICATION_TYPE_INTENT_EXTRA, reminderItem.type)
         }
         return PendingIntent.getBroadcast(
-            // context =
             context,
-            // requestCode =
-            reminderItem.notificationId,
-            // intent =
+            reminderItem.notificationId, // requestCode, should be unique and linked to each notification
             intent,
-            // flags =
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
 
     override fun schedule(reminderItem: ReminderItem) {
         if (reminderItem.enabled) {
-            alarmManager.setRepeating(
-                // type =
-                AlarmManager.RTC_WAKEUP,
-                // triggerAtMillis =
-                reminderItem.triggerTime,
-                // intervalMillis =
-                reminderItem.interval,
-                // operation =
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP, // type, wake up the device when triggered
+                reminderItem.triggerTime, // trigger the notification at specified UTC timestamp
                 createPendingIntent(reminderItem)
             )
         } else {

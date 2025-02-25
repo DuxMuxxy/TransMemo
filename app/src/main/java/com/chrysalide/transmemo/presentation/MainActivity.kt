@@ -1,27 +1,38 @@
 package com.chrysalide.transmemo.presentation
 
 import android.Manifest
+import android.app.AlarmManager
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.os.Build
+import android.net.Uri
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult.ActionPerformed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.chrysalide.transmemo.R
 import com.chrysalide.transmemo.domain.model.DarkThemeConfig
 import com.chrysalide.transmemo.presentation.MainActivityUiState.Loading
 import com.chrysalide.transmemo.presentation.MainActivityUiState.Success
@@ -29,10 +40,12 @@ import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : FragmentActivity() {
     private val viewModel: MainActivityViewModel by viewModel()
+    private val alarmManager: AlarmManager by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +66,7 @@ class MainActivity : FragmentActivity() {
         enableEdgeToEdge()
 
         setContent {
+            val snackbarHostState = remember { SnackbarHostState() }
             val darkTheme = shouldUseDarkTheme(uiState)
 
             val permissionLauncher = rememberLauncherForActivityResult(
@@ -60,17 +74,34 @@ class MainActivity : FragmentActivity() {
                 onResult = {}
             )
 
-            // Check if the notification permission is granted, ask if not
+            // Check if the notification and alarm permissions are granted, ask to allow if not granted
             // If user deny once, the app will ask again at the next launch
             // If they deny again, the app will not ask again
+            val alarmPermissionDeniedText = stringResource(R.string.alarm_permission_denied)
+            val alarmPermissionButton = stringResource(R.string.alarm_permission_allow_button)
             LaunchedEffect(Unit) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (SDK_INT >= VERSION_CODES.TIRAMISU) {
                     val permissionCheckResult = ContextCompat.checkSelfPermission(
                         this@MainActivity,
                         Manifest.permission.POST_NOTIFICATIONS
                     )
                     if (permissionCheckResult != PackageManager.PERMISSION_GRANTED) {
                         permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    }
+                }
+
+                if (SDK_INT >= VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
+                    val snackbarResult = snackbarHostState.showSnackbar(
+                        message = alarmPermissionDeniedText,
+                        actionLabel = alarmPermissionButton,
+                        duration = SnackbarDuration.Long
+                    )
+                    if (snackbarResult == ActionPerformed) {
+                        startActivity(
+                            Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+                                data = Uri.parse("package:$packageName")
+                            }
+                        )
                     }
                 }
             }
@@ -93,7 +124,7 @@ class MainActivity : FragmentActivity() {
                 darkTheme = darkTheme,
                 disableDynamicTheming = shouldDisableDynamicTheming(uiState),
             ) {
-                TransMemoApp(appState, viewModel.shouldAskAuthenticationAtLaunch)
+                TransMemoApp(appState, snackbarHostState, viewModel.shouldAskAuthenticationAtLaunch)
             }
         }
     }

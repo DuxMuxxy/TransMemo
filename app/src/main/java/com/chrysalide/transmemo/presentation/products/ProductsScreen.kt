@@ -27,8 +27,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.Card
@@ -40,6 +38,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -68,9 +67,11 @@ import com.chrysalide.transmemo.domain.model.Molecule
 import com.chrysalide.transmemo.domain.model.NotificationType
 import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
+import com.chrysalide.transmemo.presentation.design.TimePickerDialog
 import com.chrysalide.transmemo.presentation.design.TransMemoIcons
 import com.chrysalide.transmemo.presentation.extension.alertDelay
 import com.chrysalide.transmemo.presentation.extension.containerCapacity
+import com.chrysalide.transmemo.presentation.extension.dayTimeOfIntake
 import com.chrysalide.transmemo.presentation.extension.dosePerIntake
 import com.chrysalide.transmemo.presentation.extension.expirationDate
 import com.chrysalide.transmemo.presentation.extension.getAllMoleculeNames
@@ -188,7 +189,7 @@ private fun ProductsView(
                         .align(Alignment.BottomEnd)
                         .padding(24.dp)
                 ) {
-                    Icon(Icons.Rounded.Add, contentDescription = stringResource(string.feature_products_add_button_content_description))
+                    Icon(TransMemoIcons.Add, contentDescription = stringResource(string.feature_products_add_button_content_description))
                 }
             }
 
@@ -241,6 +242,7 @@ private fun ProductCard(
     var isEditing by remember { mutableStateOf(false) }
     var editableProduct by remember(isEditing, product) { mutableStateOf(product) }
     var editedIntakePeriodicityValue by remember(isEditing) { mutableStateOf(product.intakeInterval.toString()) }
+    var editedTimeOfIntakeValue by remember(isEditing) { mutableStateOf(product.timeOfIntake) }
     var editedDosingPerIntakeValue by remember(isEditing) { mutableStateOf(product.dosePerIntake.stripTrailingZeros()) }
     var editedCapacityValue by remember(isEditing) { mutableStateOf(product.capacity.stripTrailingZeros()) }
     var editedExpirationDaysValue by remember(isEditing) { mutableStateOf(product.expirationDays.toString()) }
@@ -250,6 +252,18 @@ private fun ProductCard(
     val isCapacityValid = editedCapacityValue.isValidDecimalValue()
     val isExpirationDaysValid = editedExpirationDaysValue.isValidIntegerValue()
     val isAlertDelayValid = editedAlertDelayValue.isValidIntegerValue()
+
+    var showTimeOfIntakePicker by remember { mutableStateOf(false) }
+    if (showTimeOfIntakePicker) {
+        TimePickerDialog(
+            initialTime = editedTimeOfIntakeValue,
+            onDismiss = { showTimeOfIntakePicker = false },
+            onConfirm = {
+                editedTimeOfIntakeValue = it
+                showTimeOfIntakePicker = false
+            }
+        )
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -314,7 +328,7 @@ private fun ProductCard(
 
                         val deleteButtonContentDescription = stringResource(string.feature_products_delete_button_content_description)
                         IconButton(onClick = { deleteProduct(product) }, modifier = Modifier.padding(start = 8.dp)) {
-                            Icon(Icons.Rounded.Delete, contentDescription = deleteButtonContentDescription)
+                            Icon(TransMemoIcons.Delete, contentDescription = deleteButtonContentDescription)
                         }
                         val editButtonContentDescription = stringResource(string.feature_products_edit_button_content_description)
                         IconButton(
@@ -323,7 +337,7 @@ private fun ProductCard(
                                 isExtented = true
                             }
                         ) {
-                            Icon(Icons.Rounded.Edit, contentDescription = editButtonContentDescription)
+                            Icon(TransMemoIcons.Edit, contentDescription = editButtonContentDescription)
                         }
                     }
                 }
@@ -361,6 +375,22 @@ private fun ProductCard(
                         imeAction = if (isExtented) ImeAction.Next else ImeAction.Done,
                         isError = !isIntakePeriodicityValid
                     )
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(stringResource(string.feature_products_intake_at_day_time))
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(horizontal = 24.dp)
+                        )
+                        if (isEditing) {
+                            OutlinedButton(onClick = { showTimeOfIntakePicker = true }) {
+                                Text(editedTimeOfIntakeValue.toString())
+                            }
+                        } else {
+                            Text(product.dayTimeOfIntake())
+                        }
+                    }
 
                     AnimatedVisibility(isExtented) {
                         Column {
@@ -472,6 +502,7 @@ private fun ProductCard(
                                 onClick = {
                                     editableProduct = editableProduct.copy(
                                         intakeInterval = editedIntakePeriodicityValue.toInt(),
+                                        timeOfIntake = editedTimeOfIntakeValue,
                                         dosePerIntake = editedDosingPerIntakeValue.toFloat(),
                                         capacity = editedCapacityValue.toFloat(),
                                         expirationDays = editedExpirationDaysValue.toInt(),
@@ -604,7 +635,7 @@ private fun ProductsScreenListPreviews() {
         ProductsView(
             Products(
                 products = listOf(
-                    Product(
+                    Product.default().copy(
                         name = "Testosterone",
                         molecule = Molecule.TESTOSTERONE,
                         unit = MeasureUnit.VIAL,
@@ -615,7 +646,7 @@ private fun ProductsScreenListPreviews() {
                         alertDelay = 1,
                         handleSide = true,
                         inUse = true,
-                        notifications = 15,
+                        notifications = NotificationType.ALL
                     ),
                 ),
             ),

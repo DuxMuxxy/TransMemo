@@ -3,11 +3,21 @@ package com.chrysalide.transmemo.presentation.extension
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.intl.Locale
 import com.chrysalide.transmemo.R
 import com.chrysalide.transmemo.R.string
+import com.chrysalide.transmemo.domain.extension.getCurrentLocalDate
 import com.chrysalide.transmemo.domain.model.MeasureUnit
 import com.chrysalide.transmemo.domain.model.Molecule
 import com.chrysalide.transmemo.domain.model.Product
+import kotlinx.datetime.atDate
+import kotlinx.datetime.format
+import kotlinx.datetime.toJavaLocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import kotlin.text.format
 
 @Composable
 fun Product.moleculeName() = molecule.name()
@@ -69,3 +79,10 @@ fun getAllMoleculeNames() = Molecule.entries.map { it to it.name() }
 
 @Composable
 fun getAllUnitNames() = MeasureUnit.entries.map { it to it.name() }
+
+fun Product.dayTimeOfIntake(): String {
+    val localDateTime = timeOfIntake.atDate(getCurrentLocalDate()).toJavaLocalDateTime()
+    val zonedDateTime = ZonedDateTime.of(localDateTime, ZoneId.systemDefault())
+    val formatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(java.util.Locale.getDefault())
+    return zonedDateTime.format(formatter)
+}

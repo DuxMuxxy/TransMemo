@@ -3,6 +3,7 @@ package com.chrysalide.transmemo.presentation.notification
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import com.chrysalide.transmemo.R
 import com.chrysalide.transmemo.data.extension.serializable
 import com.chrysalide.transmemo.domain.model.NotificationType
@@ -22,6 +23,7 @@ class AlertReceiver :
     // private val emptyAlertNotifier: EmptyAlertNotifier by inject()
 
     override fun onReceive(context: Context, intent: Intent) {
+        Log.d("TEST", "onReceive")
         val notificationId = intent.getIntExtra(NOTIFICATION_ID_INTENT_EXTRA, 1)
         val notificationTitle =
             intent.getStringExtra(NOTIFICATION_TITLE_INTENT_EXTRA) ?: context.getString(R.string.feature_notification_intake_title)

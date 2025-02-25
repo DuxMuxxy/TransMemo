@@ -2,13 +2,20 @@ package com.chrysalide.transmemo.presentation.design
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.DateRange
+import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Settings
 import dev.sergiobelda.compose.vectorize.images.Images
 import dev.sergiobelda.compose.vectorize.images.icons.filled.Facebook
@@ -52,7 +59,10 @@ object TransMemoIcons {
     val Github = Images.Icons.Filled.Github
     val Contributors = Images.Icons.Outlined.Group
     val Licenses = Images.Icons.Filled.FactCheck
-    val Back = Icons.AutoMirrored.Filled.ArrowBack
-    val Notifications = Icons.Filled.Notifications
+    val Back = Icons.AutoMirrored.Rounded.ArrowBack
+    val Notifications = Icons.Rounded.Notifications
     val OpenInNew = Images.Icons.Filled.OpenInNew
+    val Edit = Icons.Rounded.Edit
+    val Add = Icons.Rounded.Add
+    val Delete = Icons.Rounded.Delete
 }

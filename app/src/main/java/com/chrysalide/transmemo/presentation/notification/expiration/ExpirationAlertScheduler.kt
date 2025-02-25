@@ -20,13 +20,9 @@ class ExpirationAlertScheduler(
             putExtra(NOTIFICATION_TITLE_INTENT_EXTRA, reminderItem.title)
         }
         return PendingIntent.getBroadcast(
-            // context =
             context,
-            // requestCode =
-            reminderItem.notificationId,
-            // intent =
+            reminderItem.notificationId, // requestCode, should be unique and linked to each notification
             intent,
-            // flags =
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
@@ -34,11 +30,8 @@ class ExpirationAlertScheduler(
     override fun schedule(reminderItem: ReminderItem) {
         if (reminderItem.enabled) {
             alarmManager.setExact(
-                // type =
-                AlarmManager.RTC_WAKEUP,
-                // triggerAtMillis =
-                reminderItem.triggerTime,
-                // operation =
+                AlarmManager.RTC_WAKEUP, // type, wake up the device when triggered
+                reminderItem.triggerTime, // trigger the notification at specified UTC timestamp
                 createPendingIntent(reminderItem)
             )
         } else {

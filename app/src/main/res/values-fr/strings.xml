@@ -159,4 +159,7 @@
     <string name="feature_settings_custom_notification_description">Remplacer les notifications par un message customisé</string>
     <string name="feature_settings_custom_notification_dialog_title">Modifier la notification discrète</string>
     <string name="feature_settings_notifications_title">Notifications</string>
+    <string name="feature_products_intake_at_day_time">À</string>
+    <string name="alarm_permission_denied">Vous devez activer la permission des alarmes pour recevoir les notifications.</string>
+    <string name="alarm_permission_allow_button">Activer les alarmes</string>
 </resources>

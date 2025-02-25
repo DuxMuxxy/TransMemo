@@ -1,5 +1,7 @@
 package com.chrysalide.transmemo.domain.model
 
+import kotlinx.datetime.LocalTime
+
 data class Product(
     val id: Int = 0,
     val name: String,
@@ -9,6 +11,7 @@ data class Product(
     val capacity: Float,
     val expirationDays: Int,
     val intakeInterval: Int,
+    val timeOfIntake: LocalTime,
     val alertDelay: Int,
     val handleSide: Boolean,
     val inUse: Boolean,
@@ -31,6 +34,7 @@ data class Product(
             capacity = 0f,
             expirationDays = 0,
             intakeInterval = 21,
+            timeOfIntake = LocalTime(hour = 12, minute = 0),
             alertDelay = 3,
             handleSide = false,
             inUse = false,

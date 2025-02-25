@@ -295,7 +295,7 @@ private fun IntakeCard(intake: Intake) {
 @ThemePreviews
 @Composable
 private fun IntakesScreenPreview() {
-    val product = Product(
+    val product = Product.default().copy(
         name = "Testosterone",
         molecule = Molecule.TESTOSTERONE,
         unit = MeasureUnit.MILLILITER,

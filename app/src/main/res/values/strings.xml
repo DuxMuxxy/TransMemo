@@ -165,4 +165,7 @@
     <string name="feature_settings_custom_notification_description">Replace notifications by a custom message</string>
     <string name="feature_settings_custom_notification_dialog_title">Edit discreet notification message</string>
     <string name="feature_settings_notifications_title">Notifications</string>
+    <string name="feature_products_intake_at_day_time">At</string>
+    <string name="alarm_permission_denied">You need to enable alarm permission to receive notifications.</string>
+    <string name="alarm_permission_allow_button">Allow alarms</string>
 </resources>

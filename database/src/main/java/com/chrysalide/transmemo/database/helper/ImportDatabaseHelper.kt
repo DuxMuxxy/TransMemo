@@ -57,6 +57,7 @@ import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.domain.model.Wellbeing
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.LocalTime
 import java.io.File
 import java.io.FileOutputStream
 
@@ -256,6 +257,7 @@ class ImportDatabaseHelper(
         capacity = getFloat(getColumnIndexOrThrow(PRODUCTS_COLUMN_CAPACITE)),
         expirationDays = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_JOURS_DLC)),
         intakeInterval = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_INTERVALLE_PRISES)),
+        timeOfIntake = LocalTime(hour = 12, minute = 0),
         alertDelay = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_DELAI_ALERTE)),
         handleSide = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_GESTION_COTE)) == 1,
         inUse = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_ETAT)) == 2,

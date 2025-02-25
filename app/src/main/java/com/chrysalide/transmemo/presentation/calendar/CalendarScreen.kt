@@ -47,6 +47,7 @@ import com.chrysalide.transmemo.presentation.calendar.CalendarUiState.Loading
 import com.chrysalide.transmemo.presentation.calendar.dointake.DoIntakeModal
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.design.TransMemoIcons
+import com.chrysalide.transmemo.presentation.extension.dayTimeOfIntake
 import com.chrysalide.transmemo.presentation.extension.daysLateText
 import com.chrysalide.transmemo.presentation.extension.daysUntilText
 import com.chrysalide.transmemo.presentation.extension.typeText
@@ -220,6 +221,7 @@ private fun DoableIntakeEventCard(event: IncomingEvent.IntakeEvent, doIntake: ()
             Column {
                 Text(event.typeText(), style = MaterialTheme.typography.titleLarge)
                 Text(event.product.name)
+                Text(event.product.dayTimeOfIntake())
             }
             Spacer(
                 Modifier
@@ -255,6 +257,7 @@ private fun IncomingIntakeEventCard(event: IncomingEvent.IntakeEvent) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(event.typeText(), style = MaterialTheme.typography.titleLarge)
             Text(event.product.name)
+            Text(event.product.dayTimeOfIntake())
         }
     }
 }

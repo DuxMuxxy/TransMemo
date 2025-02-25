@@ -327,12 +327,18 @@ private fun ColumnScope.SecurityPanel(
                 Modifier
                     .weight(1f)
                     .clickable { editCustomNotificationMessage() }
-                    .padding(end = 16.dp)
             ) {
                 SettingsSectionSubtitle(text = stringResource(string.feature_settings_custom_notification_title))
                 Spacer(modifier = Modifier.height(4.dp))
                 SettingsDescription(text = stringResource(string.feature_settings_custom_notification_description))
             }
+            Spacer(Modifier.width(16.dp))
+            Icon(
+                TransMemoIcons.Edit,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.secondary
+            )
+            Spacer(Modifier.width(16.dp))
             VerticalDivider(modifier = Modifier.height(34.dp))
             Spacer(Modifier.width(24.dp))
             Switch(

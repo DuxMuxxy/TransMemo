@@ -13,7 +13,6 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.SnackbarDuration.Short
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult.ActionPerformed
 import androidx.compose.material3.Text
@@ -45,10 +44,13 @@ import kotlin.reflect.KClass
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun TransMemoApp(appState: TransMemoAppState, shouldAskAuthentication: Boolean) {
+fun TransMemoApp(
+    appState: TransMemoAppState,
+    snackbarHostState: SnackbarHostState,
+    shouldAskAuthentication: Boolean
+) {
     TransMemoBackground {
         var isUserAuthenticated by remember { mutableStateOf(false) }
-        val snackbarHostState = remember { SnackbarHostState() }
         val coroutineScope: CoroutineScope = rememberCoroutineScope()
         val currentDestination = appState.currentDestination
         val destination = appState.currentTopLevelDestination
@@ -114,11 +116,7 @@ fun TransMemoApp(appState: TransMemoAppState, shouldAskAuthentication: Boolean) 
                     TransMemoNavHost(
                         appState = appState,
                         onShowSnackbar = { message, action ->
-                            snackbarHostState.showSnackbar(
-                                message = message,
-                                actionLabel = action,
-                                duration = Short,
-                            ) == ActionPerformed
+                            snackbarHostState.showSnackbar(message, action) == ActionPerformed
                         },
                     )
                 }

@@ -14,6 +14,7 @@ import com.chrysalide.transmemo.presentation.notification.intake.IntakeAlertNoti
 import com.chrysalide.transmemo.presentation.notification.intake.IntakeAlertScheduler
 import java.util.concurrent.TimeUnit
 
+// TODO to unit test
 class ScheduleAlertsForProductUseCase(
     private val intakeAlertNotifier: IntakeAlertNotifier,
     private val intakeAlertScheduler: IntakeAlertScheduler,
@@ -36,26 +37,28 @@ class ScheduleAlertsForProductUseCase(
 
     private suspend fun scheduleIntakes(product: Product) {
         val nextIntakeTriggerDate = getNextIntakeForProductUseCase(listOf(product)).firstOrNull()?.plannedDate
-        val triggerTime = (nextIntakeTriggerDate ?: getCurrentLocalDate()).toEpochMillis()
+        val triggerTime = product.timeOfIntake.toEpochMillis(nextIntakeTriggerDate ?: getCurrentLocalDate())
+        val enabled = product.inUse && product.hasIntakeNotification
         val reminderItem = ReminderItem(
             productId = product.id,
             title = "${product.name} - ${intakeAlertNotifier.getNotificationTitle()}",
             triggerTime = triggerTime,
             interval = TimeUnit.DAYS.toMillis(product.intakeInterval.toLong()),
             type = NotificationType.INTAKE,
-            enabled = product.hasIntakeNotification
+            enabled = enabled
         )
         intakeAlertScheduler.schedule(reminderItem)
 
         // Show notification now if it's the current intake day
-        if (triggerTime < System.currentTimeMillis() && product.hasIntakeNotification) {
+        if (enabled && triggerTime < System.currentTimeMillis()) {
             intakeAlertNotifier.showNotification(reminderItem.notificationId, reminderItem.title)
         }
     }
 
     private fun scheduleExpiration(product: Product, container: Container) {
         val triggerTime = container.expirationDate().toEpochMillis()
-        val enabled = product.hasExpirationNotification && product.expirationDays > 0 && container.state == ContainerState.OPEN
+        val enabled =
+            product.inUse && product.hasExpirationNotification && product.expirationDays > 0 && container.state == ContainerState.OPEN
         val reminderItem = ReminderItem(
             productId = product.id,
             title = "${product.name} - ${expirationAlertNotifier.getNotificationTitle()}",
@@ -66,7 +69,7 @@ class ScheduleAlertsForProductUseCase(
         expirationAlertScheduler.schedule(reminderItem)
 
         // Show notification now if it's the current intake day
-        if (triggerTime < System.currentTimeMillis() && enabled) {
+        if (enabled && triggerTime < System.currentTimeMillis()) {
             expirationAlertNotifier.showNotification(reminderItem.notificationId, reminderItem.title)
         }
     }

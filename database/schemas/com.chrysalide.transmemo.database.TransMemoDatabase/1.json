@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "8cfbcb8d5d3fc79916c78c6a07d49b45",
+    "identityHash": "1c5b44735ecaf874a86aec4be5defd5f",
     "entities": [
       {
         "tableName": "containers",
@@ -104,7 +104,7 @@
       },
       {
         "tableName": "products",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `molecule` TEXT NOT NULL, `unit` TEXT NOT NULL, `dosePerIntake` REAL NOT NULL, `capacity` REAL NOT NULL, `expirationDays` INTEGER NOT NULL, `intakeInterval` INTEGER NOT NULL, `alertDelay` INTEGER NOT NULL, `handleSide` INTEGER NOT NULL, `inUse` INTEGER NOT NULL, `notifications` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `molecule` TEXT NOT NULL, `unit` TEXT NOT NULL, `dosePerIntake` REAL NOT NULL, `capacity` REAL NOT NULL, `expirationDays` INTEGER NOT NULL, `intakeInterval` INTEGER NOT NULL, `timeOfIntake` TEXT NOT NULL, `alertDelay` INTEGER NOT NULL, `handleSide` INTEGER NOT NULL, `inUse` INTEGER NOT NULL, `notifications` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -152,6 +152,12 @@
             "fieldPath": "intakeInterval",
             "columnName": "intakeInterval",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeOfIntake",
+            "columnName": "timeOfIntake",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -314,7 +320,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8cfbcb8d5d3fc79916c78c6a07d49b45')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1c5b44735ecaf874a86aec4be5defd5f')"
     ]
   }
 }

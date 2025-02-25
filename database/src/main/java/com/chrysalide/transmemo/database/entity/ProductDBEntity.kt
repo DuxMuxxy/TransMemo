@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.chrysalide.transmemo.domain.model.MeasureUnit
 import com.chrysalide.transmemo.domain.model.Molecule
+import kotlinx.datetime.LocalTime
 
 @Entity(
     tableName = "products"
@@ -18,6 +19,7 @@ data class ProductDBEntity(
     val capacity: Float,
     val expirationDays: Int,
     val intakeInterval: Int,
+    val timeOfIntake: LocalTime,
     val alertDelay: Int,
     val handleSide: Boolean,
     val inUse: Boolean,
