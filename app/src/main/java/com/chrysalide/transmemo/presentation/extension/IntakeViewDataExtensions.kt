@@ -27,9 +27,11 @@ fun Intake.doneDose() = "${realDose.stripTrailingZeros()} ${unitName()}"
 @Composable
 fun Intake.plannedDose() = "${plannedDose.stripTrailingZeros()} ${unitName()}"
 
-fun Intake.shouldShowPlannedDose() = realDose != plannedDose
+fun Intake.shouldShowPlannedDose() = realDose != plannedDose && plannedDose > 0
 
 fun Intake.shouldShowSideInfo() = plannedSide != IntakeSide.UNDEFINED || realSide != IntakeSide.UNDEFINED
+
+fun Intake.shouldShowDoseInfo() = plannedDose > 0 || realDose > 0
 
 @Composable
 fun Intake.doneSide() = realSide.text()

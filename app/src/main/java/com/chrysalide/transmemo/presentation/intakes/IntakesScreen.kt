@@ -50,6 +50,7 @@ import com.chrysalide.transmemo.presentation.extension.plannedDate
 import com.chrysalide.transmemo.presentation.extension.plannedDose
 import com.chrysalide.transmemo.presentation.extension.plannedSide
 import com.chrysalide.transmemo.presentation.extension.productName
+import com.chrysalide.transmemo.presentation.extension.shouldShowDoseInfo
 import com.chrysalide.transmemo.presentation.extension.shouldShowPlannedDate
 import com.chrysalide.transmemo.presentation.extension.shouldShowPlannedDose
 import com.chrysalide.transmemo.presentation.extension.shouldShowPlannedSide
@@ -84,7 +85,9 @@ private fun IntakesView(intakesUiState: IntakesUiState) {
             }
             Empty -> {
                 Column(
-                    modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -125,7 +128,9 @@ private fun IntakesView(intakesUiState: IntakesUiState) {
                                 Icons.Filled.KeyboardArrowUp,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.padding(vertical = 4.dp).size(32.dp),
+                                modifier = Modifier
+                                    .padding(vertical = 4.dp)
+                                    .size(32.dp),
                             )
                         }
                     }
@@ -140,7 +145,9 @@ private fun IntakesView(intakesUiState: IntakesUiState) {
                                     Icons.Filled.MoreVert,
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.primary.copy(alpha = .5f),
-                                    modifier = Modifier.padding(vertical = 4.dp).size(32.dp),
+                                    modifier = Modifier
+                                        .padding(vertical = 4.dp)
+                                        .size(32.dp),
                                 )
                             }
                         }
@@ -157,7 +164,11 @@ private fun NextIntakeCard(intake: Intake) {
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors().copy(containerColor = MaterialTheme.colorScheme.tertiaryContainer)
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(24.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp)
+        ) {
             Text(intake.productName(), style = MaterialTheme.typography.headlineMedium)
             Text(intake.moleculeName(), style = MaterialTheme.typography.titleMedium)
 
@@ -205,7 +216,11 @@ private fun NextIntakeCard(intake: Intake) {
 @Composable
 private fun IntakeCard(intake: Intake) {
     Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.fillMaxWidth().padding(24.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp)
+        ) {
             Text(intake.productName(), style = MaterialTheme.typography.headlineMedium)
             Text(intake.moleculeName(), style = MaterialTheme.typography.titleMedium)
 
@@ -235,29 +250,31 @@ private fun IntakeCard(intake: Intake) {
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Text(stringResource(R.string.feature_intakes_done_dose))
-                HorizontalDivider(
-                    modifier = Modifier
-                        .weight(1f)
-                        .align(Alignment.CenterVertically)
-                        .padding(horizontal = 24.dp)
-                )
-                Text(intake.doneDose())
-            }
-            if (intake.shouldShowPlannedDose()) {
+            if (intake.shouldShowDoseInfo()) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    Spacer(Modifier.width(16.dp))
-                    Text(stringResource(R.string.feature_intakes_planned_dose))
+                    Text(stringResource(R.string.feature_intakes_done_dose))
                     HorizontalDivider(
                         modifier = Modifier
                             .weight(1f)
                             .align(Alignment.CenterVertically)
                             .padding(horizontal = 24.dp)
                     )
-                    Text(intake.plannedDose())
+                    Text(intake.doneDose())
+                }
+                if (intake.shouldShowPlannedDose()) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Spacer(Modifier.width(16.dp))
+                        Text(stringResource(R.string.feature_intakes_planned_dose))
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .weight(1f)
+                                .align(Alignment.CenterVertically)
+                                .padding(horizontal = 24.dp)
+                        )
+                        Text(intake.plannedDose())
+                    }
                 }
             }
 

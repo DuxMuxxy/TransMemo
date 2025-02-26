@@ -12,7 +12,7 @@ sealed class IncomingEvent(
         val isLate: Boolean = false
     ) : IncomingEvent(product) {
         override fun compareTo(other: IncomingEvent): Int = when (other) {
-            is IntakeEvent -> 0
+            is IntakeEvent -> product.timeOfIntake.compareTo(other.product.timeOfIntake)
             is EmptyContainerEvent -> -1 // IntakeEvent comes before EmptyContainerEvent
             is ExpirationEvent -> -1 // IntakeEvent comes before ExpirationEvent
         }
