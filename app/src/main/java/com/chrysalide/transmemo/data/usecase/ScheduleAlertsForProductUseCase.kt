@@ -56,9 +56,9 @@ class ScheduleAlertsForProductUseCase(
     }
 
     private fun scheduleExpiration(product: Product, container: Container) {
-        val triggerTime = container.expirationDate().toEpochMillis()
         val enabled =
             product.inUse && product.hasExpirationNotification && product.expirationDays > 0 && container.state == ContainerState.OPEN
+        val triggerTime = (if (enabled)container.expirationDate() else getCurrentLocalDate()).toEpochMillis()
         val reminderItem = ReminderItem(
             productId = product.id,
             title = "${product.name} - ${expirationAlertNotifier.getNotificationTitle()}",
@@ -75,8 +75,8 @@ class ScheduleAlertsForProductUseCase(
     }
 
     private fun scheduleEmpty(product: Product, container: Container) {
-        val triggerTime = container.emptyDate().toEpochMillis()
         val enabled = product.hasEmptyNotification && product.capacity > 0 && container.state == ContainerState.OPEN
+        val triggerTime = (if (enabled) container.emptyDate() else getCurrentLocalDate()).toEpochMillis()
         /*val reminderItem = ReminderItem(
             productId = product.id,
             title = "${product.name} - ${emptyAlertNotifier.getNotificationTitle()}",
