@@ -4,7 +4,11 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.widget.Toast
+import com.chrysalide.transmemo.BuildConfig
 import com.chrysalide.transmemo.data.model.ReminderItem
+import com.chrysalide.transmemo.domain.extension.formatToSystemDate
+import com.chrysalide.transmemo.domain.extension.toLocalDateTime
 import com.chrysalide.transmemo.presentation.notification.AlertReceiver
 import com.chrysalide.transmemo.presentation.notification.AlertScheduler
 import com.chrysalide.transmemo.presentation.notification.Notifier.Companion.NOTIFICATION_ID_INTENT_EXTRA
@@ -30,6 +34,14 @@ class IntakeAlertScheduler(
     }
 
     override fun schedule(reminderItem: ReminderItem) {
+        if (BuildConfig.DEBUG) {
+            Toast
+                .makeText(
+                    context,
+                    "DEBUG: Scheduled ${reminderItem.productId} at ${reminderItem.triggerTime.toLocalDateTime().formatToSystemDate()}",
+                    Toast.LENGTH_LONG
+                ).show()
+        }
         if (reminderItem.enabled) {
             alarmManager.setExact(
                 AlarmManager.RTC_WAKEUP, // type, wake up the device when triggered

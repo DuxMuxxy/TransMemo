@@ -10,6 +10,7 @@ import kotlinx.datetime.atDate
 import kotlinx.datetime.atTime
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toJavaLocalDate
+import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.todayIn
 import java.time.format.DateTimeFormatter
@@ -26,12 +27,26 @@ fun LocalDate.formatToSystemDate(): String {
     return javaLocalDateTime.format(formatter)
 }
 
+fun LocalDateTime.formatToSystemDate(): String {
+    val javaLocalDateTime = this.toJavaLocalDateTime()
+    val formatter = DateTimeFormatter
+        .ofLocalizedDateTime(FormatStyle.SHORT)
+        .withLocale(Locale.getDefault())
+    return javaLocalDateTime.format(formatter)
+}
+
 fun getCurrentLocalDate(): LocalDate = Clock.System.todayIn(timeZone)
 
 fun Long.toLocalDate(): LocalDate {
     val instant = Instant.fromEpochMilliseconds(this)
     val localDateTime = instant.toLocalDateTime(timeZone)
     return localDateTime.date
+}
+
+fun Long.toLocalDateTime(): LocalDateTime {
+    val instant = Instant.fromEpochMilliseconds(this)
+    val localDateTime = instant.toLocalDateTime(timeZone)
+    return localDateTime
 }
 
 fun LocalDate.toEpochMillis(): Long {

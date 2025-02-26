@@ -72,6 +72,7 @@ class DoIntakeViewModelTest {
 
         // Assert
         coVerify { doIntakeForProductUseCase(intake) }
+        coVerify { scheduleAlertsForProductUseCase(intake.product) }
         verify { intakeAlertNotifier.cancelNotification(NotificationType.INTAKE.notificationId(intake.product.id)) }
     }
 }

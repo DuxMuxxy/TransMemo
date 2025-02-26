@@ -25,6 +25,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
@@ -36,6 +37,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
@@ -47,6 +49,8 @@ import androidx.compose.ui.unit.dp
 import com.chrysalide.transmemo.R.string
 import com.chrysalide.transmemo.domain.model.Product
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
+import com.chrysalide.transmemo.presentation.design.TimePickerDialog
+import com.chrysalide.transmemo.presentation.extension.dayTimeOfIntake
 import com.chrysalide.transmemo.presentation.extension.getAllMoleculeNames
 import com.chrysalide.transmemo.presentation.extension.getAllUnitNames
 import com.chrysalide.transmemo.presentation.extension.isValidDecimalValue
@@ -107,6 +111,18 @@ private fun AddProductView(
     val isAlertDelayValid = alertDelayValue.isValidIntegerValue()
     val daysSuffix = stringResource(string.global_days)
 
+    var showTimeOfIntakePicker by remember { mutableStateOf(false) }
+    if (showTimeOfIntakePicker) {
+        TimePickerDialog(
+            initialTime = product.timeOfIntake,
+            onDismiss = { showTimeOfIntakePicker = false },
+            onConfirm = {
+                product = product.copy(timeOfIntake = it)
+                showTimeOfIntakePicker = false
+            }
+        )
+    }
+
     Column(modifier = Modifier.verticalScroll(rememberScrollState()).padding(24.dp)) {
         ValueTextField(
             title = stringResource(string.feature_product_name),
@@ -159,6 +175,14 @@ private fun AddProductView(
             imeAction = if (isExtended) ImeAction.Next else ImeAction.Done,
             focusManager = focusManager
         )
+        Spacer(modifier = Modifier.height(24.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(stringResource(string.feature_products_intake_at_day_time))
+            Spacer(Modifier.weight(1f))
+            OutlinedButton(onClick = { showTimeOfIntakePicker = true }) {
+                Text(product.dayTimeOfIntake())
+            }
+        }
 
         AnimatedVisibility(isExtended) {
             Column {

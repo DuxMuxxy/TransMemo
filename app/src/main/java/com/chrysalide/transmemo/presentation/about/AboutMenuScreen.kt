@@ -22,8 +22,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,12 +37,12 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
+import com.chrysalide.transmemo.BuildConfig
 import com.chrysalide.transmemo.R
 import com.chrysalide.transmemo.R.string
 import com.chrysalide.transmemo.presentation.design.ChrysalideLogoFull
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.design.TransMemoIcons
-import com.chrysalide.transmemo.presentation.extension.getAppVersionName
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 
 @Composable
@@ -55,7 +53,6 @@ fun AboutMenuScreen(
     navigateToLicenses: () -> Unit
 ) {
     val context = LocalContext.current
-    val appVersion by remember { mutableStateOf(context.getAppVersionName()) }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -140,14 +137,17 @@ fun AboutMenuScreen(
             modifier = Modifier.padding(horizontal = 32.dp),
         )
 
-        appVersion?.let {
-            Spacer(Modifier.height(24.dp))
-            Text(
-                "Version $appVersion",
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 32.dp),
-            )
+        Spacer(Modifier.height(24.dp))
+        var versionName = "Version ${BuildConfig.VERSION_NAME}"
+        if (BuildConfig.DEBUG) {
+            versionName += " - ${BuildConfig.BUILD_TYPE}"
         }
+
+        Text(
+            versionName,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 32.dp),
+        )
 
         Spacer(Modifier.height(64.dp))
     }

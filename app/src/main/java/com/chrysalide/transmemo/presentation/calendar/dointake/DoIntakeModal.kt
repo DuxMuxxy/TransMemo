@@ -113,7 +113,7 @@ private fun DoIntakeView(
     var editableIntake by remember(intake) { mutableStateOf(intake) }
     var showDatePickerDialog by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
-    var editedDoseValue by remember { mutableStateOf(editableIntake.realDose.stripTrailingZeros()) }
+    var editedDoseValue by remember(intake) { mutableStateOf(editableIntake.realDose.stripTrailingZeros()) }
     val isDoseValid = editedDoseValue.isValidDecimalValue()
 
     Column(
@@ -145,36 +145,39 @@ private fun DoIntakeView(
             onValueChange = {},
             readOnly = true
         )
-        Spacer(Modifier.height(16.dp))
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            label = { Text(stringResource(string.feature_intakes_planned_dose)) },
-            suffix = { Text(intake.unitName()) },
-            value = editedDoseValue,
-            onValueChange = { editedDoseValue = it },
-            isError = !isDoseValid,
-            supportingText = if (!isDoseValid) {
-                {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(string.global_bad_value_format),
-                        color = MaterialTheme.colorScheme.error,
-                    )
-                }
-            } else {
-                null
-            },
-            trailingIcon = if (!isDoseValid) {
-                { Icon(Icons.Filled.Warning, contentDescription = null, tint = MaterialTheme.colorScheme.error) }
-            } else {
-                null
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Decimal,
-                imeAction = ImeAction.Next,
-            ),
-            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) })
-        )
+
+        if (editableIntake.plannedDose > 0) {
+            Spacer(Modifier.height(16.dp))
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(stringResource(string.feature_intakes_planned_dose)) },
+                suffix = { Text(intake.unitName()) },
+                value = editedDoseValue,
+                onValueChange = { editedDoseValue = it },
+                isError = !isDoseValid,
+                supportingText = if (!isDoseValid) {
+                    {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(string.global_bad_value_format),
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
+                } else {
+                    null
+                },
+                trailingIcon = if (!isDoseValid) {
+                    { Icon(Icons.Filled.Warning, contentDescription = null, tint = MaterialTheme.colorScheme.error) }
+                } else {
+                    null
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal,
+                    imeAction = ImeAction.Next,
+                ),
+                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) })
+            )
+        }
 
         if (editableIntake.realSide != IntakeSide.UNDEFINED) {
             Spacer(Modifier.height(32.dp))

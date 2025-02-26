@@ -41,6 +41,7 @@ android {
         jvmTarget = JavaVersion.VERSION_17.toString()
         freeCompilerArgs += "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
     }
+    buildFeatures.buildConfig = true
 }
 
 dependencies {
