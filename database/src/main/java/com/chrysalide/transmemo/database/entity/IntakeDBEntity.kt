@@ -28,5 +28,6 @@ data class IntakeDBEntity(
     val plannedDate: LocalDate,
     val realDate: LocalDate,
     val plannedSide: IntakeSide,
-    val realSide: IntakeSide
+    val realSide: IntakeSide,
+    val forScheduledIntake: Boolean = false
 )

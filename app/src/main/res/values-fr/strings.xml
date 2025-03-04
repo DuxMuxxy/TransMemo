@@ -163,4 +163,6 @@
     <string name="alarm_permission_denied">Vous devez activer la permission des alarmes pour recevoir les notifications.</string>
     <string name="alarm_permission_allow_button">Activer les alarmes</string>
     <string name="global_more_details">Plus de détails</string>
+    <string name="global_return">Retour</string>
+    <string name="feature_add_product_save_intake_message">Saisissez votre dernière date d’admission ou la prochaine que vous souhaitez planifier.</string>
 </resources>

@@ -23,7 +23,7 @@ import com.chrysalide.transmemo.database.entity.WellbeingDBEntity
         IntakeDBEntity::class,
         WellbeingDBEntity::class,
     ],
-    version = 1
+    version = 2
 )
 @TypeConverters(Converters::class)
 abstract class TransMemoDatabase : RoomDatabase() {

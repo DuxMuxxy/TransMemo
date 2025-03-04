@@ -4,8 +4,6 @@ import com.chrysalide.transmemo.domain.boundary.DatabaseRepository
 import com.chrysalide.transmemo.domain.model.DateIntakeEvent
 import com.chrysalide.transmemo.domain.model.Intake
 import com.chrysalide.transmemo.domain.model.IntakeSide
-import com.chrysalide.transmemo.domain.model.Product
-import kotlinx.datetime.plus
 
 // TODO unit tests
 class CreateIntakeForProductUseCase(
@@ -32,6 +30,4 @@ class CreateIntakeForProductUseCase(
         IntakeSide.RIGHT -> IntakeSide.LEFT
         IntakeSide.UNDEFINED -> IntakeSide.UNDEFINED
     }
-
-    private fun Product.initIntakeSide(): IntakeSide = if (handleSide) IntakeSide.LEFT else IntakeSide.UNDEFINED
 }

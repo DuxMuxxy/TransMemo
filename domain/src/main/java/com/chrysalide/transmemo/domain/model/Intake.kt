@@ -10,5 +10,6 @@ data class Intake(
     val plannedDate: LocalDate,
     val realDate: LocalDate,
     val plannedSide: IntakeSide,
-    val realSide: IntakeSide
+    val realSide: IntakeSide,
+    val forScheduledIntake: Boolean = false
 )

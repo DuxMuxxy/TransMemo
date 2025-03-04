@@ -31,10 +31,4 @@ class ComputeNextIntakeForProductUseCase(
             .minBy { it.key }
             .value
     }
-
-    private fun IntakeSide.getNextSide(): IntakeSide = when (this) {
-        IntakeSide.LEFT -> IntakeSide.RIGHT
-        IntakeSide.RIGHT -> IntakeSide.LEFT
-        IntakeSide.UNDEFINED -> IntakeSide.UNDEFINED
-    }
 }

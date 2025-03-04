@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface IntakeDao {
     @Transaction
-    @Query("SELECT * FROM intakes ORDER BY realDate DESC")
+    @Query("SELECT * FROM intakes WHERE forScheduledIntake is 0 ORDER BY realDate DESC")
     fun observeAll(): Flow<List<IntakeWithProductDBEntity>>
 
     @Transaction

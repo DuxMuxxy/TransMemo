@@ -1,21 +1,7 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
-    `java-library`
-    kotlin("jvm")
+    alias(libs.plugins.transmemo.jvm.library)
     alias(libs.plugins.kotlinter)
     alias(libs.plugins.kotlin.serialization)
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-}
-
-kotlin {
-    compilerOptions {
-        jvmTarget = JvmTarget.JVM_17
-    }
 }
 
 dependencies {

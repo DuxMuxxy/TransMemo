@@ -1,6 +1,7 @@
 package com.chrysalide.transmemo.database.di
 
 import androidx.room.Room
+import com.chrysalide.transmemo.database.MIGRATION_1_2
 import com.chrysalide.transmemo.database.TransMemoDatabase
 import com.chrysalide.transmemo.database.dao.ContainerDao
 import com.chrysalide.transmemo.database.dao.IntakeDao
@@ -39,7 +40,7 @@ private val dbModule = module {
     single<TransMemoDatabase> {
         Room
             .databaseBuilder(androidContext(), TransMemoDatabase::class.java, DATABASE_NAME)
-            .fallbackToDestructiveMigration()
+            .addMigrations(MIGRATION_1_2)
             .build()
     }
 }

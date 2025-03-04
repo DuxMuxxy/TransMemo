@@ -17,8 +17,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -30,7 +28,6 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,12 +48,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.chrysalide.transmemo.R.string
 import com.chrysalide.transmemo.domain.extension.getCurrentLocalDate
-import com.chrysalide.transmemo.domain.extension.toEpochMillis
-import com.chrysalide.transmemo.domain.extension.toLocalDate
 import com.chrysalide.transmemo.domain.model.DateIntakeEvent
 import com.chrysalide.transmemo.domain.model.Intake
 import com.chrysalide.transmemo.domain.model.IntakeSide
 import com.chrysalide.transmemo.domain.model.Product
+import com.chrysalide.transmemo.presentation.design.DatePickerDialog
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.extension.doneDate
 import com.chrysalide.transmemo.presentation.extension.isValidDecimalValue
@@ -66,7 +62,6 @@ import com.chrysalide.transmemo.presentation.extension.stripTrailingZeros
 import com.chrysalide.transmemo.presentation.extension.unitName
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,7 +89,7 @@ fun DoIntakeModal(
                     intake = state.intake,
                     confirmIntake = viewModel::confirmIntake,
                     sheetState = sheetState,
-                    onDismiss = onDismiss
+                    dismiss = onDismiss
                 )
             }
         }
@@ -107,7 +102,7 @@ private fun DoIntakeView(
     intake: Intake,
     confirmIntake: (Intake) -> Unit,
     sheetState: SheetState = rememberModalBottomSheetState(),
-    onDismiss: () -> Unit
+    dismiss: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     var editableIntake by remember(intake) { mutableStateOf(intake) }
@@ -208,7 +203,7 @@ private fun DoIntakeView(
         ) {
             TextButton(
                 onClick = {
-                    coroutineScope.launch { sheetState.hide() }.invokeOnCompletion { onDismiss() }
+                    coroutineScope.launch { sheetState.hide() }.invokeOnCompletion { dismiss() }
                 },
             ) { Text(stringResource(string.global_cancel)) }
             Spacer(Modifier.width(24.dp))
@@ -216,7 +211,7 @@ private fun DoIntakeView(
                 onClick = {
                     editableIntake = editableIntake.copy(realDose = editedDoseValue.toFloat())
                     confirmIntake(editableIntake)
-                    coroutineScope.launch { sheetState.hide() }.invokeOnCompletion { onDismiss() }
+                    coroutineScope.launch { sheetState.hide() }.invokeOnCompletion { dismiss() }
                 },
                 enabled = isDoseValid
             ) { Text(stringResource(string.global_confirm)) }
@@ -229,33 +224,6 @@ private fun DoIntakeView(
             onDateSelected = { editableIntake = editableIntake.copy(realDate = it) },
             onDismiss = { showDatePickerDialog = false }
         )
-    }
-}
-
-@ExperimentalMaterial3Api
-@Composable
-private fun DatePickerDialog(
-    initialSelectedDate: LocalDate,
-    onDateSelected: (LocalDate) -> Unit,
-    onDismiss: () -> Unit
-) {
-    val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = initialSelectedDate.toEpochMillis()
-    )
-
-    DatePickerDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            Button(onClick = {
-                datePickerState.selectedDateMillis?.let { onDateSelected(it.toLocalDate()) }
-                onDismiss()
-            }) { Text(stringResource(string.global_confirm)) }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(string.global_cancel)) }
-        }
-    ) {
-        DatePicker(state = datePickerState)
     }
 }
 
@@ -275,7 +243,7 @@ private fun DoIntakeModalViewPreview() {
                 plannedSide = IntakeSide.LEFT
             ),
             confirmIntake = {},
-            onDismiss = {}
+            dismiss = {}
         )
     }
 }

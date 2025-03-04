@@ -102,3 +102,4 @@ vectorize = { id = "dev.sergiobelda.compose.vectorize", version.ref = "vectorize
 # Plugins defined by this project
 transmemo-android-application = { id = "transmemo.android.application" }
 transmemo-android-library = { id = "transmemo.android.library" }
+transmemo-jvm-library = { id = "transmemo.jvm.library" }

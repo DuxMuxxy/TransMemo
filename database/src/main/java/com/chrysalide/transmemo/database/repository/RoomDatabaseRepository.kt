@@ -61,9 +61,10 @@ internal class RoomDatabaseRepository(
         }
     }
 
-    override suspend fun insertProduct(product: Product) {
-        val insertedProductId = productDao.insert(product.toProductEntity())
-        insertNewContainerForProduct(product.copy(id = insertedProductId.toInt()))
+    override suspend fun insertProduct(product: Product): Int {
+        val insertedProductId = productDao.insert(product.toProductEntity()).toInt()
+        insertNewContainerForProduct(product.copy(id = insertedProductId))
+        return insertedProductId
     }
 
     override suspend fun deleteProduct(product: Product) = productDao.delete(product.toProductEntity())
@@ -162,7 +163,8 @@ internal class RoomDatabaseRepository(
         plannedDate = intake.plannedDate,
         realDate = intake.realDate,
         plannedSide = intake.plannedSide,
-        realSide = intake.realSide
+        realSide = intake.realSide,
+        forScheduledIntake = intake.forScheduledIntake
     )
 
     private fun List<Intake>.toIntakeEntities() = map { it.toIntakeEntity() }
@@ -175,7 +177,8 @@ internal class RoomDatabaseRepository(
         plannedDate = plannedDate,
         realDate = realDate,
         plannedSide = plannedSide,
-        realSide = realSide
+        realSide = realSide,
+        forScheduledIntake = forScheduledIntake
     )
 
     private fun List<WellbeingDBEntity>.toWellbeings() = map { it.toWellbeing() }

@@ -55,6 +55,12 @@ fun LocalDate.toEpochMillis(): Long {
     return instant.toEpochMilliseconds()
 }
 
+fun LocalDate.toMidDayEpochMillis(): Long {
+    val localDateTime = this.atTime(12, 0, 0)
+    val instant = localDateTime.toInstant(timeZone)
+    return instant.toEpochMilliseconds()
+}
+
 fun LocalDateTime.toEpochMillis(): Long {
     val instant = toInstant(timeZone)
     return instant.toEpochMilliseconds()

@@ -34,22 +34,30 @@ class IntakeAlertScheduler(
     }
 
     override fun schedule(reminderItem: ReminderItem) {
-        if (BuildConfig.DEBUG) {
-            Toast
-                .makeText(
-                    context,
-                    "DEBUG: Scheduled ${reminderItem.productId} at ${reminderItem.triggerTime.toLocalDateTime().formatToSystemDate()}",
-                    Toast.LENGTH_LONG
-                ).show()
-        }
         if (reminderItem.enabled) {
             alarmManager.setExact(
                 AlarmManager.RTC_WAKEUP, // type, wake up the device when triggered
                 reminderItem.triggerTime, // trigger the notification at specified UTC timestamp
                 createPendingIntent(reminderItem)
             )
+            if (BuildConfig.DEBUG) {
+                Toast
+                    .makeText(
+                        context,
+                        "DEBUG: scheduled intake notif for ${reminderItem.productId} at ${reminderItem.triggerTime.toLocalDateTime().formatToSystemDate()}",
+                        Toast.LENGTH_LONG
+                    ).show()
+            }
         } else {
             cancel(reminderItem)
+            if (BuildConfig.DEBUG) {
+                Toast
+                    .makeText(
+                        context,
+                        "DEBUG: canceled ${reminderItem.productId} intakes notifs",
+                        Toast.LENGTH_LONG
+                    ).show()
+            }
         }
     }
 

@@ -169,4 +169,6 @@
     <string name="alarm_permission_denied">You need to enable alarm permission to receive notifications.</string>
     <string name="alarm_permission_allow_button">Allow alarms</string>
     <string name="global_more_details">More details</string>
+    <string name="global_return">Back</string>
+    <string name="feature_add_product_save_intake_message">Enter your last intake date or the next one you want to schedule.</string>
 </resources>

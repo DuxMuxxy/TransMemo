@@ -28,5 +28,9 @@ gradlePlugin {
             id = "transmemo.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
+        create("jvmLibrary") {
+            id = "transmemo.jvm.library"
+            implementationClass = "JvmLibraryConventionPlugin"
+        }
     }
 }

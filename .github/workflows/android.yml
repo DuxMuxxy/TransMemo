@@ -8,6 +8,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: main
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -58,7 +62,7 @@ jobs:
     - name: Calculate new version code
       id: calculateVersionCode
       run: |
-         SUM=$((steps.appVersion.outputs.versionCode + github.run_number))
+         SUM=$((${{ steps.appVersion.outputs.versionCode }} + ${{ github.run_number }}))
          echo "versionCode=${SUM}" >> $GITHUB_OUTPUT
 
     - name: Build and sign APK for App Distrib

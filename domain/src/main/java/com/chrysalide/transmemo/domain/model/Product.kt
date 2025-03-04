@@ -25,6 +25,8 @@ data class Product(
 
     private fun hasFlag(flags: Int, flagToCheck: Int): Boolean = (flags and flagToCheck) != 0
 
+    fun initIntakeSide(): IntakeSide = if (handleSide) IntakeSide.LEFT else IntakeSide.UNDEFINED
+
     companion object {
         fun default() = Product(
             name = "",
@@ -33,11 +35,11 @@ data class Product(
             dosePerIntake = 0f,
             capacity = 0f,
             expirationDays = 0,
-            intakeInterval = 21,
+            intakeInterval = 1,
             timeOfIntake = LocalTime(hour = 12, minute = 0),
-            alertDelay = 3,
+            alertDelay = 0,
             handleSide = false,
-            inUse = false,
+            inUse = true,
             notifications = NotificationType.ALL
         )
     }
