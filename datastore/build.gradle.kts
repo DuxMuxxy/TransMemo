@@ -1,6 +1,5 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.transmemo.android.library)
     alias(libs.plugins.protobuf)
     alias(libs.plugins.kotlinter)
 }

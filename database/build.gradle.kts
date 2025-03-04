@@ -1,12 +1,11 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.transmemo.android.library)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinter)
 }
 
 android {
-    namespace = "com.chrysalide.transmemo.dastabase"
+    namespace = "com.chrysalide.transmemo.database"
     compileSdk = 35
     defaultConfig.minSdk = 26
 

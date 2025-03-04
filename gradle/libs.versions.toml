@@ -1,5 +1,6 @@
 [versions]
 agp = "8.8.0"
+androidGradlePlugin = "8.2.2"
 kotlin = "2.1.10"
 coreKtx = "1.15.0"
 androidxComposeRuntimeTracing = "1.7.8"
@@ -7,6 +8,8 @@ androidxCoreSplashscreen = "1.0.1"
 androidxDataStore = "1.1.2"
 androidxLifecycle = "2.8.7"
 androidxNavigation = "2.8.7"
+androidTools = "31.8.2"
+kotlinGradlePlugin = "1.9.22"
 kotlinxCoroutines = "1.10.1"
 kotlinxDatetime = "0.6.1"
 kotlinxSerializationJson = "1.8.0"
@@ -62,6 +65,10 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 
+# Dependencies of the included build-logic
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
+android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
 
 [bundles]
 androidx-compose = [
@@ -91,3 +98,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
 kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
 vectorize = { id = "dev.sergiobelda.compose.vectorize", version.ref = "vectorize" }
+
+# Plugins defined by this project
+transmemo-android-application = { id = "transmemo.android.application" }
+transmemo-android-library = { id = "transmemo.android.library" }
