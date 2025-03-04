@@ -89,7 +89,7 @@ fun AboutMenuScreen(
 
         Spacer(Modifier.height(32.dp))
 
-        val chrysalideLink = stringResource(string.feature_about_menu_link)
+        val chrysalideLink = stringResource(string.global_chrysalide_asso_url)
         val helpUsLink = stringResource(string.feature_about_help_us_link)
         val facebookLink = stringResource(string.feature_about_facebook_link)
         val githubLink = stringResource(string.feature_about_github_link)
