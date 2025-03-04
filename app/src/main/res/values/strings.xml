@@ -124,7 +124,8 @@
     <string name="global_today">Today</string>
     <string name="feature_about_title">About</string>
     <string name="feature_about_menu_text">Trans Memo is an application made by Chrysalide.\n\nPlease feel free to send us your comments and suggestions.\n\nThis application is free, but you can support Chrysalide by joining us or making a donation at </string>
-    <string name="feature_about_menu_link" translatable="false">https://www.chrysalide-asso.fr/</string>
+    <string name="global_chrysalide_asso_url" translatable="false">https://www.chrysalide-asso.fr/</string>
+    <string name="global_chrysalide_asso_mail" translatable="false">chrysalidelyon@yahoo.fr</string>
     <string name="feature_about_help_us_link" translatable="false">https://www.helloasso.com/associations/chrysalide/formulaires/1</string>
     <string name="feature_about_help_us_title">Help us</string>
     <string name="feature_about_chrysalide_asso_title">The Chrysalide association</string>
@@ -171,4 +172,11 @@
     <string name="global_more_details">More details</string>
     <string name="global_return">Back</string>
     <string name="feature_add_product_save_intake_message">Enter your last intake date or the next one you want to schedule.</string>
+    <string name="feature_about_chrysalide_asso_content">
+        &lt;i&gt;Chrysalide&lt;/i&gt; is a support group advocating equal rights for trans people in Lyon, France.&lt;br&gt;&lt;br&gt;
+        Our support groups take place on the third Saturday of every month during our Exchange &amp; Dialogue Group.&lt;br&gt;&lt;br&gt;
+        We write and edit brochures and leaflets on transidentities.&lt;br&gt;&lt;br&gt;
+        You can also become a member to support our activities and buy our badges  and other products.&lt;br&gt;&lt;br&gt;&lt;br&gt;
+        &lt;b&gt;More information:&lt;/b&gt;
+    </string>
 </resources>

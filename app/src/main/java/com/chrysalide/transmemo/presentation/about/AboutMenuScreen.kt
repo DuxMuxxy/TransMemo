@@ -36,6 +36,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import com.chrysalide.transmemo.BuildConfig
@@ -89,7 +90,7 @@ fun AboutMenuScreen(
 
         Spacer(Modifier.height(32.dp))
 
-        val chrysalideLink = stringResource(string.feature_about_menu_link)
+        val chrysalideLink = stringResource(string.global_chrysalide_asso_url)
         val helpUsLink = stringResource(string.feature_about_help_us_link)
         val facebookLink = stringResource(string.feature_about_facebook_link)
         val githubLink = stringResource(string.feature_about_github_link)
@@ -127,7 +128,10 @@ fun AboutMenuScreen(
             buildAnnotatedString {
                 append("$infoText ")
                 withLink(
-                    LinkAnnotation.Url(url = chrysalideLink, TextLinkStyles(SpanStyle(color = linkColor)))
+                    LinkAnnotation.Url(
+                        chrysalideLink,
+                        TextLinkStyles(SpanStyle(color = linkColor, textDecoration = TextDecoration.Underline))
+                    )
                 ) {
                     append(chrysalideLink)
                 }

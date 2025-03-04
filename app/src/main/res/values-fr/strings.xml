@@ -165,4 +165,11 @@
     <string name="global_more_details">Plus de détails</string>
     <string name="global_return">Retour</string>
     <string name="feature_add_product_save_intake_message">Saisissez votre dernière date d’admission ou la prochaine que vous souhaitez planifier.</string>
+    <string name="feature_about_chrysalide_asso_content">
+        &lt;i&gt;Chrysalide&lt;/i&gt; est une association militante de support et d\'informations sur les transidentités basée à Lyon.&lt;br&gt;&lt;br&gt;
+        Vous pouvez nous rencontrer le 3ème samedi de chaque mois durant le Groupe d’Échanges et de Dialogues (GED).&lt;br&gt;&lt;br&gt;
+        Nous rédigeons et éditons diverses brochures et dépliants sur les transidentités.&lt;br&gt;&lt;br&gt;
+        Vous pouvez aussi adhérer à l\'association afin de soutenir nos activités et acheter nos badges et autres objets.&lt;br&gt;&lt;br&gt;&lt;br&gt;
+        &lt;b&gt;Plus d\'infos:&lt;/b&gt;
+    </string>
 </resources>
