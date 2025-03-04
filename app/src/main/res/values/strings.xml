@@ -5,8 +5,8 @@
     <string name="menu_content_description">Menu</string>
 
     <string name="feature_calendar_title">Calendar</string>
-    <string name="feature_intakes_title">Intakes</string>
-    <string name="feature_inventory_title">Inventory</string>
+    <string name="feature_intakes_title">History</string>
+    <string name="feature_inventory_title">Stock</string>
     <string name="feature_products_title">Products</string>
     <string name="feature_wellbeing_title">Well being</string>
     <string name="feature_statistics_title">Statistics</string>
@@ -168,4 +168,5 @@
     <string name="feature_products_intake_at_day_time">At</string>
     <string name="alarm_permission_denied">You need to enable alarm permission to receive notifications.</string>
     <string name="alarm_permission_allow_button">Allow alarms</string>
+    <string name="global_more_details">More details</string>
 </resources>

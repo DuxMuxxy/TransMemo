@@ -1,5 +1,6 @@
 package com.chrysalide.transmemo.presentation.inventory
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -15,20 +16,26 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -39,7 +46,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.chrysalide.transmemo.R.string
@@ -53,19 +61,20 @@ import com.chrysalide.transmemo.presentation.design.LinearProgressBar
 import com.chrysalide.transmemo.presentation.design.ThemePreviews
 import com.chrysalide.transmemo.presentation.design.TransMemoIcons
 import com.chrysalide.transmemo.presentation.extension.capacity
+import com.chrysalide.transmemo.presentation.extension.conditional
 import com.chrysalide.transmemo.presentation.extension.expirationDateString
+import com.chrysalide.transmemo.presentation.extension.isValidDecimalValue
 import com.chrysalide.transmemo.presentation.extension.moleculeName
 import com.chrysalide.transmemo.presentation.extension.openDate
 import com.chrysalide.transmemo.presentation.extension.productName
 import com.chrysalide.transmemo.presentation.extension.remainingCapacity
-import com.chrysalide.transmemo.presentation.extension.usedCapacity
+import com.chrysalide.transmemo.presentation.extension.stripTrailingZeros
+import com.chrysalide.transmemo.presentation.extension.unitName
 import com.chrysalide.transmemo.presentation.inventory.InventoryUiState.Containers
 import com.chrysalide.transmemo.presentation.inventory.InventoryUiState.Empty
 import com.chrysalide.transmemo.presentation.inventory.InventoryUiState.Loading
 import com.chrysalide.transmemo.presentation.inventory.recycle.AskRecycleContainerDialog
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
-import dev.sergiobelda.compose.vectorize.images.Images
-import dev.sergiobelda.compose.vectorize.images.icons.outlined.Recycling
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
 
@@ -106,14 +115,16 @@ fun InventoryScreen(
         recycleContainer = {
             containerToRecycle = it
             showRecycleContainerDialog = true
-        }
+        },
+        editRemainingCapacity = viewModel::editRemainingCapacity
     )
 }
 
 @Composable
 private fun InventoryView(
     containersUiState: InventoryUiState,
-    recycleContainer: (Container) -> Unit
+    recycleContainer: (Container) -> Unit,
+    editRemainingCapacity: (Container) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         when (containersUiState) {
@@ -161,7 +172,7 @@ private fun InventoryView(
                         Spacer(modifier = Modifier.height(32.dp))
                     }
                     itemsIndexed(items = containersUiState.containers) { index, container ->
-                        ContainerCard(container, recycleContainer)
+                        ContainerCard(container, recycleContainer, editRemainingCapacity)
                         if (index < containersUiState.containers.lastIndex) {
                             Spacer(modifier = Modifier.height(16.dp))
                         }
@@ -175,7 +186,8 @@ private fun InventoryView(
 @Composable
 private fun ContainerCard(
     container: Container,
-    recycleContainer: (Container) -> Unit
+    recycleContainer: (Container) -> Unit,
+    editRemainingCapacity: (Container) -> Unit
 ) {
     var isExtented by remember { mutableStateOf(false) }
 
@@ -196,7 +208,7 @@ private fun ContainerCard(
                     }
                     val recycleButtonContentDescription = stringResource(string.feature_inventory_recycle_button_content_description)
                     IconButton(onClick = { recycleContainer(container) }, modifier = Modifier.padding(start = 8.dp)) {
-                        Icon(Images.Icons.Outlined.Recycling, contentDescription = recycleButtonContentDescription)
+                        Icon(TransMemoIcons.Recycle, contentDescription = recycleButtonContentDescription)
                     }
                 }
 
@@ -266,53 +278,111 @@ private fun ContainerCard(
             Spacer(modifier = Modifier.height(16.dp))
 
             if (container.product.capacity > container.product.dosePerIntake) {
+                var isEditing by remember { mutableStateOf(false) }
+                var containerRemainingCapacity by remember(isEditing, container) {
+                    val containerRemainingCapacity = container.product.capacity - container.usedCapacity
+                    mutableStateOf(containerRemainingCapacity.stripTrailingZeros())
+                }
+                val isError = !containerRemainingCapacity.isValidDecimalValue()
+
                 HorizontalDivider()
-                Box {
-                    var progress by remember { mutableFloatStateOf(1F) }
-                    val progressAnimation by animateFloatAsState(
-                        targetValue = progress,
-                        animationSpec = tween(durationMillis = 1_500, easing = FastOutSlowInEasing),
-                    )
-                    LaunchedEffect(Unit) {
-                        progress = (container.product.capacity - container.usedCapacity) / container.product.capacity
-                    }
-                    LinearProgressBar(
-                        progress = { progressAnimation },
-                        height = 120.dp,
-                    )
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(120.dp)
-                            .padding(horizontal = 16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                stringResource(string.feature_inventory_remaining_capacity),
-                                color = MaterialTheme.colorScheme.onPrimary,
+                AnimatedContent(isEditing) { isBeingEdited ->
+                    Box {
+                        if (!isBeingEdited) {
+                            var progress by remember { mutableFloatStateOf(1F) }
+                            val progressAnimation by animateFloatAsState(
+                                targetValue = progress,
+                                animationSpec = tween(durationMillis = 1_500, easing = FastOutSlowInEasing),
                             )
-                            Text(
-                                container.remainingCapacity(),
-                                color = MaterialTheme.colorScheme.onPrimary,
-                                style = MaterialTheme.typography.headlineMedium,
+                            LaunchedEffect(Unit) {
+                                progress = (container.product.capacity - container.usedCapacity) / container.product.capacity
+                            }
+                            LinearProgressBar(
+                                progress = { progressAnimation },
+                                height = 120.dp,
                             )
                         }
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            horizontalAlignment = Alignment.End,
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .conditional(!isBeingEdited) {
+                                    Modifier
+                                        .height(120.dp)
+                                        .padding(horizontal = 16.dp)
+                                }.conditional(isBeingEdited) { Modifier.padding(16.dp) },
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            Text(
-                                stringResource(string.feature_inventory_used_capacity),
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                            )
-                            Text(
-                                container.usedCapacity(),
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                style = MaterialTheme.typography.headlineMedium,
-                                textAlign = TextAlign.End,
-                            )
+                            if (isBeingEdited) {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    OutlinedTextField(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        value = containerRemainingCapacity,
+                                        onValueChange = { containerRemainingCapacity = it },
+                                        singleLine = true,
+                                        label = { Text(stringResource(string.feature_inventory_remaining_capacity)) },
+                                        suffix = { Text(container.unitName()) },
+                                        isError = isError,
+                                        supportingText = if (isError) {
+                                            {
+                                                Text(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    text = stringResource(string.global_bad_value_format),
+                                                    color = MaterialTheme.colorScheme.error
+                                                )
+                                            }
+                                        } else {
+                                            null
+                                        },
+                                        trailingIcon = if (isError) {
+                                            {
+                                                Icon(
+                                                    Icons.Filled.Warning,
+                                                    contentDescription = null,
+                                                    tint = MaterialTheme.colorScheme.error
+                                                )
+                                            }
+                                        } else {
+                                            null
+                                        },
+                                        keyboardOptions = KeyboardOptions(
+                                            keyboardType = KeyboardType.Decimal,
+                                            imeAction = ImeAction.Done
+                                        )
+                                    )
+                                    Spacer(Modifier.height(16.dp))
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.End
+                                    ) {
+                                        TextButton(onClick = { isEditing = false }) { Text(stringResource(string.global_cancel)) }
+                                        Spacer(Modifier.width(24.dp))
+                                        Button(
+                                            onClick = {
+                                                val usedCapacity = container.product.capacity - containerRemainingCapacity.toFloat()
+                                                editRemainingCapacity(container.copy(usedCapacity = usedCapacity))
+                                                isEditing = false
+                                            },
+                                            enabled = !isError
+                                        ) { Text(stringResource(string.global_confirm)) }
+                                    }
+                                }
+                            } else {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        stringResource(string.feature_inventory_remaining_capacity),
+                                        color = MaterialTheme.colorScheme.onPrimary,
+                                    )
+                                    Text(
+                                        container.remainingCapacity(),
+                                        color = MaterialTheme.colorScheme.onPrimary,
+                                        style = MaterialTheme.typography.headlineMedium,
+                                    )
+                                }
+                                IconButton(onClick = { isEditing = true }) {
+                                    Icon(TransMemoIcons.Edit, contentDescription = null)
+                                }
+                            }
                         }
                     }
                 }
@@ -348,7 +418,8 @@ private fun InventoryScreenListPreviews() {
                     )
                 )
             ),
-            recycleContainer = {}
+            recycleContainer = {},
+            editRemainingCapacity = {}
         )
     }
 }
@@ -380,7 +451,8 @@ private fun InventoryScreenNoCapacityPreviews() {
                     )
                 )
             ),
-            recycleContainer = {}
+            recycleContainer = {},
+            editRemainingCapacity = {}
         )
     }
 }
@@ -412,7 +484,8 @@ private fun InventoryScreenOneShotPreviews() {
                     )
                 )
             ),
-            recycleContainer = {}
+            recycleContainer = {},
+            editRemainingCapacity = {}
         )
     }
 }
@@ -421,7 +494,7 @@ private fun InventoryScreenOneShotPreviews() {
 @Composable
 private fun InventoryScreenLoadingPreviews() {
     TransMemoTheme {
-        InventoryView(Loading, {})
+        InventoryView(Loading, {}, {})
     }
 }
 
@@ -429,6 +502,6 @@ private fun InventoryScreenLoadingPreviews() {
 @Composable
 private fun InventoryScreenEmptyPreviews() {
     TransMemoTheme {
-        InventoryView(Empty, {})
+        InventoryView(Empty, {}, {})
     }
 }

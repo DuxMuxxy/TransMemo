@@ -41,6 +41,12 @@ class InventoryViewModel(
             expirationAlertNotifier.cancelNotification(NotificationType.EXPIRATION.notificationId(container.product.id))
         }
     }
+
+    fun editRemainingCapacity(container: Container) {
+        viewModelScope.launch {
+            databaseRepository.updateContainer(container)
+        }
+    }
 }
 
 sealed interface InventoryUiState {

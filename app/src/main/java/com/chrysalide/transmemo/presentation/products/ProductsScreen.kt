@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -493,7 +494,8 @@ private fun ProductCard(
                                     editableProduct = product
                                 },
                             ) { Text(stringResource(string.global_cancel)) }
-                            TextButton(
+                            Spacer(Modifier.width(24.dp))
+                            Button(
                                 enabled = isIntakePeriodicityValid &&
                                     isDosingPerIntakeValid &&
                                     isCapacityValid &&

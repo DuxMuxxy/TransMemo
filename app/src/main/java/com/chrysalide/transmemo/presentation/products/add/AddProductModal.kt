@@ -123,7 +123,11 @@ private fun AddProductView(
         )
     }
 
-    Column(modifier = Modifier.verticalScroll(rememberScrollState()).padding(24.dp)) {
+    Column(
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .padding(24.dp)
+    ) {
         ValueTextField(
             title = stringResource(string.feature_product_name),
             value = product.name,
@@ -285,15 +289,17 @@ private fun AddProductView(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { isExtended = !isExtended },
+                .clickable { isExtended = !isExtended }
+                .padding(vertical = 8.dp),
             horizontalArrangement = Arrangement.Center
         ) {
-            val icon = if (isExtended) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown
-            Icon(
-                icon,
-                contentDescription = null,
-                modifier = Modifier.padding(8.dp)
-            )
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                if (!isExtended) {
+                    Text(stringResource(string.global_more_details), style = MaterialTheme.typography.labelMedium)
+                }
+                val icon = if (isExtended) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown
+                Icon(icon, contentDescription = null)
+            }
         }
 
         Row(

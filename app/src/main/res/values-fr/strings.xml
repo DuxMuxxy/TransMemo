@@ -3,8 +3,8 @@
     <string name="menu_content_description">Menu</string>
 
     <string name="feature_calendar_title">Calendrier</string>
-    <string name="feature_intakes_title">Prises</string>
-    <string name="feature_inventory_title">Inventaire</string>
+    <string name="feature_intakes_title">Historique</string>
+    <string name="feature_inventory_title">Stock</string>
     <string name="feature_products_title">Produits</string>
     <string name="feature_wellbeing_title">Bien-être</string>
     <string name="feature_statistics_title">Statistiques</string>
@@ -162,4 +162,5 @@
     <string name="feature_products_intake_at_day_time">À</string>
     <string name="alarm_permission_denied">Vous devez activer la permission des alarmes pour recevoir les notifications.</string>
     <string name="alarm_permission_allow_button">Activer les alarmes</string>
+    <string name="global_more_details">Plus de détails</string>
 </resources>

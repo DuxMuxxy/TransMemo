@@ -1,11 +1,7 @@
 package com.chrysalide.transmemo.presentation.design
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Settings
@@ -32,6 +28,7 @@ import dev.sergiobelda.compose.vectorize.images.icons.outlined.HeartCheck
 import dev.sergiobelda.compose.vectorize.images.icons.outlined.Inventory
 import dev.sergiobelda.compose.vectorize.images.icons.outlined.Medication
 import dev.sergiobelda.compose.vectorize.images.icons.outlined.Monitoring
+import dev.sergiobelda.compose.vectorize.images.icons.outlined.Recycling
 import dev.sergiobelda.compose.vectorize.images.icons.outlined.Vaccines
 
 object TransMemoIcons {
@@ -65,4 +62,5 @@ object TransMemoIcons {
     val Edit = Icons.Rounded.Edit
     val Add = Icons.Rounded.Add
     val Delete = Icons.Rounded.Delete
+    val Recycle = Images.Icons.Outlined.Recycling
 }

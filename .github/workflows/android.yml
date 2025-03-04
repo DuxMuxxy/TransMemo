@@ -95,3 +95,4 @@ jobs:
           serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS }}
           file: apk/app-appDistrib.apk
           groups: commu-trans
+          releaseNotes: ${{ github.event.head_commit.message }}
