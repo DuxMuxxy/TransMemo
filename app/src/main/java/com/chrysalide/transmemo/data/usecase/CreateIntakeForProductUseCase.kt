@@ -3,7 +3,6 @@ package com.chrysalide.transmemo.data.usecase
 import com.chrysalide.transmemo.domain.boundary.DatabaseRepository
 import com.chrysalide.transmemo.domain.model.DateIntakeEvent
 import com.chrysalide.transmemo.domain.model.Intake
-import com.chrysalide.transmemo.domain.model.IntakeSide
 
 // TODO unit tests
 class CreateIntakeForProductUseCase(
@@ -23,11 +22,5 @@ class CreateIntakeForProductUseCase(
                 realSide = side
             )
         }
-    }
-
-    private fun IntakeSide.getNextSide(): IntakeSide = when (this) {
-        IntakeSide.LEFT -> IntakeSide.RIGHT
-        IntakeSide.RIGHT -> IntakeSide.LEFT
-        IntakeSide.UNDEFINED -> IntakeSide.UNDEFINED
     }
 }

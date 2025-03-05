@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.chrysalide.transmemo.data.usecase.ScheduleAllAlertsUseCase
 import com.chrysalide.transmemo.database.usecase.AutoImportOldDatabaseUseCase
 import com.chrysalide.transmemo.domain.boundary.BiometricRepository
 import com.chrysalide.transmemo.domain.boundary.UserDataRepository
@@ -22,16 +23,19 @@ import kotlin.time.Duration.Companion.seconds
 class MainActivityViewModel(
     userDataRepository: UserDataRepository,
     autoImportOldDatabaseUseCase: AutoImportOldDatabaseUseCase,
+    scheduleAllAlertsUseCase: ScheduleAllAlertsUseCase,
     biometricRepository: BiometricRepository
 ) : ViewModel() {
     var shouldAskAuthenticationAtLaunch by mutableStateOf(false)
 
     init {
         viewModelScope.launch {
-            autoImportOldDatabaseUseCase()
             shouldAskAuthenticationAtLaunch =
                 userDataRepository.userData.first().askAuthentication &&
                 biometricRepository.canDeviceAskAuthentication()
+            autoImportOldDatabaseUseCase(
+                onSuccess = { viewModelScope.launch { scheduleAllAlertsUseCase() } }
+            )
         }
     }
 

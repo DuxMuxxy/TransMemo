@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chrysalide.transmemo.data.AndroidBiometricRepository
+import com.chrysalide.transmemo.data.usecase.ScheduleAllAlertsUseCase
 import com.chrysalide.transmemo.database.usecase.ImportOldDatabaseUseCase
 import com.chrysalide.transmemo.domain.boundary.UserDataRepository
 import com.chrysalide.transmemo.domain.model.DarkThemeConfig
@@ -22,6 +23,7 @@ import kotlin.time.Duration.Companion.seconds
 class SettingsViewModel(
     private val userDataRepository: UserDataRepository,
     private val importOldDatabaseUseCase: ImportOldDatabaseUseCase,
+    private val scheduleAllAlertsUseCase: ScheduleAllAlertsUseCase,
     private val biometricRepository: AndroidBiometricRepository
 ) : ViewModel() {
     var importResultSnackbar by mutableStateOf<ImportDatabaseFileResultSnackbar>(ImportDatabaseFileResultSnackbar.Idle)
@@ -85,6 +87,7 @@ class SettingsViewModel(
                 dbFileUri = fileUri,
                 onSuccess = {
                     importResultSnackbar = ImportDatabaseFileResultSnackbar.Success
+                    viewModelScope.launch { scheduleAllAlertsUseCase() }
                 },
                 onError = {
                     importResultSnackbar = ImportDatabaseFileResultSnackbar.Error

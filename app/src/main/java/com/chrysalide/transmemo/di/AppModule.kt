@@ -10,6 +10,8 @@ import com.chrysalide.transmemo.data.usecase.CreateIntakeForProductUseCase
 import com.chrysalide.transmemo.data.usecase.DoIntakeForProductUseCase
 import com.chrysalide.transmemo.data.usecase.GetNextCalendarEventsUseCase
 import com.chrysalide.transmemo.data.usecase.ScheduleAlertsForProductUseCase
+import com.chrysalide.transmemo.data.usecase.ScheduleAllAlertsUseCase
+import com.chrysalide.transmemo.data.usecase.UpdateAppIconUseCase
 import com.chrysalide.transmemo.domain.boundary.BiometricRepository
 import com.chrysalide.transmemo.presentation.MainActivityViewModel
 import com.chrysalide.transmemo.presentation.calendar.CalendarViewModel
@@ -54,6 +56,8 @@ private val useCaseModule = module {
     singleOf(::CreateIntakeForProductUseCase)
     singleOf(::DoIntakeForProductUseCase)
     singleOf(::ScheduleAlertsForProductUseCase)
+    singleOf(::ScheduleAllAlertsUseCase)
+    singleOf(::UpdateAppIconUseCase)
 }
 
 private val notificationModule = module {

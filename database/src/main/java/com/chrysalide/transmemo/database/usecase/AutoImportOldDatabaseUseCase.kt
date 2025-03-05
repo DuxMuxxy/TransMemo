@@ -15,13 +15,14 @@ class AutoImportOldDatabaseUseCase(
     private val userDataRepository: UserDataRepository,
     private val importDatabaseHelper: ImportDatabaseHelper
 ) {
-    suspend operator fun invoke() {
+    suspend operator fun invoke(onSuccess: () -> Unit) {
         coroutineScope {
             val legacyDatabaseHasBeenImported = userDataRepository.userData.map { it.legacyDatabaseHasBeenImported }.first()
             try {
                 if (!legacyDatabaseHasBeenImported && importDatabaseHelper.legacyDatabaseExists()) {
                     importDatabaseHelper.tryImportLegacyData()
                     userDataRepository.setLegacyDatabaseHasBeenImported()
+                    onSuccess()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
