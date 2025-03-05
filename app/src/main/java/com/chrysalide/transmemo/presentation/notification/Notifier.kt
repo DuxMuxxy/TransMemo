@@ -19,7 +19,10 @@ abstract class Notifier(
     abstract val notificationChannelName: String
     abstract val notificationChannelDescription: String
 
-    fun showNotification(notificationId: Int, title: String) {
+    fun showNotification(
+        notificationId: Int,
+        title: String
+    ) {
         val channel = createNotificationChannel()
         notificationManager.createNotificationChannel(channel)
         CoroutineScope(Job()).launch {

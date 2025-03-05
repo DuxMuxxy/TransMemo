@@ -19,25 +19,26 @@ class DoIntakeForProductUseCaseTest {
     private val container = Container.new(product)
 
     @Test
-    fun shouldInsertIntakeAndUpdateContainer() = runTest {
-        // Arrange
-        val testContainer = container.copy(usedCapacity = 3f)
-        val intake = Intake(
-            plannedDose = 1f,
-            realDose = 1f,
-            plannedDate = mockk(),
-            realDate = mockk(),
-            plannedSide = IntakeSide.LEFT,
-            realSide = IntakeSide.LEFT,
-            product = product
-        )
-        coEvery { databaseRepository.getProductContainer(product.id) } returns testContainer
+    fun shouldInsertIntakeAndUpdateContainer() =
+        runTest {
+            // Arrange
+            val testContainer = container.copy(usedCapacity = 3f)
+            val intake = Intake(
+                plannedDose = 1f,
+                realDose = 1f,
+                plannedDate = mockk(),
+                realDate = mockk(),
+                plannedSide = IntakeSide.LEFT,
+                realSide = IntakeSide.LEFT,
+                product = product
+            )
+            coEvery { databaseRepository.getProductContainer(product.id) } returns testContainer
 
-        // Act
-        useCase(intake)
+            // Act
+            useCase(intake)
 
-        // Assert
-        coVerify { databaseRepository.insertIntake(intake) }
-        coVerify { databaseRepository.updateContainer(testContainer.copy(usedCapacity = 4f)) }
-    }
+            // Assert
+            coVerify { databaseRepository.insertIntake(intake) }
+            coVerify { databaseRepository.updateContainer(testContainer.copy(usedCapacity = 4f)) }
+        }
 }

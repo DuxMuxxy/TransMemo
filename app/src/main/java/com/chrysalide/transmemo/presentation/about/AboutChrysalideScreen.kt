@@ -80,7 +80,10 @@ fun AboutChrysalideScreen(navigateUp: () -> Unit) {
     }
 }
 
-private fun openMailIntent(context: Context, email: String) {
+private fun openMailIntent(
+    context: Context,
+    email: String
+) {
     val intent = Intent(Intent.ACTION_SENDTO).apply {
         data = Uri.parse("mailto:$email")
     }

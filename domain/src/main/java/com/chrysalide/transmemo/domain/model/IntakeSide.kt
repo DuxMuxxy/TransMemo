@@ -5,9 +5,10 @@ enum class IntakeSide {
     LEFT,
     RIGHT;
 
-    fun getNextSide(): IntakeSide = when (this) {
-        LEFT -> RIGHT
-        RIGHT -> LEFT
-        UNDEFINED -> UNDEFINED
-    }
+    fun getNextSide(): IntakeSide =
+        when (this) {
+            LEFT -> RIGHT
+            RIGHT -> LEFT
+            UNDEFINED -> UNDEFINED
+        }
 }

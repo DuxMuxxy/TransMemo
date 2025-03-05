@@ -18,37 +18,38 @@ fun String.isValidDecimalValue() = isNotBlank() && matches("^[0-9]+(\\.[0-9]+)?$
 fun Float.stripTrailingZeros(): String = toBigDecimal().setScale(2, RoundingMode.HALF_UP).stripTrailingZeros().toPlainString()
 
 @Composable
-fun Spanned.convertHtmlSpannedToAnnotatedString(): AnnotatedString = buildAnnotatedString {
-    val text = this@convertHtmlSpannedToAnnotatedString
-    val spans = text.getSpans(0, text.length, Any::class.java)
-    append(text.toString())
-    spans.forEach { span ->
-        val start = text.getSpanStart(span)
-        val end = text.getSpanEnd(span)
-        when (span) {
-            is android.text.style.StyleSpan -> {
-                when (span.style) {
-                    android.graphics.Typeface.BOLD -> {
-                        addStyle(SpanStyle(fontWeight = FontWeight.Bold), start, end)
-                    }
+fun Spanned.convertHtmlSpannedToAnnotatedString(): AnnotatedString =
+    buildAnnotatedString {
+        val text = this@convertHtmlSpannedToAnnotatedString
+        val spans = text.getSpans(0, text.length, Any::class.java)
+        append(text.toString())
+        spans.forEach { span ->
+            val start = text.getSpanStart(span)
+            val end = text.getSpanEnd(span)
+            when (span) {
+                is android.text.style.StyleSpan -> {
+                    when (span.style) {
+                        android.graphics.Typeface.BOLD -> {
+                            addStyle(SpanStyle(fontWeight = FontWeight.Bold), start, end)
+                        }
 
-                    android.graphics.Typeface.ITALIC -> {
-                        addStyle(SpanStyle(fontStyle = FontStyle.Italic), start, end)
-                    }
+                        android.graphics.Typeface.ITALIC -> {
+                            addStyle(SpanStyle(fontStyle = FontStyle.Italic), start, end)
+                        }
 
-                    android.graphics.Typeface.BOLD_ITALIC -> {
-                        addStyle(SpanStyle(fontWeight = FontWeight.Bold, fontStyle = FontStyle.Italic), start, end)
+                        android.graphics.Typeface.BOLD_ITALIC -> {
+                            addStyle(SpanStyle(fontWeight = FontWeight.Bold, fontStyle = FontStyle.Italic), start, end)
+                        }
                     }
                 }
-            }
 
-            is android.text.style.UnderlineSpan -> {
-                addStyle(SpanStyle(textDecoration = TextDecoration.Underline), start, end)
-            }
+                is android.text.style.UnderlineSpan -> {
+                    addStyle(SpanStyle(textDecoration = TextDecoration.Underline), start, end)
+                }
 
-            is android.text.style.ParagraphStyle -> {
-                // Handle paragraph styles if needed
+                is android.text.style.ParagraphStyle -> {
+                    // Handle paragraph styles if needed
+                }
             }
         }
     }
-}

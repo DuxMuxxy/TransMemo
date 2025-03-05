@@ -378,9 +378,7 @@ private fun AlternativeIconPreview() {
 }
 
 @Composable
-private fun ColumnScope.DatabasePanel(
-    onImportClick: () -> Unit
-) {
+private fun ColumnScope.DatabasePanel(onImportClick: () -> Unit) {
     SettingsSectionTitle(text = stringResource(string.feature_settings_database_title))
     Spacer(modifier = Modifier.height(16.dp))
     Row(verticalAlignment = Alignment.CenterVertically) {

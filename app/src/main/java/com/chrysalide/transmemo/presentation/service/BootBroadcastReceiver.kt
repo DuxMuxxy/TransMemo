@@ -26,7 +26,10 @@ class BootBroadcastReceiver :
     private val scheduleAllAlertsUseCase: ScheduleAllAlertsUseCase by inject()
     private val updateAppIconUseCase: UpdateAppIconUseCase by inject()
 
-    override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent
+    ) {
         if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
             CoroutineScope(Job()).launch {
                 scheduleAllAlertsUseCase()

@@ -14,12 +14,13 @@ data class Container(
     val state: ContainerState
 ) {
     companion object {
-        fun new(product: Product) = Container(
-            product = product,
-            usedCapacity = 0f,
-            openDate = getCurrentLocalDate(),
-            state = ContainerState.OPEN
-        )
+        fun new(product: Product) =
+            Container(
+                product = product,
+                usedCapacity = 0f,
+                openDate = getCurrentLocalDate(),
+                state = ContainerState.OPEN
+            )
     }
 
     fun emptyDate(): LocalDate {

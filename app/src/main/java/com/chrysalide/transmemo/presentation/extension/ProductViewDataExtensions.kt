@@ -23,23 +23,24 @@ import kotlin.text.format
 fun Product.moleculeName() = molecule.name()
 
 @Composable
-private fun Molecule.name() = stringResource(
-    when (this) {
-        Molecule.CHLORMADINONE_ACETATE -> string.molecule_chlormadinone_acetate
-        Molecule.CYPROTERONE_ACETATE -> string.molecule_cyproterone_acetate
-        Molecule.NOMEGESTROL_ACETATE -> string.molecule_nomegestrol_acetate
-        Molecule.ANDROSTANOLONE -> string.molecule_androstanolone
-        Molecule.BICALUTAMIDE -> string.molecule_bicalutamide
-        Molecule.DUTASTERIDE -> string.molecule_dutasteride
-        Molecule.ESTRADIOL -> string.molecule_estradiol
-        Molecule.FINASTERIDE -> string.molecule_finasteride
-        Molecule.TESTOSTERONE -> string.molecule_testosterone
-        Molecule.PROGESTERONE -> string.molecule_progesterone
-        Molecule.SPIRONOLACTONE -> string.molecule_spironolactone
-        Molecule.TRIPTORELIN -> string.molecule_triptorelin
-        Molecule.OTHER -> string.molecule_other
-    }
-)
+private fun Molecule.name() =
+    stringResource(
+        when (this) {
+            Molecule.CHLORMADINONE_ACETATE -> string.molecule_chlormadinone_acetate
+            Molecule.CYPROTERONE_ACETATE -> string.molecule_cyproterone_acetate
+            Molecule.NOMEGESTROL_ACETATE -> string.molecule_nomegestrol_acetate
+            Molecule.ANDROSTANOLONE -> string.molecule_androstanolone
+            Molecule.BICALUTAMIDE -> string.molecule_bicalutamide
+            Molecule.DUTASTERIDE -> string.molecule_dutasteride
+            Molecule.ESTRADIOL -> string.molecule_estradiol
+            Molecule.FINASTERIDE -> string.molecule_finasteride
+            Molecule.TESTOSTERONE -> string.molecule_testosterone
+            Molecule.PROGESTERONE -> string.molecule_progesterone
+            Molecule.SPIRONOLACTONE -> string.molecule_spironolactone
+            Molecule.TRIPTORELIN -> string.molecule_triptorelin
+            Molecule.OTHER -> string.molecule_other
+        }
+    )
 
 @Composable
 fun Product.dosePerIntake() = "${dosePerIntake.stripTrailingZeros()} ${unitName()}"
@@ -60,19 +61,20 @@ fun Product.alertDelay() = pluralStringResource(R.plurals.global_days_text_templ
 fun Product.unitName() = unit.name()
 
 @Composable
-private fun MeasureUnit.name() = stringResource(
-    when (this) {
-        MeasureUnit.VIAL -> string.unit_vial
-        MeasureUnit.PILL -> string.unit_pill
-        MeasureUnit.MILLIGRAM -> string.unit_milligram
-        MeasureUnit.MILLILITER -> string.unit_milliliter
-        MeasureUnit.OZ -> string.unit_oz
-        MeasureUnit.PATCH -> string.unit_patch
-        MeasureUnit.PUMP -> string.unit_pump
-        MeasureUnit.SACHET -> string.unit_sachet
-        MeasureUnit.OTHER -> string.unit_other
-    }
-)
+private fun MeasureUnit.name() =
+    stringResource(
+        when (this) {
+            MeasureUnit.VIAL -> string.unit_vial
+            MeasureUnit.PILL -> string.unit_pill
+            MeasureUnit.MILLIGRAM -> string.unit_milligram
+            MeasureUnit.MILLILITER -> string.unit_milliliter
+            MeasureUnit.OZ -> string.unit_oz
+            MeasureUnit.PATCH -> string.unit_patch
+            MeasureUnit.PUMP -> string.unit_pump
+            MeasureUnit.SACHET -> string.unit_sachet
+            MeasureUnit.OTHER -> string.unit_other
+        }
+    )
 
 @Composable
 fun getAllMoleculeNames() = Molecule.entries.map { it to it.name() }

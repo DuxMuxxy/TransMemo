@@ -65,9 +65,7 @@ import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun IntakesScreen(
-    viewModel: IntakesViewModel = koinViewModel()
-) {
+fun IntakesScreen(viewModel: IntakesViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     IntakesView(uiState)

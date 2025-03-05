@@ -21,7 +21,10 @@ fun BiometricPromptContainer(
     val executor = remember { ContextCompat.getMainExecutor(context) }
     val callback = remember {
         object : BiometricPrompt.AuthenticationCallback() {
-            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+            override fun onAuthenticationError(
+                errorCode: Int,
+                errString: CharSequence
+            ) {
                 onAuthError()
             }
 

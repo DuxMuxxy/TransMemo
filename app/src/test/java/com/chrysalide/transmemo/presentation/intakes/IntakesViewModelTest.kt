@@ -36,48 +36,51 @@ class IntakesViewModelTest {
     }
 
     @Test
-    fun stateIsInitiallyLoading() = runTest {
-        assertIs<IntakesUiState.Loading>(viewModel.uiState.value)
-    }
+    fun stateIsInitiallyLoading() =
+        runTest {
+            assertIs<IntakesUiState.Loading>(viewModel.uiState.value)
+        }
 
     @Test
-    fun stateIsEmptyWhenNoIntakesExist() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
+    fun stateIsEmptyWhenNoIntakesExist() =
+        runTest {
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
 
-        // Act
-        fakeRepository.emit(emptyList())
+            // Act
+            fakeRepository.emit(emptyList())
 
-        // Assert
-        assertIs<IntakesUiState.Empty>(viewModel.uiState.value)
-    }
+            // Assert
+            assertIs<IntakesUiState.Empty>(viewModel.uiState.value)
+        }
 
     @Test
-    fun stateIsIntakesWhenIntakesExist() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
+    fun stateIsIntakesWhenIntakesExist() =
+        runTest {
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
 
-        // Arrange
-        val product = Product.default()
-        val intakes = listOf(
-            Intake(
-                product = product,
-                plannedDose = 1f,
-                realDose = 1f,
-                plannedDate = mockk(),
-                realDate = mockk(),
-                plannedSide = IntakeSide.LEFT,
-                realSide = IntakeSide.LEFT
+            // Arrange
+            val product = Product.default()
+            val intakes = listOf(
+                Intake(
+                    product = product,
+                    plannedDose = 1f,
+                    realDose = 1f,
+                    plannedDate = mockk(),
+                    realDate = mockk(),
+                    plannedSide = IntakeSide.LEFT,
+                    realSide = IntakeSide.LEFT
+                )
             )
-        )
-        val nextIntakes = listOf<Intake>(mockk())
-        coEvery { computeNextIntakeForProductsUseCase(any()) } returns nextIntakes
+            val nextIntakes = listOf<Intake>(mockk())
+            coEvery { computeNextIntakeForProductsUseCase(any()) } returns nextIntakes
 
-        // Act
-        fakeRepository.emit(intakes)
+            // Act
+            fakeRepository.emit(intakes)
 
-        // Assert
-        assertEquals(
-            IntakesUiState.Intakes(nextIntakes = nextIntakes, intakes = intakes),
-            viewModel.uiState.value
-        )
-    }
+            // Assert
+            assertEquals(
+                IntakesUiState.Intakes(nextIntakes = nextIntakes, intakes = intakes),
+                viewModel.uiState.value
+            )
+        }
 }

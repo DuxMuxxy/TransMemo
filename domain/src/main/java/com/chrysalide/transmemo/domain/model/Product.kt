@@ -23,24 +23,28 @@ data class Product(
     val hasEmptyNotification = hasFlag(notifications, NotificationType.EMPTY.value)
     val hasExpirationNotification = hasFlag(notifications, NotificationType.EXPIRATION.value)
 
-    private fun hasFlag(flags: Int, flagToCheck: Int): Boolean = (flags and flagToCheck) != 0
+    private fun hasFlag(
+        flags: Int,
+        flagToCheck: Int
+    ): Boolean = (flags and flagToCheck) != 0
 
     fun initIntakeSide(): IntakeSide = if (handleSide) IntakeSide.LEFT else IntakeSide.UNDEFINED
 
     companion object {
-        fun default() = Product(
-            name = "",
-            molecule = Molecule.TESTOSTERONE,
-            unit = MeasureUnit.VIAL,
-            dosePerIntake = 0f,
-            capacity = 0f,
-            expirationDays = 0,
-            intakeInterval = 1,
-            timeOfIntake = LocalTime(hour = 12, minute = 0),
-            alertDelay = 0,
-            handleSide = false,
-            inUse = true,
-            notifications = NotificationType.ALL
-        )
+        fun default() =
+            Product(
+                name = "",
+                molecule = Molecule.TESTOSTERONE,
+                unit = MeasureUnit.VIAL,
+                dosePerIntake = 0f,
+                capacity = 0f,
+                expirationDays = 0,
+                intakeInterval = 1,
+                timeOfIntake = LocalTime(hour = 12, minute = 0),
+                alertDelay = 0,
+                handleSide = false,
+                inUse = true,
+                notifications = NotificationType.ALL
+            )
     }
 }

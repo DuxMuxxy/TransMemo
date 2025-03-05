@@ -128,5 +128,4 @@ fun TransMemoApp(
     }
 }
 
-private fun NavDestination?.isRouteInHierarchy(route: KClass<*>) =
-    this?.hierarchy?.any { it.hasRoute(route) } ?: false
+private fun NavDestination?.isRouteInHierarchy(route: KClass<*>) = this?.hierarchy?.any { it.hasRoute(route) } ?: false

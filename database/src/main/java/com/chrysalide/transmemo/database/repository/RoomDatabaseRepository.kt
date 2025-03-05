@@ -99,119 +99,129 @@ internal class RoomDatabaseRepository(
 
     private fun List<ProductDBEntity>.toProducts() = map { it.toProduct() }
 
-    private fun ProductDBEntity.toProduct() = Product(
-        id = id,
-        name = name,
-        molecule = molecule,
-        unit = unit,
-        dosePerIntake = dosePerIntake,
-        capacity = capacity,
-        expirationDays = expirationDays,
-        intakeInterval = intakeInterval,
-        timeOfIntake = timeOfIntake,
-        alertDelay = alertDelay,
-        handleSide = handleSide,
-        inUse = inUse,
-        notifications = notifications
-    )
+    private fun ProductDBEntity.toProduct() =
+        Product(
+            id = id,
+            name = name,
+            molecule = molecule,
+            unit = unit,
+            dosePerIntake = dosePerIntake,
+            capacity = capacity,
+            expirationDays = expirationDays,
+            intakeInterval = intakeInterval,
+            timeOfIntake = timeOfIntake,
+            alertDelay = alertDelay,
+            handleSide = handleSide,
+            inUse = inUse,
+            notifications = notifications
+        )
 
     private fun List<Product>.toProductEntities() = map { it.toProductEntity() }
 
-    private fun Product.toProductEntity() = ProductDBEntity(
-        id = id,
-        name = name,
-        molecule = molecule,
-        unit = unit,
-        dosePerIntake = dosePerIntake,
-        capacity = capacity,
-        expirationDays = expirationDays,
-        intakeInterval = intakeInterval,
-        timeOfIntake = timeOfIntake,
-        alertDelay = alertDelay,
-        handleSide = handleSide,
-        inUse = inUse,
-        notifications = notifications
-    )
+    private fun Product.toProductEntity() =
+        ProductDBEntity(
+            id = id,
+            name = name,
+            molecule = molecule,
+            unit = unit,
+            dosePerIntake = dosePerIntake,
+            capacity = capacity,
+            expirationDays = expirationDays,
+            intakeInterval = intakeInterval,
+            timeOfIntake = timeOfIntake,
+            alertDelay = alertDelay,
+            handleSide = handleSide,
+            inUse = inUse,
+            notifications = notifications
+        )
 
     private fun List<ContainerWithProductDBEntity>.toContainers() = map { it.toContainer() }
 
-    private fun ContainerWithProductDBEntity.toContainer() = Container(
-        id = container.id,
-        product = product.toProduct(),
-        usedCapacity = container.usedCapacity,
-        openDate = container.openDate,
-        state = container.state
-    )
+    private fun ContainerWithProductDBEntity.toContainer() =
+        Container(
+            id = container.id,
+            product = product.toProduct(),
+            usedCapacity = container.usedCapacity,
+            openDate = container.openDate,
+            state = container.state
+        )
 
     private fun List<Container>.toContainerEntities() = map { it.toContainerEntity() }
 
-    private fun Container.toContainerEntity() = ContainerDBEntity(
-        id = id,
-        productId = product.id,
-        usedCapacity = usedCapacity,
-        openDate = openDate,
-        state = state
-    )
+    private fun Container.toContainerEntity() =
+        ContainerDBEntity(
+            id = id,
+            productId = product.id,
+            usedCapacity = usedCapacity,
+            openDate = openDate,
+            state = state
+        )
 
     private fun List<IntakeWithProductDBEntity>.toIntakes() = map { it.toIntake() }
 
-    private fun IntakeWithProductDBEntity.toIntake() = Intake(
-        id = intake.id,
-        product = product.toProduct(),
-        plannedDose = intake.plannedDose,
-        realDose = intake.realDose,
-        plannedDate = intake.plannedDate,
-        realDate = intake.realDate,
-        plannedSide = intake.plannedSide,
-        realSide = intake.realSide,
-        forScheduledIntake = intake.forScheduledIntake
-    )
+    private fun IntakeWithProductDBEntity.toIntake() =
+        Intake(
+            id = intake.id,
+            product = product.toProduct(),
+            plannedDose = intake.plannedDose,
+            realDose = intake.realDose,
+            plannedDate = intake.plannedDate,
+            realDate = intake.realDate,
+            plannedSide = intake.plannedSide,
+            realSide = intake.realSide,
+            forScheduledIntake = intake.forScheduledIntake
+        )
 
     private fun List<Intake>.toIntakeEntities() = map { it.toIntakeEntity() }
 
-    private fun Intake.toIntakeEntity() = IntakeDBEntity(
-        id = id,
-        productId = product.id,
-        plannedDose = plannedDose,
-        realDose = realDose,
-        plannedDate = plannedDate,
-        realDate = realDate,
-        plannedSide = plannedSide,
-        realSide = realSide,
-        forScheduledIntake = forScheduledIntake
-    )
+    private fun Intake.toIntakeEntity() =
+        IntakeDBEntity(
+            id = id,
+            productId = product.id,
+            plannedDose = plannedDose,
+            realDose = realDose,
+            plannedDate = plannedDate,
+            realDate = realDate,
+            plannedSide = plannedSide,
+            realSide = realSide,
+            forScheduledIntake = forScheduledIntake
+        )
 
     private fun List<WellbeingDBEntity>.toWellbeings() = map { it.toWellbeing() }
 
-    private fun WellbeingDBEntity.toWellbeing() = Wellbeing(
-        id = id,
-        date = date,
-        criteriaId = criteriaId,
-        value = value
-    )
+    private fun WellbeingDBEntity.toWellbeing() =
+        Wellbeing(
+            id = id,
+            date = date,
+            criteriaId = criteriaId,
+            value = value
+        )
 
     private fun List<Wellbeing>.toWellbeingEntities() = map { it.toWellbeingEntity() }
 
-    private fun Wellbeing.toWellbeingEntity() = WellbeingDBEntity(
-        id = id,
-        date = date,
-        criteriaId = criteriaId,
-        value = value
-    )
+    private fun Wellbeing.toWellbeingEntity() =
+        WellbeingDBEntity(
+            id = id,
+            date = date,
+            criteriaId = criteriaId,
+            value = value
+        )
 
     private fun List<NoteDBEntity>.toNotes() = map { it.toNote() }
 
-    private fun NoteDBEntity.toNote() = Note(
-        id = id,
-        date = date,
-        text = text
-    )
+    private fun NoteDBEntity.toNote() =
+        Note(
+            id = id,
+            date = date,
+            text = text
+        )
 
     private fun List<Note>.toNoteEntities() = map { it.toNoteEntity() }
 
-    private fun Note.toNoteEntity() = NoteDBEntity(
-        id = id,
-        date = date,
-        text = text
-    )
+    private fun Note.toNoteEntity() =
+        NoteDBEntity(
+            id = id,
+            date = date,
+            text = text
+        )
 }

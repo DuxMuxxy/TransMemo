@@ -24,14 +24,15 @@ fun LocalDate.daysLateText(): String {
 }
 
 @Composable
-fun IncomingEvent.typeText(): String = stringResource(
-    when (this) {
-        is IntakeEvent -> when {
-            isLate -> string.feature_calendar_type_late_intake
-            isToday -> string.feature_calendar_type_today_intake
-            else -> string.feature_calendar_type_incoming_intake
+fun IncomingEvent.typeText(): String =
+    stringResource(
+        when (this) {
+            is IntakeEvent -> when {
+                isLate -> string.feature_calendar_type_late_intake
+                isToday -> string.feature_calendar_type_today_intake
+                else -> string.feature_calendar_type_incoming_intake
+            }
+            is IncomingEvent.EmptyContainerEvent -> string.feature_calendar_type_empty
+            is IncomingEvent.ExpirationEvent -> string.feature_calendar_type_expiration
         }
-        is IncomingEvent.EmptyContainerEvent -> string.feature_calendar_type_empty
-        is IncomingEvent.ExpirationEvent -> string.feature_calendar_type_expiration
-    }
-)
+    )

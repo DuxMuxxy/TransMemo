@@ -22,7 +22,10 @@ class AlertReceiver :
     private val expirationAlertNotifier: ExpirationAlertNotifier by inject()
     // private val emptyAlertNotifier: EmptyAlertNotifier by inject()
 
-    override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent
+    ) {
         Log.d("TEST", "onReceive")
         val notificationId = intent.getIntExtra(NOTIFICATION_ID_INTENT_EXTRA, 1)
         val notificationTitle =

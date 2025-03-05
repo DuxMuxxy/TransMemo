@@ -37,7 +37,10 @@ sealed class Either<out L, out R> {
      * @param rightFn The function to apply if this is a Right.
      * @return The result of applying the function.
      */
-    inline fun <T> fold(leftFn: (L) -> T, rightFn: (R) -> T): T =
+    inline fun <T> fold(
+        leftFn: (L) -> T,
+        rightFn: (R) -> T
+    ): T =
         when (this) {
             is Left -> leftFn(value)
             is Right -> rightFn(value)

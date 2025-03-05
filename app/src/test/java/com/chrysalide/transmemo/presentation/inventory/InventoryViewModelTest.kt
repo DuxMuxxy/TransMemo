@@ -42,67 +42,72 @@ class InventoryViewModelTest {
     }
 
     @Test
-    fun stateIsInitiallyLoading() = runTest {
-        assertIs<InventoryUiState.Loading>(viewModel.uiState.value)
-    }
+    fun stateIsInitiallyLoading() =
+        runTest {
+            assertIs<InventoryUiState.Loading>(viewModel.uiState.value)
+        }
 
     @Test
-    fun stateIsEmptyWhenNoContainerExist() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
+    fun stateIsEmptyWhenNoContainerExist() =
+        runTest {
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
 
-        // Act
-        fakeRepository.emit(emptyList())
+            // Act
+            fakeRepository.emit(emptyList())
 
-        // Assert
-        assertIs<InventoryUiState.Empty>(viewModel.uiState.value)
-    }
-
-    @Test
-    fun stateIsEmptyWhenNoOpenContainerExist() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
-
-        // Arrange
-        val product = Product.default().copy(inUse = true)
-        val containers = listOf(
-            Container.new(product).copy(state = ContainerState.EMPTY)
-        )
-
-        // Act
-        fakeRepository.emit(containers)
-
-        // Assert
-        assertIs<InventoryUiState.Empty>(viewModel.uiState.value)
-    }
+            // Assert
+            assertIs<InventoryUiState.Empty>(viewModel.uiState.value)
+        }
 
     @Test
-    fun stateIsEmptyWhenNoProductIsInUse() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
+    fun stateIsEmptyWhenNoOpenContainerExist() =
+        runTest {
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
 
-        // Arrange
-        val product = Product.default().copy(inUse = false)
-        val containers = listOf(Container.new(product))
+            // Arrange
+            val product = Product.default().copy(inUse = true)
+            val containers = listOf(
+                Container.new(product).copy(state = ContainerState.EMPTY)
+            )
 
-        // Act
-        fakeRepository.emit(containers)
+            // Act
+            fakeRepository.emit(containers)
 
-        // Assert
-        assertIs<InventoryUiState.Empty>(viewModel.uiState.value)
-    }
+            // Assert
+            assertIs<InventoryUiState.Empty>(viewModel.uiState.value)
+        }
 
     @Test
-    fun stateIsContainersWhenOpenContainersExist() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
+    fun stateIsEmptyWhenNoProductIsInUse() =
+        runTest {
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
 
-        // Arrange
-        val product = Product.default().copy(inUse = true)
-        val containers = listOf(Container.new(product))
+            // Arrange
+            val product = Product.default().copy(inUse = false)
+            val containers = listOf(Container.new(product))
 
-        // Act
-        fakeRepository.emit(containers)
+            // Act
+            fakeRepository.emit(containers)
 
-        // Assert
-        assertEquals(InventoryUiState.Containers(containers), viewModel.uiState.value)
-    }
+            // Assert
+            assertIs<InventoryUiState.Empty>(viewModel.uiState.value)
+        }
+
+    @Test
+    fun stateIsContainersWhenOpenContainersExist() =
+        runTest {
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
+
+            // Arrange
+            val product = Product.default().copy(inUse = true)
+            val containers = listOf(Container.new(product))
+
+            // Act
+            fakeRepository.emit(containers)
+
+            // Assert
+            assertEquals(InventoryUiState.Containers(containers), viewModel.uiState.value)
+        }
 
     @Test
     fun callRecycleContainerWhenInvoke() {

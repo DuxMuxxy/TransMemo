@@ -62,9 +62,7 @@ import kotlinx.datetime.plus
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun CalendarScreen(
-    viewModel: CalendarViewModel = koinViewModel()
-) {
+fun CalendarScreen(viewModel: CalendarViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var doIntakeModalProduct by remember { mutableStateOf<DateIntakeEvent?>(null) }
 
@@ -84,7 +82,10 @@ fun CalendarScreen(
 }
 
 @Composable
-private fun CalendarView(calendarUiState: CalendarUiState, doIntake: (DateIntakeEvent) -> Unit) {
+private fun CalendarView(
+    calendarUiState: CalendarUiState,
+    doIntake: (DateIntakeEvent) -> Unit
+) {
     Column(modifier = Modifier.fillMaxSize()) {
         when (calendarUiState) {
             is Loading -> {
@@ -212,7 +213,10 @@ fun LazyItemScope.DateEvents(
 }
 
 @Composable
-private fun DoableIntakeEventCard(event: IncomingEvent.IntakeEvent, doIntake: () -> Unit) {
+private fun DoableIntakeEventCard(
+    event: IncomingEvent.IntakeEvent,
+    doIntake: () -> Unit
+) {
     val containerColor = when {
         event.isLate -> MaterialTheme.colorScheme.tertiaryContainer
         else -> MaterialTheme.colorScheme.surfaceTint

@@ -12,7 +12,11 @@ class ImportOldDatabaseUseCase(
     private val importDatabaseHelper: ImportDatabaseHelper,
     private val userDataRepository: UserDataRepository
 ) {
-    suspend operator fun invoke(dbFileUri: Uri, onSuccess: () -> Unit, onError: () -> Unit) {
+    suspend operator fun invoke(
+        dbFileUri: Uri,
+        onSuccess: () -> Unit,
+        onError: () -> Unit
+    ) {
         coroutineScope {
             try {
                 importDatabaseHelper.copyFileToInternalStorage(dbFileUri)

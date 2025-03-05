@@ -42,10 +42,11 @@ fun Intake.plannedSide() = plannedSide.text()
 fun Intake.shouldShowPlannedSide() = realSide != plannedSide
 
 @Composable
-private fun IntakeSide.text() = stringResource(
-    when (this) {
-        IntakeSide.LEFT -> string.intake_side_left
-        IntakeSide.RIGHT -> string.intake_side_right
-        IntakeSide.UNDEFINED -> string.intake_side_undefined
-    }
-)
+private fun IntakeSide.text() =
+    stringResource(
+        when (this) {
+            IntakeSide.LEFT -> string.intake_side_left
+            IntakeSide.RIGHT -> string.intake_side_right
+            IntakeSide.UNDEFINED -> string.intake_side_undefined
+        }
+    )

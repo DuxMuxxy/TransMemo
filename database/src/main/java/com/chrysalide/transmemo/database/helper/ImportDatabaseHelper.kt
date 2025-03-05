@@ -69,26 +69,28 @@ class ImportDatabaseHelper(
 ) {
     private val extractedProductIds = mutableIntSetOf()
 
-    suspend fun copyFileToInternalStorage(fileUri: Uri) = withContext(Dispatchers.IO) {
-        val destinationFile = File(context.getDatabasePath(DATABASE_NAME).parentFile, TMP_DATABASE_NAME)
+    suspend fun copyFileToInternalStorage(fileUri: Uri) =
+        withContext(Dispatchers.IO) {
+            val destinationFile = File(context.getDatabasePath(DATABASE_NAME).parentFile, TMP_DATABASE_NAME)
 
-        context.contentResolver.openInputStream(fileUri)?.use { inputStream ->
-            FileOutputStream(destinationFile).use { outputStream ->
-                inputStream.copyTo(outputStream)
+            context.contentResolver.openInputStream(fileUri)?.use { inputStream ->
+                FileOutputStream(destinationFile).use { outputStream ->
+                    inputStream.copyTo(outputStream)
+                }
             }
         }
-    }
 
-    suspend fun isDBFileLegacy() = withContext(Dispatchers.IO) {
-        val legacyDatabaseHelper = LegacyDatabaseHelper(context, TMP_DATABASE_NAME)
-        var dbContainsLegacyTable: Boolean
-        with(legacyDatabaseHelper.readableDatabase) {
-            dbContainsLegacyTable = dbContainsLegacyTable()
-            close()
+    suspend fun isDBFileLegacy() =
+        withContext(Dispatchers.IO) {
+            val legacyDatabaseHelper = LegacyDatabaseHelper(context, TMP_DATABASE_NAME)
+            var dbContainsLegacyTable: Boolean
+            with(legacyDatabaseHelper.readableDatabase) {
+                dbContainsLegacyTable = dbContainsLegacyTable()
+                close()
+            }
+            legacyDatabaseHelper.close()
+            return@withContext dbContainsLegacyTable
         }
-        legacyDatabaseHelper.close()
-        return@withContext dbContainsLegacyTable
-    }
 
     private fun SQLiteDatabase.dbContainsLegacyTable(): Boolean {
         try {
@@ -105,19 +107,20 @@ class ImportDatabaseHelper(
         }
     }
 
-    suspend fun tryImportLegacyData() = withContext(Dispatchers.IO) {
-        try {
-            importLegacyDataInRoomDatabase()
-        } catch (e: SQLiteException) {
-            // If the legacy file has not the writable permissions, we can't open it and copy data to room db for some reasons
-            // Actually this happens only when we upload a legacy file with the Android Studio device explorer to the app internal databases directory
-            // The solution is to copy the legacy file to a new one with the writable permissions and then try to import it again
-            Log.d("ImportDatabaseHelper", "retrying to import legacy data with a file with write permissions...")
-            copyLegacyToWritableFile()
-            importLegacyDataInRoomDatabase()
-            context.getDatabasePath(LEGACY_DATABASE_NAME).delete()
+    suspend fun tryImportLegacyData() =
+        withContext(Dispatchers.IO) {
+            try {
+                importLegacyDataInRoomDatabase()
+            } catch (e: SQLiteException) {
+                // If the legacy file has not the writable permissions, we can't open it and copy data to room db for some reasons
+                // Actually this happens only when we upload a legacy file with the Android Studio device explorer to the app internal databases directory
+                // The solution is to copy the legacy file to a new one with the writable permissions and then try to import it again
+                Log.d("ImportDatabaseHelper", "retrying to import legacy data with a file with write permissions...")
+                copyLegacyToWritableFile()
+                importLegacyDataInRoomDatabase()
+                context.getDatabasePath(LEGACY_DATABASE_NAME).delete()
+            }
         }
-    }
 
     suspend fun importLegacyDataInRoomDatabase() {
         val tmpDBFile = context.getDatabasePath(TMP_DATABASE_NAME)
@@ -135,15 +138,17 @@ class ImportDatabaseHelper(
         context.getDatabasePath(TMP_DATABASE_NAME).delete()
     }
 
-    suspend fun legacyDatabaseExists() = withContext(Dispatchers.IO) {
-        context.getDatabasePath(LEGACY_DATABASE_NAME).exists()
-    }
+    suspend fun legacyDatabaseExists() =
+        withContext(Dispatchers.IO) {
+            context.getDatabasePath(LEGACY_DATABASE_NAME).exists()
+        }
 
-    suspend fun importDatabase() = withContext(Dispatchers.IO) {
-        val roomDBFile = context.getDatabasePath("$DATABASE_NAME.db")
-        roomDBFile.delete()
-        context.getDatabasePath(TMP_DATABASE_NAME).renameTo(roomDBFile)
-    }
+    suspend fun importDatabase() =
+        withContext(Dispatchers.IO) {
+            val roomDBFile = context.getDatabasePath("$DATABASE_NAME.db")
+            roomDBFile.delete()
+            context.getDatabasePath(TMP_DATABASE_NAME).renameTo(roomDBFile)
+        }
 
     private fun copyLegacyToWritableFile() {
         val tmpFile = context.getDatabasePath(TMP_DATABASE_NAME)
@@ -229,90 +234,99 @@ class ImportDatabaseHelper(
 
     // We have to add 1 to every model indexes because room primary keys auto increment starts at 1, 0 is for not yet id defined
 
-    private fun Cursor.toContainer() = Container(
-        id = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_IDCONTENANT)) + 1,
-        product = Product.default().copy(id = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_IDPRODUIT)) + 1),
-        usedCapacity = getFloat(getColumnIndexOrThrow(CONTAINERS_COLUMN_CAPACITE_UTILISEE)),
-        openDate = getLong(getColumnIndexOrThrow(CONTAINERS_COLUMN_DATE_OUVERTURE)).toLocalDate(),
-        state = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_ETAT)).toContainerState()
-    )
+    private fun Cursor.toContainer() =
+        Container(
+            id = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_IDCONTENANT)) + 1,
+            product = Product.default().copy(id = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_IDPRODUIT)) + 1),
+            usedCapacity = getFloat(getColumnIndexOrThrow(CONTAINERS_COLUMN_CAPACITE_UTILISEE)),
+            openDate = getLong(getColumnIndexOrThrow(CONTAINERS_COLUMN_DATE_OUVERTURE)).toLocalDate(),
+            state = getInt(getColumnIndexOrThrow(CONTAINERS_COLUMN_ETAT)).toContainerState()
+        )
 
-    private fun Cursor.toIntake() = Intake(
-        id = getInt(getColumnIndexOrThrow(INTAKES_COLUMN_IDPRISE)) + 1,
-        product = Product.default().copy(id = getInt(getColumnIndexOrThrow(INTAKES_COLUMN_IDPRODUIT)) + 1),
-        plannedDose = getFloat(getColumnIndexOrThrow(INTAKES_COLUMN_DOSE_PREVUE)),
-        realDose = getFloat(getColumnIndexOrThrow(INTAKES_COLUMN_DOSE_REELLE)),
-        plannedDate = getLong(getColumnIndexOrThrow(INTAKES_COLUMN_DATE_PREVUE)).toLocalDate(),
-        realDate = getLong(getColumnIndexOrThrow(INTAKES_COLUMN_DATE_REELLE)).toLocalDate(),
-        plannedSide = getInt(getColumnIndexOrThrow(INTAKES_COLUMN_COTE_PREVU)).toIntakeSide(),
-        realSide = getInt(getColumnIndexOrThrow(INTAKES_COLUMN_COTE_REEL)).toIntakeSide()
-    )
+    private fun Cursor.toIntake() =
+        Intake(
+            id = getInt(getColumnIndexOrThrow(INTAKES_COLUMN_IDPRISE)) + 1,
+            product = Product.default().copy(id = getInt(getColumnIndexOrThrow(INTAKES_COLUMN_IDPRODUIT)) + 1),
+            plannedDose = getFloat(getColumnIndexOrThrow(INTAKES_COLUMN_DOSE_PREVUE)),
+            realDose = getFloat(getColumnIndexOrThrow(INTAKES_COLUMN_DOSE_REELLE)),
+            plannedDate = getLong(getColumnIndexOrThrow(INTAKES_COLUMN_DATE_PREVUE)).toLocalDate(),
+            realDate = getLong(getColumnIndexOrThrow(INTAKES_COLUMN_DATE_REELLE)).toLocalDate(),
+            plannedSide = getInt(getColumnIndexOrThrow(INTAKES_COLUMN_COTE_PREVU)).toIntakeSide(),
+            realSide = getInt(getColumnIndexOrThrow(INTAKES_COLUMN_COTE_REEL)).toIntakeSide()
+        )
 
-    private fun Cursor.toProduct() = Product(
-        id = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_IDPRODUIT)) + 1,
-        name = getString(getColumnIndexOrThrow(PRODUCTS_COLUMN_NOM_PRODUIT)),
-        molecule = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_IDMOLECULE)).toMolecule(),
-        unit = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_UNITE)).toUnit(),
-        dosePerIntake = getFloat(getColumnIndexOrThrow(PRODUCTS_COLUMN_DOSE_PRISE)),
-        capacity = getFloat(getColumnIndexOrThrow(PRODUCTS_COLUMN_CAPACITE)),
-        expirationDays = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_JOURS_DLC)),
-        intakeInterval = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_INTERVALLE_PRISES)),
-        timeOfIntake = LocalTime(hour = 12, minute = 0),
-        alertDelay = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_DELAI_ALERTE)),
-        handleSide = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_GESTION_COTE)) == 1,
-        inUse = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_ETAT)) == 2,
-        notifications = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_NOTIFICATIONS))
-    )
+    private fun Cursor.toProduct() =
+        Product(
+            id = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_IDPRODUIT)) + 1,
+            name = getString(getColumnIndexOrThrow(PRODUCTS_COLUMN_NOM_PRODUIT)),
+            molecule = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_IDMOLECULE)).toMolecule(),
+            unit = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_UNITE)).toUnit(),
+            dosePerIntake = getFloat(getColumnIndexOrThrow(PRODUCTS_COLUMN_DOSE_PRISE)),
+            capacity = getFloat(getColumnIndexOrThrow(PRODUCTS_COLUMN_CAPACITE)),
+            expirationDays = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_JOURS_DLC)),
+            intakeInterval = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_INTERVALLE_PRISES)),
+            timeOfIntake = LocalTime(hour = 12, minute = 0),
+            alertDelay = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_DELAI_ALERTE)),
+            handleSide = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_GESTION_COTE)) == 1,
+            inUse = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_ETAT)) == 2,
+            notifications = getInt(getColumnIndexOrThrow(PRODUCTS_COLUMN_NOTIFICATIONS))
+        )
 
-    private fun Cursor.toWellbeing() = Wellbeing(
-        date = getInt(getColumnIndexOrThrow(WELLNESS_COLUMN_DATE)),
-        criteriaId = getInt(getColumnIndexOrThrow(WELLNESS_COLUMN_IDCRITERE)),
-        value = getFloat(getColumnIndexOrThrow(WELLNESS_COLUMN_VALEUR))
-    )
+    private fun Cursor.toWellbeing() =
+        Wellbeing(
+            date = getInt(getColumnIndexOrThrow(WELLNESS_COLUMN_DATE)),
+            criteriaId = getInt(getColumnIndexOrThrow(WELLNESS_COLUMN_IDCRITERE)),
+            value = getFloat(getColumnIndexOrThrow(WELLNESS_COLUMN_VALEUR))
+        )
 
-    private fun Cursor.toNote() = Note(
-        date = getInt(getColumnIndexOrThrow(NOTES_COLUMN_DATE)),
-        text = getString(getColumnIndexOrThrow(NOTES_COLUMN_NOTES))
-    )
+    private fun Cursor.toNote() =
+        Note(
+            date = getInt(getColumnIndexOrThrow(NOTES_COLUMN_DATE)),
+            text = getString(getColumnIndexOrThrow(NOTES_COLUMN_NOTES))
+        )
 
-    private fun Int.toMolecule() = when (this) {
-        0 -> Molecule.OTHER
-        1 -> Molecule.CHLORMADINONE_ACETATE
-        2 -> Molecule.CYPROTERONE_ACETATE
-        3 -> Molecule.NOMEGESTROL_ACETATE
-        4 -> Molecule.ANDROSTANOLONE
-        5 -> Molecule.BICALUTAMIDE
-        6 -> Molecule.DUTASTERIDE
-        7 -> Molecule.ESTRADIOL
-        8 -> Molecule.FINASTERIDE
-        9 -> Molecule.TESTOSTERONE
-        10 -> Molecule.PROGESTERONE
-        11 -> Molecule.SPIRONOLACTONE
-        12 -> Molecule.TRIPTORELIN
-        else -> Molecule.OTHER
-    }
+    private fun Int.toMolecule() =
+        when (this) {
+            0 -> Molecule.OTHER
+            1 -> Molecule.CHLORMADINONE_ACETATE
+            2 -> Molecule.CYPROTERONE_ACETATE
+            3 -> Molecule.NOMEGESTROL_ACETATE
+            4 -> Molecule.ANDROSTANOLONE
+            5 -> Molecule.BICALUTAMIDE
+            6 -> Molecule.DUTASTERIDE
+            7 -> Molecule.ESTRADIOL
+            8 -> Molecule.FINASTERIDE
+            9 -> Molecule.TESTOSTERONE
+            10 -> Molecule.PROGESTERONE
+            11 -> Molecule.SPIRONOLACTONE
+            12 -> Molecule.TRIPTORELIN
+            else -> Molecule.OTHER
+        }
 
-    private fun Int.toUnit() = when (this) {
-        0 -> MeasureUnit.OTHER
-        1 -> MeasureUnit.VIAL
-        2 -> MeasureUnit.PILL
-        8 -> MeasureUnit.MILLIGRAM
-        3 -> MeasureUnit.MILLILITER
-        4 -> MeasureUnit.OZ
-        5 -> MeasureUnit.PATCH
-        6 -> MeasureUnit.PUMP
-        7 -> MeasureUnit.SACHET
-        else -> MeasureUnit.OTHER
-    }
+    private fun Int.toUnit() =
+        when (this) {
+            0 -> MeasureUnit.OTHER
+            1 -> MeasureUnit.VIAL
+            2 -> MeasureUnit.PILL
+            8 -> MeasureUnit.MILLIGRAM
+            3 -> MeasureUnit.MILLILITER
+            4 -> MeasureUnit.OZ
+            5 -> MeasureUnit.PATCH
+            6 -> MeasureUnit.PUMP
+            7 -> MeasureUnit.SACHET
+            else -> MeasureUnit.OTHER
+        }
 
-    private fun Int.toContainerState() = when (this) {
-        0, 1, 2 -> ContainerState.OPEN
-        else -> ContainerState.EMPTY
-    }
+    private fun Int.toContainerState() =
+        when (this) {
+            0, 1, 2 -> ContainerState.OPEN
+            else -> ContainerState.EMPTY
+        }
 
-    private fun Int.toIntakeSide() = when (this) {
-        1 -> IntakeSide.LEFT
-        2 -> IntakeSide.RIGHT
-        else -> IntakeSide.UNDEFINED
-    }
+    private fun Int.toIntakeSide() =
+        when (this) {
+            1 -> IntakeSide.LEFT
+            2 -> IntakeSide.RIGHT
+            else -> IntakeSide.UNDEFINED
+        }
 }

@@ -33,34 +33,37 @@ class CalendarViewModelTest {
     }
 
     @Test
-    fun stateIsInitiallyLoading() = runTest {
-        assertIs<CalendarUiState.Loading>(viewModel.uiState.value)
-    }
+    fun stateIsInitiallyLoading() =
+        runTest {
+            assertIs<CalendarUiState.Loading>(viewModel.uiState.value)
+        }
 
     @Test
-    fun stateIsEmptyWhenNoEventExist() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
+    fun stateIsEmptyWhenNoEventExist() =
+        runTest {
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
 
-        // Act
-        fakeRepository.emit(emptyMap())
+            // Act
+            fakeRepository.emit(emptyMap())
 
-        // Assert
-        assertIs<CalendarUiState.Empty>(viewModel.uiState.value)
-    }
+            // Assert
+            assertIs<CalendarUiState.Empty>(viewModel.uiState.value)
+        }
 
     @Test
-    fun stateIsEventsWhenEventsExist() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
+    fun stateIsEventsWhenEventsExist() =
+        runTest {
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
 
-        // Arrange
-        val map = mapOf(
-            mockk<LocalDate>() to listOf<IncomingEvent>(mockk())
-        )
+            // Arrange
+            val map = mapOf(
+                mockk<LocalDate>() to listOf<IncomingEvent>(mockk())
+            )
 
-        // Act
-        fakeRepository.emit(map)
+            // Act
+            fakeRepository.emit(map)
 
-        // Assert
-        assertEquals(CalendarUiState.IncomingEvents(map), viewModel.uiState.value)
-    }
+            // Assert
+            assertEquals(CalendarUiState.IncomingEvents(map), viewModel.uiState.value)
+        }
 }

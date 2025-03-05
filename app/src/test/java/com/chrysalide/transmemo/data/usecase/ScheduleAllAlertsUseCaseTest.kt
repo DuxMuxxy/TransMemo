@@ -15,18 +15,19 @@ class ScheduleAllAlertsUseCaseTest {
     private val useCase = ScheduleAllAlertsUseCase(databaseRepository, scheduleAlertsForProductUseCase)
 
     @Test
-    fun scheduleAlertsForEachProducts() = runTest {
-        // Arrange
-        val product1 = mockk<Product>()
-        val product2 = mockk<Product>()
+    fun scheduleAlertsForEachProducts() =
+        runTest {
+            // Arrange
+            val product1 = mockk<Product>()
+            val product2 = mockk<Product>()
 
-        coEvery { databaseRepository.observeInUseProducts() } returns flowOf(listOf(product1, product2))
+            coEvery { databaseRepository.observeInUseProducts() } returns flowOf(listOf(product1, product2))
 
-        // Act
-        useCase()
+            // Act
+            useCase()
 
-        // Assert
-        coVerify(exactly = 1) { scheduleAlertsForProductUseCase(product1) }
-        coVerify(exactly = 1) { scheduleAlertsForProductUseCase(product2) }
-    }
+            // Assert
+            coVerify(exactly = 1) { scheduleAlertsForProductUseCase(product1) }
+            coVerify(exactly = 1) { scheduleAlertsForProductUseCase(product2) }
+        }
 }

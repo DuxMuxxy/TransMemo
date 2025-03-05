@@ -52,133 +52,137 @@ class AddProductViewModelTest {
     }
 
     @Test
-    fun setSaveIntakeUiStateWhenAddProductInvoke() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
+    fun setSaveIntakeUiStateWhenAddProductInvoke() =
+        runTest {
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
 
-        // Arrange
-        val product = Product.default().copy(dosePerIntake = 10f)
+            // Arrange
+            val product = Product.default().copy(dosePerIntake = 10f)
 
-        // Act
-        viewModel.addProduct(product)
+            // Act
+            viewModel.addProduct(product)
 
-        // Assert
-        assertEquals(
-            AddProductUiState.SaveIntake(
-                Intake(
-                    product = product,
-                    realDose = 10f,
-                    plannedDose = 10f,
-                    realDate = fixedDate,
-                    plannedDate = fixedDate,
-                    realSide = IntakeSide.UNDEFINED,
-                    plannedSide = IntakeSide.UNDEFINED
-                )
-            ),
-            viewModel.uiState.value
-        )
-    }
-
-    @Test
-    fun setBackAddProductUiStateWhenCancelSaveIntake() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
-
-        // Arrange
-        val product = Product.default()
-        viewModel.addProduct(product)
-        assertIs<AddProductUiState.SaveIntake>(viewModel.uiState.value)
-
-        // Act
-        viewModel.backToProductDetails()
-
-        // Assert
-        assertEquals(
-            AddProductUiState.ProductDetails(product),
-            viewModel.uiState.value
-        )
-    }
+            // Assert
+            assertEquals(
+                AddProductUiState.SaveIntake(
+                    Intake(
+                        product = product,
+                        realDose = 10f,
+                        plannedDose = 10f,
+                        realDate = fixedDate,
+                        plannedDate = fixedDate,
+                        realSide = IntakeSide.UNDEFINED,
+                        plannedSide = IntakeSide.UNDEFINED
+                    )
+                ),
+                viewModel.uiState.value
+            )
+        }
 
     @Test
-    fun insertPastIntakeWhenSavePastIntake() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
+    fun setBackAddProductUiStateWhenCancelSaveIntake() =
+        runTest {
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
 
-        // Arrange
-        val product = Product.default().copy(
-            dosePerIntake = 10f,
-            intakeInterval = 5
-        )
-        val dateInThePast = fixedDate.minus(DatePeriod(days = 3))
-        val intake = Intake(
-            product = product,
-            realDose = 10f,
-            plannedDose = 10f,
-            realDate = dateInThePast,
-            plannedDate = dateInThePast,
-            realSide = IntakeSide.UNDEFINED,
-            plannedSide = IntakeSide.UNDEFINED
-        )
-        val productGeneratedId = 5
-        coEvery { databaseRepository.insertProduct(product) } returns productGeneratedId
+            // Arrange
+            val product = Product.default()
+            viewModel.addProduct(product)
+            assertIs<AddProductUiState.SaveIntake>(viewModel.uiState.value)
 
-        viewModel.addProduct(product)
-        assertIs<AddProductUiState.SaveIntake>(viewModel.uiState.value)
+            // Act
+            viewModel.backToProductDetails()
 
-        // Act
-        viewModel.saveIntake(intake)
-
-        // Assert
-        val updatedIdProduct = product.copy(id = productGeneratedId)
-        val updatedIntake = intake.copy(product = updatedIdProduct)
-        coVerify { databaseRepository.insertProduct(product) }
-        coVerify { doIntakeForProductUseCase(updatedIntake) }
-        coVerify { scheduleAlertsForProductUseCase(updatedIdProduct) }
-        assertIs<AddProductUiState.ProductDetails>(viewModel.uiState.value)
-    }
+            // Assert
+            assertEquals(
+                AddProductUiState.ProductDetails(product),
+                viewModel.uiState.value
+            )
+        }
 
     @Test
-    fun insertFakePastIntakeForNextFutureIntakeWhenSaveFutureIntake() = runTest {
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
+    fun insertPastIntakeWhenSavePastIntake() =
+        runTest {
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
 
-        // Arrange
-        val intakeInterval = 5
-        val product = Product.default().copy(
-            dosePerIntake = 10f,
-            intakeInterval = intakeInterval
-        )
-        val dateInTheFuture = fixedDate.plus(DatePeriod(days = 3))
-        val intake = Intake(
-            product = product,
-            realDose = 10f,
-            plannedDose = 10f,
-            realDate = dateInTheFuture,
-            plannedDate = dateInTheFuture,
-            realSide = IntakeSide.LEFT,
-            plannedSide = IntakeSide.LEFT
-        )
-        val productGeneratedId = 5
-        coEvery { databaseRepository.insertProduct(product) } returns productGeneratedId
+            // Arrange
+            val product = Product.default().copy(
+                dosePerIntake = 10f,
+                intakeInterval = 5
+            )
+            val dateInThePast = fixedDate.minus(DatePeriod(days = 3))
+            val intake = Intake(
+                product = product,
+                realDose = 10f,
+                plannedDose = 10f,
+                realDate = dateInThePast,
+                plannedDate = dateInThePast,
+                realSide = IntakeSide.UNDEFINED,
+                plannedSide = IntakeSide.UNDEFINED
+            )
+            val productGeneratedId = 5
+            coEvery { databaseRepository.insertProduct(product) } returns productGeneratedId
 
-        viewModel.addProduct(product)
-        assertIs<AddProductUiState.SaveIntake>(viewModel.uiState.value)
+            viewModel.addProduct(product)
+            assertIs<AddProductUiState.SaveIntake>(viewModel.uiState.value)
 
-        // Act
-        viewModel.saveIntake(intake)
+            // Act
+            viewModel.saveIntake(intake)
 
-        // Assert
-        val updatedIdProduct = product.copy(id = productGeneratedId)
-        val dateInThePast = dateInTheFuture.minus(DatePeriod(days = intakeInterval))
-        val updatedIntake = intake.copy(
-            product = updatedIdProduct,
-            realDate = dateInThePast,
-            plannedDate = dateInThePast,
-            realDose = 0f,
-            plannedDose = 0f,
-            realSide = IntakeSide.RIGHT,
-            plannedSide = IntakeSide.RIGHT,
-            forScheduledIntake = true
-        )
-        coVerify { databaseRepository.insertProduct(product) }
-        coVerify { doIntakeForProductUseCase(updatedIntake) }
-        coVerify { scheduleAlertsForProductUseCase(updatedIdProduct) }
-        assertIs<AddProductUiState.ProductDetails>(viewModel.uiState.value)
-    }
+            // Assert
+            val updatedIdProduct = product.copy(id = productGeneratedId)
+            val updatedIntake = intake.copy(product = updatedIdProduct)
+            coVerify { databaseRepository.insertProduct(product) }
+            coVerify { doIntakeForProductUseCase(updatedIntake) }
+            coVerify { scheduleAlertsForProductUseCase(updatedIdProduct) }
+            assertIs<AddProductUiState.ProductDetails>(viewModel.uiState.value)
+        }
+
+    @Test
+    fun insertFakePastIntakeForNextFutureIntakeWhenSaveFutureIntake() =
+        runTest {
+            backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.uiState.collect() }
+
+            // Arrange
+            val intakeInterval = 5
+            val product = Product.default().copy(
+                dosePerIntake = 10f,
+                intakeInterval = intakeInterval
+            )
+            val dateInTheFuture = fixedDate.plus(DatePeriod(days = 3))
+            val intake = Intake(
+                product = product,
+                realDose = 10f,
+                plannedDose = 10f,
+                realDate = dateInTheFuture,
+                plannedDate = dateInTheFuture,
+                realSide = IntakeSide.LEFT,
+                plannedSide = IntakeSide.LEFT
+            )
+            val productGeneratedId = 5
+            coEvery { databaseRepository.insertProduct(product) } returns productGeneratedId
+
+            viewModel.addProduct(product)
+            assertIs<AddProductUiState.SaveIntake>(viewModel.uiState.value)
+
+            // Act
+            viewModel.saveIntake(intake)
+
+            // Assert
+            val updatedIdProduct = product.copy(id = productGeneratedId)
+            val dateInThePast = dateInTheFuture.minus(DatePeriod(days = intakeInterval))
+            val updatedIntake = intake.copy(
+                product = updatedIdProduct,
+                realDate = dateInThePast,
+                plannedDate = dateInThePast,
+                realDose = 0f,
+                plannedDose = 0f,
+                realSide = IntakeSide.RIGHT,
+                plannedSide = IntakeSide.RIGHT,
+                forScheduledIntake = true
+            )
+            coVerify { databaseRepository.insertProduct(product) }
+            coVerify { doIntakeForProductUseCase(updatedIntake) }
+            coVerify { scheduleAlertsForProductUseCase(updatedIdProduct) }
+            assertIs<AddProductUiState.ProductDetails>(viewModel.uiState.value)
+        }
 }

@@ -43,184 +43,188 @@ class ScheduleAlertsForProductUseCaseTest {
     )
 
     @Test
-    fun scheduleNextIntakeAlertForProduct() = runTest {
-        // Arrange
-        val product = Product.default().copy(
-            name = "testo",
-            timeOfIntake = LocalTime(hour = 12, minute = 30),
-            inUse = true,
-            notifications = NotificationType.INTAKE.value,
-            intakeInterval = 1
-        )
-        val nextIntakeDate = LocalDate(year = 2025, monthNumber = 2, dayOfMonth = 3)
-        val nextIntake = Intake(
-            product = product,
-            realDose = 1f,
-            plannedDose = 1f,
-            realDate = nextIntakeDate,
-            plannedDate = nextIntakeDate,
-            realSide = IntakeSide.LEFT,
-            plannedSide = IntakeSide.LEFT
-        )
-        coEvery { databaseRepository.getProductContainer(product.id) } returns null
-        coEvery { getNextIntakeForProductUseCase(listOf(product)) } returns listOf(nextIntake)
-        every { intakeAlertNotifier.getNotificationTitle() } returns "notif test"
-
-        // Act
-        useCase(product)
-
-        // Assert
-        coVerify { databaseRepository.getProductContainer(product.id) }
-        coVerify { getNextIntakeForProductUseCase(listOf(product)) }
-        coVerify {
-            intakeAlertScheduler.schedule(
-                ReminderItem(
-                    productId = product.id,
-                    title = "testo - notif test",
-                    triggerTime = LocalDateTime(
-                        year = 2025,
-                        monthNumber = 2,
-                        dayOfMonth = 3,
-                        hour = 12,
-                        minute = 30
-                    ).toEpochMillis(),
-                    interval = 86400000,
-                    type = NotificationType.INTAKE,
-                    enabled = true
-                )
+    fun scheduleNextIntakeAlertForProduct() =
+        runTest {
+            // Arrange
+            val product = Product.default().copy(
+                name = "testo",
+                timeOfIntake = LocalTime(hour = 12, minute = 30),
+                inUse = true,
+                notifications = NotificationType.INTAKE.value,
+                intakeInterval = 1
             )
+            val nextIntakeDate = LocalDate(year = 2025, monthNumber = 2, dayOfMonth = 3)
+            val nextIntake = Intake(
+                product = product,
+                realDose = 1f,
+                plannedDose = 1f,
+                realDate = nextIntakeDate,
+                plannedDate = nextIntakeDate,
+                realSide = IntakeSide.LEFT,
+                plannedSide = IntakeSide.LEFT
+            )
+            coEvery { databaseRepository.getProductContainer(product.id) } returns null
+            coEvery { getNextIntakeForProductUseCase(listOf(product)) } returns listOf(nextIntake)
+            every { intakeAlertNotifier.getNotificationTitle() } returns "notif test"
+
+            // Act
+            useCase(product)
+
+            // Assert
+            coVerify { databaseRepository.getProductContainer(product.id) }
+            coVerify { getNextIntakeForProductUseCase(listOf(product)) }
+            coVerify {
+                intakeAlertScheduler.schedule(
+                    ReminderItem(
+                        productId = product.id,
+                        title = "testo - notif test",
+                        triggerTime = LocalDateTime(
+                            year = 2025,
+                            monthNumber = 2,
+                            dayOfMonth = 3,
+                            hour = 12,
+                            minute = 30
+                        ).toEpochMillis(),
+                        interval = 86400000,
+                        type = NotificationType.INTAKE,
+                        enabled = true
+                    )
+                )
+            }
         }
-    }
 
     @Test
-    fun disableIntakeAlertForProductWhenNotificationIsDisabled() = runTest {
-        // Arrange
-        val product = Product.default().copy(
-            name = "testo",
-            timeOfIntake = LocalTime(hour = 12, minute = 30),
-            inUse = true,
-            notifications = 0,
-            intakeInterval = 1
-        )
-        val nextIntakeDate = LocalDate(year = 2025, monthNumber = 2, dayOfMonth = 3)
-        val nextIntake = Intake(
-            product = product,
-            realDose = 1f,
-            plannedDose = 1f,
-            realDate = nextIntakeDate,
-            plannedDate = nextIntakeDate,
-            realSide = IntakeSide.LEFT,
-            plannedSide = IntakeSide.LEFT
-        )
-        coEvery { databaseRepository.getProductContainer(product.id) } returns null
-        coEvery { getNextIntakeForProductUseCase(listOf(product)) } returns listOf(nextIntake)
-        every { intakeAlertNotifier.getNotificationTitle() } returns "notif test"
-
-        // Act
-        useCase(product)
-
-        // Assert
-        coVerify { databaseRepository.getProductContainer(product.id) }
-        coVerify { getNextIntakeForProductUseCase(listOf(product)) }
-        coVerify {
-            intakeAlertScheduler.schedule(
-                ReminderItem(
-                    productId = product.id,
-                    title = "testo - notif test",
-                    triggerTime = LocalDateTime(
-                        year = 2025,
-                        monthNumber = 2,
-                        dayOfMonth = 3,
-                        hour = 12,
-                        minute = 30
-                    ).toEpochMillis(),
-                    interval = 86400000,
-                    type = NotificationType.INTAKE,
-                    enabled = false
-                )
+    fun disableIntakeAlertForProductWhenNotificationIsDisabled() =
+        runTest {
+            // Arrange
+            val product = Product.default().copy(
+                name = "testo",
+                timeOfIntake = LocalTime(hour = 12, minute = 30),
+                inUse = true,
+                notifications = 0,
+                intakeInterval = 1
             )
+            val nextIntakeDate = LocalDate(year = 2025, monthNumber = 2, dayOfMonth = 3)
+            val nextIntake = Intake(
+                product = product,
+                realDose = 1f,
+                plannedDose = 1f,
+                realDate = nextIntakeDate,
+                plannedDate = nextIntakeDate,
+                realSide = IntakeSide.LEFT,
+                plannedSide = IntakeSide.LEFT
+            )
+            coEvery { databaseRepository.getProductContainer(product.id) } returns null
+            coEvery { getNextIntakeForProductUseCase(listOf(product)) } returns listOf(nextIntake)
+            every { intakeAlertNotifier.getNotificationTitle() } returns "notif test"
+
+            // Act
+            useCase(product)
+
+            // Assert
+            coVerify { databaseRepository.getProductContainer(product.id) }
+            coVerify { getNextIntakeForProductUseCase(listOf(product)) }
+            coVerify {
+                intakeAlertScheduler.schedule(
+                    ReminderItem(
+                        productId = product.id,
+                        title = "testo - notif test",
+                        triggerTime = LocalDateTime(
+                            year = 2025,
+                            monthNumber = 2,
+                            dayOfMonth = 3,
+                            hour = 12,
+                            minute = 30
+                        ).toEpochMillis(),
+                        interval = 86400000,
+                        type = NotificationType.INTAKE,
+                        enabled = false
+                    )
+                )
+            }
         }
-    }
 
     @Test
-    fun disableIntakeAlertForProductWhenNotInUse() = runTest {
-        // Arrange
-        val product = Product.default().copy(
-            name = "testo",
-            timeOfIntake = LocalTime(hour = 12, minute = 30),
-            inUse = false,
-            notifications = NotificationType.INTAKE.value,
-            intakeInterval = 1
-        )
-        val nextIntakeDate = LocalDate(year = 2025, monthNumber = 2, dayOfMonth = 3)
-        val nextIntake = Intake(
-            product = product,
-            realDose = 1f,
-            plannedDose = 1f,
-            realDate = nextIntakeDate,
-            plannedDate = nextIntakeDate,
-            realSide = IntakeSide.LEFT,
-            plannedSide = IntakeSide.LEFT
-        )
-        coEvery { databaseRepository.getProductContainer(product.id) } returns null
-        coEvery { getNextIntakeForProductUseCase(listOf(product)) } returns listOf(nextIntake)
-        every { intakeAlertNotifier.getNotificationTitle() } returns "notif test"
-
-        // Act
-        useCase(product)
-
-        // Assert
-        coVerify { databaseRepository.getProductContainer(product.id) }
-        coVerify { getNextIntakeForProductUseCase(listOf(product)) }
-        coVerify {
-            intakeAlertScheduler.schedule(
-                ReminderItem(
-                    productId = product.id,
-                    title = "testo - notif test",
-                    triggerTime = LocalDateTime(
-                        year = 2025,
-                        monthNumber = 2,
-                        dayOfMonth = 3,
-                        hour = 12,
-                        minute = 30
-                    ).toEpochMillis(),
-                    interval = 86400000,
-                    type = NotificationType.INTAKE,
-                    enabled = false
-                )
+    fun disableIntakeAlertForProductWhenNotInUse() =
+        runTest {
+            // Arrange
+            val product = Product.default().copy(
+                name = "testo",
+                timeOfIntake = LocalTime(hour = 12, minute = 30),
+                inUse = false,
+                notifications = NotificationType.INTAKE.value,
+                intakeInterval = 1
             )
+            val nextIntakeDate = LocalDate(year = 2025, monthNumber = 2, dayOfMonth = 3)
+            val nextIntake = Intake(
+                product = product,
+                realDose = 1f,
+                plannedDose = 1f,
+                realDate = nextIntakeDate,
+                plannedDate = nextIntakeDate,
+                realSide = IntakeSide.LEFT,
+                plannedSide = IntakeSide.LEFT
+            )
+            coEvery { databaseRepository.getProductContainer(product.id) } returns null
+            coEvery { getNextIntakeForProductUseCase(listOf(product)) } returns listOf(nextIntake)
+            every { intakeAlertNotifier.getNotificationTitle() } returns "notif test"
+
+            // Act
+            useCase(product)
+
+            // Assert
+            coVerify { databaseRepository.getProductContainer(product.id) }
+            coVerify { getNextIntakeForProductUseCase(listOf(product)) }
+            coVerify {
+                intakeAlertScheduler.schedule(
+                    ReminderItem(
+                        productId = product.id,
+                        title = "testo - notif test",
+                        triggerTime = LocalDateTime(
+                            year = 2025,
+                            monthNumber = 2,
+                            dayOfMonth = 3,
+                            hour = 12,
+                            minute = 30
+                        ).toEpochMillis(),
+                        interval = 86400000,
+                        type = NotificationType.INTAKE,
+                        enabled = false
+                    )
+                )
+            }
         }
-    }
 
     @Test
-    fun showIntakeNotificationWhenTriggerDateTimeIsBeforeCurrent() = runTest {
-        // Arrange
-        val product = Product.default().copy(
-            id = 1,
-            name = "testo",
-            timeOfIntake = LocalTime(hour = 12, minute = 30),
-            inUse = true,
-            notifications = NotificationType.INTAKE.value,
-            intakeInterval = 1
-        )
-        val nextIntakeDate = LocalDate(year = 2000, monthNumber = 2, dayOfMonth = 3)
-        val nextIntake = Intake(
-            product = product,
-            realDose = 1f,
-            plannedDose = 1f,
-            realDate = nextIntakeDate,
-            plannedDate = nextIntakeDate,
-            realSide = IntakeSide.LEFT,
-            plannedSide = IntakeSide.LEFT
-        )
-        coEvery { databaseRepository.getProductContainer(product.id) } returns null
-        coEvery { getNextIntakeForProductUseCase(listOf(product)) } returns listOf(nextIntake)
-        every { intakeAlertNotifier.getNotificationTitle() } returns "notif test"
+    fun showIntakeNotificationWhenTriggerDateTimeIsBeforeCurrent() =
+        runTest {
+            // Arrange
+            val product = Product.default().copy(
+                id = 1,
+                name = "testo",
+                timeOfIntake = LocalTime(hour = 12, minute = 30),
+                inUse = true,
+                notifications = NotificationType.INTAKE.value,
+                intakeInterval = 1
+            )
+            val nextIntakeDate = LocalDate(year = 2000, monthNumber = 2, dayOfMonth = 3)
+            val nextIntake = Intake(
+                product = product,
+                realDose = 1f,
+                plannedDose = 1f,
+                realDate = nextIntakeDate,
+                plannedDate = nextIntakeDate,
+                realSide = IntakeSide.LEFT,
+                plannedSide = IntakeSide.LEFT
+            )
+            coEvery { databaseRepository.getProductContainer(product.id) } returns null
+            coEvery { getNextIntakeForProductUseCase(listOf(product)) } returns listOf(nextIntake)
+            every { intakeAlertNotifier.getNotificationTitle() } returns "notif test"
 
-        // Act
-        useCase(product)
+            // Act
+            useCase(product)
 
-        // Assert
-        coVerify { intakeAlertNotifier.showNotification(1001, "testo - notif test") }
-    }
+            // Assert
+            coVerify { intakeAlertNotifier.showNotification(1001, "testo - notif test") }
+        }
 }

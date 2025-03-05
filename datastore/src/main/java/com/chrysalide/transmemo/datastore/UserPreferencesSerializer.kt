@@ -18,7 +18,10 @@ internal class UserPreferencesSerializer : Serializer<UserPreferences> {
             throw CorruptionException("Cannot read proto.", exception)
         }
 
-    override suspend fun writeTo(t: UserPreferences, output: OutputStream) {
+    override suspend fun writeTo(
+        t: UserPreferences,
+        output: OutputStream
+    ) {
         // writeTo is already called on the data store background thread
         t.writeTo(output)
     }

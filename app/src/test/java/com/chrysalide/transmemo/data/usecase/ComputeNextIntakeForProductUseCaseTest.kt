@@ -15,29 +15,30 @@ class ComputeNextIntakeForProductUseCaseTest {
     private val useCase = ComputeNextIntakeForProductUseCase(databaseRepository)
 
     @Test
-    fun shouldComputeNextIntakeForProduct() = runTest {
-        // Arrange
-        val product = Product.default().copy(
-            dosePerIntake = 1f,
-            intakeInterval = 21
-        )
-        val lastIntake = Intake(
-            plannedDose = product.dosePerIntake,
-            realDose = 1f,
-            plannedDate = LocalDate(2025, 1, 1),
-            realDate = LocalDate(2025, 1, 1),
-            plannedSide = IntakeSide.LEFT,
-            realSide = IntakeSide.LEFT,
-            product = product
-        )
-        coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
+    fun shouldComputeNextIntakeForProduct() =
+        runTest {
+            // Arrange
+            val product = Product.default().copy(
+                dosePerIntake = 1f,
+                intakeInterval = 21
+            )
+            val lastIntake = Intake(
+                plannedDose = product.dosePerIntake,
+                realDose = 1f,
+                plannedDate = LocalDate(2025, 1, 1),
+                realDate = LocalDate(2025, 1, 1),
+                plannedSide = IntakeSide.LEFT,
+                realSide = IntakeSide.LEFT,
+                product = product
+            )
+            coEvery { databaseRepository.getLastIntakeForProduct(product.id) } returns lastIntake
 
-        // Act
-        val result = useCase(listOf(product))
+            // Act
+            val result = useCase(listOf(product))
 
-        // Assert
-        assert(result.first().plannedDose == product.dosePerIntake)
-        assert(result.first().plannedDate == LocalDate(2025, 1, 22))
-        assert(result.first().plannedSide == IntakeSide.RIGHT)
-    }
+            // Assert
+            assert(result.first().plannedDose == product.dosePerIntake)
+            assert(result.first().plannedDate == LocalDate(2025, 1, 22))
+            assert(result.first().plannedSide == IntakeSide.RIGHT)
+        }
 }
