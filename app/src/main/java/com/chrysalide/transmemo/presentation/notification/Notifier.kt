@@ -39,7 +39,7 @@ abstract class Notifier(
         notificationManager.cancel(notificationId)
     }
 
-    open fun createNotificationChannel(importance: Int = NotificationManager.IMPORTANCE_DEFAULT): NotificationChannel =
+    open fun createNotificationChannel(importance: Int = NotificationManager.IMPORTANCE_HIGH): NotificationChannel =
         NotificationChannel(notificationChannelId, notificationChannelName, importance).apply {
             if (notificationChannelDescription.isNotBlank()) {
                 description = notificationChannelDescription

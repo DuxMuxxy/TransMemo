@@ -12,7 +12,8 @@ import com.chrysalide.transmemo.presentation.notification.Notifier.Companion.NOT
 
 class ExpirationAlertScheduler(
     private val context: Context,
-    private val alarmManager: AlarmManager
+    private val alarmManager: AlarmManager,
+    private val expirationAlertNotifier: ExpirationAlertNotifier
 ) : AlertScheduler {
     override fun createPendingIntent(reminderItem: ReminderItem): PendingIntent {
         val intent = Intent(context, AlertReceiver::class.java).apply {
@@ -29,11 +30,16 @@ class ExpirationAlertScheduler(
 
     override fun schedule(reminderItem: ReminderItem) {
         if (reminderItem.enabled) {
-            alarmManager.setExact(
-                AlarmManager.RTC_WAKEUP, // type, wake up the device when triggered
-                reminderItem.triggerTime, // trigger the notification at specified UTC timestamp
-                createPendingIntent(reminderItem)
-            )
+            // Show notification now if notification is for a past event
+            if (reminderItem.triggerTime < System.currentTimeMillis()) {
+                expirationAlertNotifier.showNotification(reminderItem.notificationId, reminderItem.title)
+            } else {
+                alarmManager.setExact(
+                    AlarmManager.RTC_WAKEUP, // type, wake up the device when triggered
+                    reminderItem.triggerTime, // trigger the notification at specified UTC timestamp
+                    createPendingIntent(reminderItem)
+                )
+            }
         } else {
             cancel(reminderItem)
         }

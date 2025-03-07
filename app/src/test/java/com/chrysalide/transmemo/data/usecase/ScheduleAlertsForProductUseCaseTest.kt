@@ -11,6 +11,7 @@ import com.chrysalide.transmemo.presentation.notification.expiration.ExpirationA
 import com.chrysalide.transmemo.presentation.notification.expiration.ExpirationAlertScheduler
 import com.chrysalide.transmemo.presentation.notification.intake.IntakeAlertNotifier
 import com.chrysalide.transmemo.presentation.notification.intake.IntakeAlertScheduler
+import com.chrysalide.transmemo.util.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -19,9 +20,14 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
+import org.junit.Ignore
+import org.junit.Rule
 import org.junit.Test
 
 class ScheduleAlertsForProductUseCaseTest {
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
     private val intakeAlertNotifier: IntakeAlertNotifier = mockk(relaxed = true)
     private val intakeAlertScheduler: IntakeAlertScheduler = mockk(relaxed = true)
     private val expirationAlertNotifier: ExpirationAlertNotifier = mockk(relaxed = true)
@@ -196,6 +202,7 @@ class ScheduleAlertsForProductUseCaseTest {
         }
 
     @Test
+    @Ignore("This behavior has been moved in IntakeAlertNotifier")
     fun showIntakeNotificationWhenTriggerDateTimeIsBeforeCurrent() =
         runTest {
             // Arrange

@@ -12,6 +12,8 @@ import com.chrysalide.transmemo.presentation.notification.expiration.ExpirationA
 import com.chrysalide.transmemo.presentation.notification.expiration.ExpirationAlertScheduler
 import com.chrysalide.transmemo.presentation.notification.intake.IntakeAlertNotifier
 import com.chrysalide.transmemo.presentation.notification.intake.IntakeAlertScheduler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 // TODO to unit test
@@ -47,15 +49,12 @@ class ScheduleAlertsForProductUseCase(
             type = NotificationType.INTAKE,
             enabled = enabled
         )
-        intakeAlertScheduler.schedule(reminderItem)
-
-        // Show notification now if it's the current intake day
-        if (enabled && triggerTime < System.currentTimeMillis()) {
-            intakeAlertNotifier.showNotification(reminderItem.notificationId, reminderItem.title)
+        withContext(Dispatchers.Main) {
+            intakeAlertScheduler.schedule(reminderItem)
         }
     }
 
-    private fun scheduleExpiration(
+    private suspend fun scheduleExpiration(
         product: Product,
         container: Container
     ) {
@@ -69,11 +68,8 @@ class ScheduleAlertsForProductUseCase(
             type = NotificationType.EXPIRATION,
             enabled = enabled
         )
-        expirationAlertScheduler.schedule(reminderItem)
-
-        // Show notification now if it's the current intake day
-        if (enabled && triggerTime < System.currentTimeMillis()) {
-            expirationAlertNotifier.showNotification(reminderItem.notificationId, reminderItem.title)
+        withContext(Dispatchers.Main) {
+            expirationAlertScheduler.schedule(reminderItem)
         }
     }
 

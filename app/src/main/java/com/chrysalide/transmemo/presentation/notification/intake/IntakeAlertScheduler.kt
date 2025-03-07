@@ -17,7 +17,8 @@ import com.chrysalide.transmemo.presentation.notification.Notifier.Companion.NOT
 
 class IntakeAlertScheduler(
     private val context: Context,
-    private val alarmManager: AlarmManager
+    private val alarmManager: AlarmManager,
+    private val intakeAlertNotifier: IntakeAlertNotifier
 ) : AlertScheduler {
     override fun createPendingIntent(reminderItem: ReminderItem): PendingIntent {
         val intent = Intent(context, AlertReceiver::class.java).apply {
@@ -35,18 +36,25 @@ class IntakeAlertScheduler(
 
     override fun schedule(reminderItem: ReminderItem) {
         if (reminderItem.enabled) {
-            alarmManager.setExact(
-                AlarmManager.RTC_WAKEUP, // type, wake up the device when triggered
-                reminderItem.triggerTime, // trigger the notification at specified UTC timestamp
-                createPendingIntent(reminderItem)
-            )
-            if (BuildConfig.DEBUG) {
-                Toast
-                    .makeText(
-                        context,
-                        "DEBUG: scheduled intake notif for ${reminderItem.productId} at ${reminderItem.triggerTime.toLocalDateTime().formatToSystemDate()}",
-                        Toast.LENGTH_LONG
-                    ).show()
+            // Show notification now if notification is for a past intake
+            if (reminderItem.triggerTime < System.currentTimeMillis()) {
+                intakeAlertNotifier.showNotification(reminderItem.notificationId, reminderItem.title)
+            } else {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP, // type, wake up the device when triggered
+                    reminderItem.triggerTime, // trigger the notification at specified UTC timestamp
+                    createPendingIntent(reminderItem)
+                )
+                if (BuildConfig.DEBUG) {
+                    Toast
+                        .makeText(
+                            context,
+                            "DEBUG: scheduled intake notif for ${reminderItem.productId} at ${
+                                reminderItem.triggerTime.toLocalDateTime().formatToSystemDate()
+                            }",
+                            Toast.LENGTH_LONG
+                        ).show()
+                }
             }
         } else {
             cancel(reminderItem)
