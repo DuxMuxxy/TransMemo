@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.chrysalide.transmemo.R.string
 import com.chrysalide.transmemo.domain.extension.formatToSystemDate
+import com.chrysalide.transmemo.domain.extension.isToday
 import com.chrysalide.transmemo.domain.model.Intake
 import com.chrysalide.transmemo.domain.model.IntakeSide
 
@@ -15,9 +16,11 @@ fun Intake.moleculeName() = product.moleculeName()
 @Composable
 fun Intake.unitName() = product.unitName()
 
-fun Intake.doneDate() = realDate.formatToSystemDate()
+@Composable
+fun Intake.doneDate() = if (plannedDate.isToday()) stringResource(string.global_today) else realDate.formatToSystemDate()
 
-fun Intake.plannedDate() = plannedDate.formatToSystemDate()
+@Composable
+fun Intake.plannedDate() = if (plannedDate.isToday()) stringResource(string.global_today) else plannedDate.formatToSystemDate()
 
 fun Intake.shouldShowPlannedDate() = realDate != plannedDate
 

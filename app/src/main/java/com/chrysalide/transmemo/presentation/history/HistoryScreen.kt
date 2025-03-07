@@ -1,4 +1,4 @@
-package com.chrysalide.transmemo.presentation.intakes
+package com.chrysalide.transmemo.presentation.history
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.chrysalide.transmemo.R
+import com.chrysalide.transmemo.domain.extension.getCurrentLocalDate
 import com.chrysalide.transmemo.domain.model.Intake
 import com.chrysalide.transmemo.domain.model.IntakeSide
 import com.chrysalide.transmemo.domain.model.MeasureUnit
@@ -57,24 +58,24 @@ import com.chrysalide.transmemo.presentation.extension.shouldShowPlannedDate
 import com.chrysalide.transmemo.presentation.extension.shouldShowPlannedDose
 import com.chrysalide.transmemo.presentation.extension.shouldShowPlannedSide
 import com.chrysalide.transmemo.presentation.extension.shouldShowSideInfo
-import com.chrysalide.transmemo.presentation.intakes.IntakesUiState.Empty
-import com.chrysalide.transmemo.presentation.intakes.IntakesUiState.Intakes
-import com.chrysalide.transmemo.presentation.intakes.IntakesUiState.Loading
+import com.chrysalide.transmemo.presentation.history.HistoryUiState.Empty
+import com.chrysalide.transmemo.presentation.history.HistoryUiState.History
+import com.chrysalide.transmemo.presentation.history.HistoryUiState.Loading
 import com.chrysalide.transmemo.presentation.theme.TransMemoTheme
 import kotlinx.datetime.LocalDate
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun IntakesScreen(viewModel: IntakesViewModel = koinViewModel()) {
+fun HistoryScreen(viewModel: HistoryViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    IntakesView(uiState)
+    HistoryView(uiState)
 }
 
 @Composable
-private fun IntakesView(intakesUiState: IntakesUiState) {
+private fun HistoryView(uiState: HistoryUiState) {
     Box(modifier = Modifier.fillMaxSize()) {
-        when (intakesUiState) {
+        when (uiState) {
             Loading -> {
                 Box(
                     contentAlignment = Alignment.Center,
@@ -92,14 +93,14 @@ private fun IntakesView(intakesUiState: IntakesUiState) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Icon(
-                        TransMemoIcons.IntakesUnselected,
+                        TransMemoIcons.HistoryUnselected,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.surfaceDim,
                         modifier = Modifier.size(120.dp)
                     )
                 }
             }
-            is Intakes -> {
+            is History -> {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(
@@ -113,7 +114,7 @@ private fun IntakesView(intakesUiState: IntakesUiState) {
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                             // Replace by an illustration ?
                             Icon(
-                                TransMemoIcons.Intakes,
+                                TransMemoIcons.History,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primaryContainer,
                                 modifier = Modifier.size(120.dp)
@@ -121,9 +122,9 @@ private fun IntakesView(intakesUiState: IntakesUiState) {
                         }
                         Spacer(modifier = Modifier.height(32.dp))
                     }
-                    itemsIndexed(items = intakesUiState.nextIntakes) { index, intake ->
+                    itemsIndexed(items = uiState.nextIntakes) { index, intake ->
                         NextIntakeCard(intake)
-                        if (index < intakesUiState.nextIntakes.lastIndex) {
+                        if (index < uiState.nextIntakes.lastIndex) {
                             Spacer(Modifier.height(24.dp))
                         }
                     }
@@ -142,9 +143,9 @@ private fun IntakesView(intakesUiState: IntakesUiState) {
                             )
                         }
                     }
-                    itemsIndexed(items = intakesUiState.intakes) { index, intake ->
+                    itemsIndexed(items = uiState.intakes) { index, intake ->
                         IntakeCard(intake)
-                        if (index < intakesUiState.intakes.lastIndex) {
+                        if (index < uiState.intakes.lastIndex) {
                             Box(
                                 modifier = Modifier.fillMaxWidth(),
                                 contentAlignment = Alignment.Center
@@ -182,7 +183,7 @@ private fun NextIntakeCard(intake: Intake) {
 
             Spacer(modifier = Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
-                Text(stringResource(R.string.feature_intakes_planned_date))
+                Text(stringResource(R.string.intake_planned_date))
                 HorizontalDivider(
                     modifier = Modifier
                         .weight(1f)
@@ -194,7 +195,7 @@ private fun NextIntakeCard(intake: Intake) {
 
             Spacer(modifier = Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
-                Text(stringResource(R.string.feature_intakes_planned_dose))
+                Text(stringResource(R.string.intake_planned_dose))
                 HorizontalDivider(
                     modifier = Modifier
                         .weight(1f)
@@ -207,7 +208,7 @@ private fun NextIntakeCard(intake: Intake) {
             if (intake.shouldShowSideInfo()) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    Text(stringResource(R.string.feature_intakes_planned_side))
+                    Text(stringResource(R.string.intake_planned_side))
                     HorizontalDivider(
                         modifier = Modifier
                             .weight(1f)
@@ -234,7 +235,7 @@ private fun IntakeCard(intake: Intake) {
 
             Spacer(modifier = Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
-                Text(stringResource(R.string.feature_intakes_done_date))
+                Text(stringResource(R.string.intake_done_date))
                 HorizontalDivider(
                     modifier = Modifier
                         .weight(1f)
@@ -247,7 +248,7 @@ private fun IntakeCard(intake: Intake) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Spacer(Modifier.width(16.dp))
-                    Text(stringResource(R.string.feature_intakes_planned_date))
+                    Text(stringResource(R.string.intake_planned_date))
                     HorizontalDivider(
                         modifier = Modifier
                             .weight(1f)
@@ -261,7 +262,7 @@ private fun IntakeCard(intake: Intake) {
             if (intake.shouldShowDoseInfo()) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    Text(stringResource(R.string.feature_intakes_done_dose))
+                    Text(stringResource(R.string.intake_done_dose))
                     HorizontalDivider(
                         modifier = Modifier
                             .weight(1f)
@@ -274,7 +275,7 @@ private fun IntakeCard(intake: Intake) {
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Spacer(Modifier.width(16.dp))
-                        Text(stringResource(R.string.feature_intakes_planned_dose))
+                        Text(stringResource(R.string.intake_planned_dose))
                         HorizontalDivider(
                             modifier = Modifier
                                 .weight(1f)
@@ -289,7 +290,7 @@ private fun IntakeCard(intake: Intake) {
             if (intake.shouldShowSideInfo()) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(modifier = Modifier.fillMaxWidth()) {
-                    Text(stringResource(R.string.feature_intakes_done_side))
+                    Text(stringResource(R.string.intake_done_side))
                     HorizontalDivider(
                         modifier = Modifier
                             .weight(1f)
@@ -302,7 +303,7 @@ private fun IntakeCard(intake: Intake) {
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Spacer(Modifier.width(16.dp))
-                        Text(stringResource(R.string.feature_intakes_planned_side))
+                        Text(stringResource(R.string.intake_planned_side))
                         HorizontalDivider(
                             modifier = Modifier
                                 .weight(1f)
@@ -334,14 +335,14 @@ private fun IntakesScreenPreview() {
         notifications = 15
     )
     TransMemoTheme {
-        IntakesView(
-            intakesUiState = Intakes(
+        HistoryView(
+            uiState = History(
                 nextIntakes = listOf(
                     Intake(
                         plannedDose = 1f,
                         realDose = 0f,
-                        plannedDate = LocalDate(2020, 4, 6),
-                        realDate = LocalDate(1970, 1, 1),
+                        plannedDate = getCurrentLocalDate(),
+                        realDate = getCurrentLocalDate(),
                         plannedSide = IntakeSide.RIGHT,
                         realSide = IntakeSide.RIGHT,
                         product = product
@@ -376,6 +377,6 @@ private fun IntakesScreenPreview() {
 @Composable
 private fun IntakesScreenEmptyPreview() {
     TransMemoTheme {
-        IntakesView(intakesUiState = Empty)
+        HistoryView(uiState = Empty)
     }
 }

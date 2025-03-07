@@ -1,4 +1,4 @@
-package com.chrysalide.transmemo.presentation.intakes
+package com.chrysalide.transmemo.presentation.history
 
 import com.chrysalide.transmemo.data.usecase.ComputeNextIntakeForProductUseCase
 import com.chrysalide.transmemo.domain.boundary.DatabaseRepository
@@ -19,7 +19,7 @@ import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertIs
 
-class IntakesViewModelTest {
+class HistoryViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
@@ -28,17 +28,17 @@ class IntakesViewModelTest {
         coEvery { observeAllIntakes() } returns fakeRepository.flow
     }
     private val computeNextIntakeForProductsUseCase: ComputeNextIntakeForProductUseCase = mockk()
-    private lateinit var viewModel: IntakesViewModel
+    private lateinit var viewModel: HistoryViewModel
 
     @Before
     fun setup() {
-        viewModel = IntakesViewModel(databaseRepository, computeNextIntakeForProductsUseCase)
+        viewModel = HistoryViewModel(databaseRepository, computeNextIntakeForProductsUseCase)
     }
 
     @Test
     fun stateIsInitiallyLoading() =
         runTest {
-            assertIs<IntakesUiState.Loading>(viewModel.uiState.value)
+            assertIs<HistoryUiState.Loading>(viewModel.uiState.value)
         }
 
     @Test
@@ -50,7 +50,7 @@ class IntakesViewModelTest {
             fakeRepository.emit(emptyList())
 
             // Assert
-            assertIs<IntakesUiState.Empty>(viewModel.uiState.value)
+            assertIs<HistoryUiState.Empty>(viewModel.uiState.value)
         }
 
     @Test
@@ -79,7 +79,7 @@ class IntakesViewModelTest {
 
             // Assert
             assertEquals(
-                IntakesUiState.Intakes(nextIntakes = nextIntakes, intakes = intakes),
+                HistoryUiState.History(nextIntakes = nextIntakes, intakes = intakes),
                 viewModel.uiState.value
             )
         }

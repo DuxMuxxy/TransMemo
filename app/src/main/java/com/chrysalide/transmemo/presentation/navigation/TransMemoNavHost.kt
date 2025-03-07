@@ -11,7 +11,7 @@ import com.chrysalide.transmemo.presentation.about.navigateToAboutHelp
 import com.chrysalide.transmemo.presentation.about.navigateToAboutLicenses
 import com.chrysalide.transmemo.presentation.calendar.CalendarBaseRoute
 import com.chrysalide.transmemo.presentation.calendar.calendarGraph
-import com.chrysalide.transmemo.presentation.intakes.intakesScreen
+import com.chrysalide.transmemo.presentation.history.historyScreen
 import com.chrysalide.transmemo.presentation.inventory.inventoryScreen
 import com.chrysalide.transmemo.presentation.products.productsScreen
 import com.chrysalide.transmemo.presentation.settings.settingsScreen
@@ -29,7 +29,7 @@ fun TransMemoNavHost(
         modifier = modifier
     ) {
         calendarGraph()
-        intakesScreen()
+        historyScreen()
         inventoryScreen(onShowSnackbar)
         productsScreen(onShowSnackbar)
         settingsScreen(onShowSnackbar)

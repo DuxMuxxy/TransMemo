@@ -3,7 +3,7 @@
     <string name="menu_content_description">Menu</string>
 
     <string name="feature_calendar_title">Calendrier</string>
-    <string name="feature_intakes_title">Historique</string>
+    <string name="feature_history_title">Historique</string>
     <string name="feature_inventory_title">Stock</string>
     <string name="feature_products_title">Produits</string>
     <string name="feature_wellbeing_title">Bien-être</string>
@@ -109,12 +109,12 @@
     <string name="feature_settings_alt_app_icon_title">Icône alternative</string>
     <string name="feature_settings_alt_app_icon_description">Utiliser une icône et un nom alternatifs dans le lanceur d\'app</string>
     <string name="feature_settings_alt_app_icon_example">Le changement sera appliqué à la fermeture totale de l\'app. L\'icône ressemblera à cela</string>
-    <string name="feature_intakes_done_date">Date réalisée</string>
-    <string name="feature_intakes_planned_date">Date prévue</string>
-    <string name="feature_intakes_done_dose">Dose réalisée</string>
-    <string name="feature_intakes_planned_dose">Dose prévue</string>
-    <string name="feature_intakes_done_side">Côté réalisé</string>
-    <string name="feature_intakes_planned_side">Côté prévue</string>
+    <string name="intake_done_date">Date réalisée</string>
+    <string name="intake_planned_date">Date prévue</string>
+    <string name="intake_done_dose">Dose réalisée</string>
+    <string name="intake_planned_dose">Dose prévue</string>
+    <string name="intake_done_side">Côté réalisé</string>
+    <string name="intake_planned_side">Côté prévue</string>
     <string name="intake_side_left">Côté gauche</string>
     <string name="intake_side_right">Côté droit</string>
     <string name="intake_side_undefined">Côté inconnu</string>

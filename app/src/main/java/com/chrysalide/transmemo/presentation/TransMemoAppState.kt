@@ -13,7 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.chrysalide.transmemo.presentation.about.navigateToAbout
 import com.chrysalide.transmemo.presentation.calendar.navigateToCalendar
-import com.chrysalide.transmemo.presentation.intakes.navigateToIntakes
+import com.chrysalide.transmemo.presentation.history.navigateToHistory
 import com.chrysalide.transmemo.presentation.inventory.navigateToInventory
 import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination
 import com.chrysalide.transmemo.presentation.navigation.TopLevelDestination.ABOUT
@@ -76,7 +76,7 @@ class TransMemoAppState(
 
             when (topLevelDestination) {
                 CALENDAR -> navController.navigateToCalendar(topLevelNavOptions)
-                INTAKES -> navController.navigateToIntakes(topLevelNavOptions)
+                INTAKES -> navController.navigateToHistory(topLevelNavOptions)
                 INVENTORY -> navController.navigateToInventory(topLevelNavOptions)
                 PRODUCTS -> navController.navigateToProducts(topLevelNavOptions)
                 WELLBEING -> {} // navController.navigateToWellbeing(topLevelNavOptions)

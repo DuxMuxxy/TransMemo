@@ -5,7 +5,7 @@
     <string name="menu_content_description">Menu</string>
 
     <string name="feature_calendar_title">Calendar</string>
-    <string name="feature_intakes_title">History</string>
+    <string name="feature_history_title">History</string>
     <string name="feature_inventory_title">Stock</string>
     <string name="feature_products_title">Products</string>
     <string name="feature_wellbeing_title">Well being</string>
@@ -107,12 +107,12 @@
     <string name="feature_settings_alt_app_icon_title">Alternative app icon</string>
     <string name="feature_settings_alt_app_icon_description">Use an alternative icon and name in app launcher</string>
     <string name="feature_settings_alt_app_icon_example">The change will be applied after the app is closed. The icon will look like this</string>
-    <string name="feature_intakes_done_date">Done date</string>
-    <string name="feature_intakes_planned_date">Planned date</string>
-    <string name="feature_intakes_done_dose">Done dose</string>
-    <string name="feature_intakes_planned_dose">Planned dose</string>
-    <string name="feature_intakes_done_side">Done side</string>
-    <string name="feature_intakes_planned_side">Planned side</string>
+    <string name="intake_done_date">Done date</string>
+    <string name="intake_planned_date">Planned date</string>
+    <string name="intake_done_dose">Done dose</string>
+    <string name="intake_planned_dose">Planned dose</string>
+    <string name="intake_done_side">Done side</string>
+    <string name="intake_planned_side">Planned side</string>
     <string name="intake_side_left">Left side</string>
     <string name="intake_side_right">Right side</string>
     <string name="intake_side_undefined">Unknown side</string>

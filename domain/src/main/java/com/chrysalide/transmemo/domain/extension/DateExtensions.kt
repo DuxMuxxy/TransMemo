@@ -70,3 +70,5 @@ fun LocalTime.toEpochMillis(atDate: LocalDate = getCurrentLocalDate()): Long {
     val instant = atDate(atDate).toInstant(timeZone)
     return instant.toEpochMilliseconds()
 }
+
+fun LocalDate.isToday() = this == getCurrentLocalDate()

@@ -2,7 +2,6 @@
 
 - switchable notification types per product
 - handle empty container notifs
-- addable capacity on the go (maybe remove the container capacity from products?)
 - splash activity to better handle alt icon (no background service?)
 - resize app icon foreground (too much zoomed)
 - try other tertiary color in theme (this yellow is ugly)
@@ -11,6 +10,8 @@
 - move some use cases to domain module
 - Add calendar other display modes (by month/week)
 - Add filters in intakes history
+- Show stats in wellbeing screen and addable wellbeing entry with a FAB button (remove stats screen) ?
+- Concatenate containers infos with Products screen cards (remove inventory screen) ?
 
 # DONE
 

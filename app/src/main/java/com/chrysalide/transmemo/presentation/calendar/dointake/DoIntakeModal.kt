@@ -132,7 +132,7 @@ private fun DoIntakeView(
                         }
                     }
                 },
-            label = { Text(stringResource(string.feature_intakes_planned_date)) },
+            label = { Text(stringResource(string.intake_planned_date)) },
             trailingIcon = {
                 Icon(Icons.Default.DateRange, contentDescription = "Select date")
             },
@@ -145,7 +145,7 @@ private fun DoIntakeView(
             Spacer(Modifier.height(16.dp))
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text(stringResource(string.feature_intakes_planned_dose)) },
+                label = { Text(stringResource(string.intake_planned_dose)) },
                 suffix = { Text(intake.unitName()) },
                 value = editedDoseValue,
                 onValueChange = { editedDoseValue = it },

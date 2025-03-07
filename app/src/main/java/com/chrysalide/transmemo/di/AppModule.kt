@@ -16,7 +16,7 @@ import com.chrysalide.transmemo.domain.boundary.BiometricRepository
 import com.chrysalide.transmemo.presentation.MainActivityViewModel
 import com.chrysalide.transmemo.presentation.calendar.CalendarViewModel
 import com.chrysalide.transmemo.presentation.calendar.dointake.DoIntakeViewModel
-import com.chrysalide.transmemo.presentation.intakes.IntakesViewModel
+import com.chrysalide.transmemo.presentation.history.HistoryViewModel
 import com.chrysalide.transmemo.presentation.inventory.InventoryViewModel
 import com.chrysalide.transmemo.presentation.notification.AlertScheduler
 import com.chrysalide.transmemo.presentation.notification.Notifier
@@ -37,7 +37,7 @@ import org.koin.dsl.module
 private val viewModelModule = module {
     viewModelOf(::MainActivityViewModel)
     viewModelOf(::CalendarViewModel)
-    viewModelOf(::IntakesViewModel)
+    viewModelOf(::HistoryViewModel)
     viewModelOf(::InventoryViewModel)
     viewModelOf(::ProductsViewModel)
     viewModelOf(::AddProductViewModel)
