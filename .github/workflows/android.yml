@@ -53,20 +53,8 @@ jobs:
     - name: Decode App Distrib Keystore
       run: echo "${{ secrets.APP_DISTRIB_SIGNING_KEYSTORE }}" | base64 -d > ./keystore-app-distrib.jks
 
-    - name: Get app version
-      id: appVersion
-      uses: ltDino/android-get-version-action@v1.0
-      with:
-        gradlePath: app/build.gradle.kts
-
-    - name: Calculate new version code
-      id: calculateVersionCode
-      run: |
-         SUM=$((${{ steps.appVersion.outputs.versionCode }} + ${{ github.run_number }}))
-         echo "versionCode=${SUM}" >> $GITHUB_OUTPUT
-
     - name: Build and sign APK for App Distrib
-      run: ./gradlew packageAppDistrib -PversionCode="${{ steps.calculateVersionCode.outputs.versionCode }}"
+      run: ./gradlew packageAppDistrib -PversionCode="${{ github.run_number }}"
       env:
         APP_DISTRIB_SIGNING_KEY_ALIAS: ${{ secrets.APP_DISTRIB_SIGNING_KEY_ALIAS }}
         APP_DISTRIB_SIGNING_KEY_PASSWORD: ${{ secrets.APP_DISTRIB_SIGNING_KEY_PASSWORD }}
@@ -89,9 +77,6 @@ jobs:
         with:
           name: TransMemo-appDistrib.apk
           path: apk/
-
-      - name: List files in apk directory
-        run: ls -R apk/
 
       - name: Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1

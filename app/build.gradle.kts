@@ -17,8 +17,8 @@ android {
 
     defaultConfig {
         applicationId = "com.chrysalide.transmemo"
-        versionCode = 50
-        versionName = "5.0"
+        versionCode = rootProject.ext.get("versionCode").toString().toInt()
+        versionName = rootProject.ext.get("versionName").toString()
 
         androidResources.generateLocaleConfig = true
     }
